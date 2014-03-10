@@ -1,10 +1,13 @@
 #include <SoftwareSerial.h>
 
 SoftwareSerial sSerial(9, 10); // TX, RX
-String command = ""; 
+String BUFFER = "";
+int LED = 13;
 
-void setup() 
+void setup()
 {
+   pinMode(LED, OUTPUT); 
+  
    Serial.begin(9600);
    Serial.println("Type AT commands!");
 
@@ -21,10 +24,18 @@ void loop()
    if(sSerial.available()) {
      // while there is more to be read, keep reading.
      while(sSerial.available()) {
-       command += (char)sSerial.read();
+       BUFFER += (char)sSerial.read();
      }
-     Serial.println(command);
-     command = "";
+     Serial.println(BUFFER);
+     
+     if(BUFFER == "TurnOn") {
+       digitalWrite(LED, HIGH);
+     }
+     if(BUFFER == "TurnOff") {
+       digitalWrite(LED, LOW);
+     }
+     
+     BUFFER = "";
    }
   
    // read user input if available.

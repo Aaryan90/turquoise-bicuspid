@@ -6,7 +6,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.Switch;
+import android.widget.ToggleButton;
 
 import com.jareddlc.turquoisebicuspid.Bt;
 import com.jareddlc.turquoisebicuspid.R.id;
@@ -19,6 +21,7 @@ public class Activity_main extends Activity {
 	// UI
 	private static Switch switch_btState;
 	private static Button button_send;
+	private static ToggleButton toggle_on;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,11 +38,22 @@ public class Activity_main extends Activity {
 		button_send = (Button)findViewById(R.id.button_send);
 		button_send.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	String str = "TurnOn";
-            	bTooth.send(str);
+            	bTooth.send("Send Data");
                 Log.d(LOG_TAG, "Send Data");
             }
         });
+		
+		toggle_on = (ToggleButton)findViewById(R.id.toggle_on);
+		toggle_on.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if(isChecked) {
+					bTooth.send("TurnOn");
+		        } else {
+		        	bTooth.send("TurnOff");
+		        }
+			}
+		});
 	}
 
 	@Override

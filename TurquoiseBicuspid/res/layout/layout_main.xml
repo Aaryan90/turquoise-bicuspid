@@ -25,4 +25,12 @@
         android:layout_centerVertical="true"
         android:text="@string/text_send" />
 
+    <ToggleButton
+        android:id="@+id/toggle_on"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button_send"
+        android:layout_alignLeft="@+id/button_send"
+        android:text="@string/toggle_on" />
+
 </RelativeLayout>
