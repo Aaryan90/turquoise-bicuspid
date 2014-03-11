@@ -3,6 +3,9 @@
 SoftwareSerial sSerial(9, 10); // TX, RX
 String BUFFER = "";
 int LED = 13;
+int msPhoneHigh = 500;
+int msPhoneLow = 100;
+int msSMS = 100;
 
 void setup()
 {
@@ -29,7 +32,7 @@ void loop()
      Serial.println(BUFFER);
      
      if(BUFFER == "TurnOn") {
-       digitalWrite(LED, HIGH);
+       phone();
      }
      if(BUFFER == "TurnOff") {
        digitalWrite(LED, LOW);
@@ -43,4 +46,20 @@ void loop()
        delay(10);
        sSerial.write(Serial.read());
    }
+}
+
+void phone()
+{
+  for(int i=0; i<5; i++) 
+  {
+    digitalWrite(LED, HIGH);
+    delay(msPhoneHigh);
+    digitalWrite(LED, LOW);
+    delay(msPhoneLow);   
+  }
+}
+
+void sms()
+{
+  
 }

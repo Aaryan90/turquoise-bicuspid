@@ -2,6 +2,10 @@ package com.jareddlc.turquoisebicuspid;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Context;
+import android.content.IntentFilter;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -11,6 +15,8 @@ import android.widget.Switch;
 import android.widget.ToggleButton;
 
 import com.jareddlc.turquoisebicuspid.Bt;
+import com.jareddlc.turquoisebicuspid.CallListener;
+import com.jareddlc.turquoisebicuspid.SmsListener;
 import com.jareddlc.turquoisebicuspid.R.id;
 
 public class Activity_main extends Activity {
@@ -28,6 +34,15 @@ public class Activity_main extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.layout_main);
 		Log.d(LOG_TAG, "Initializing Activity_main");
+		
+		// register listeners
+		CallListener callListener = new CallListener();
+		TelephonyManager telephony = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+		telephony.listen(callListener, PhoneStateListener.LISTEN_CALL_STATE);
+		
+		SmsListener smsListener = new SmsListener();
+		IntentFilter smsFilter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
+		this.registerReceiver(smsListener, smsFilter);
 		
 		// initialize Bluetooth
 		bTooth = new Bt();
