@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.View;
 
 public class Bt {
 	private static final String LOG_TAG = "TurquoiseBicuspid:Bt";
@@ -20,13 +21,15 @@ public class Bt {
 	private static String deviceMAC = "20:13:12:06:90:58";
 	private static UUID mDeviceUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 	//private static final int REQUEST_ENABLE_BT = 10;
+	private static final int REQUEST_ENABLE_BT = 10;
+	private static Set<BluetoothDevice> pairedDevices;
 	private static BluetoothAdapter mBluetoothAdapter;
 	private static BluetoothDevice mBluetoothDevice;
 	private static BluetoothSocket mSocket;
 	private static InputStream mInStream;
     private static OutputStream mOutStream;
     private static ConnectedThread conx;
-	public static boolean isEnabled;
+	public static boolean isEnabled = false;
 	
 	public Bt() {
 		Log.d(LOG_TAG, "Initializing Bluetooth");
@@ -35,26 +38,45 @@ public class Bt {
 			Log.d(LOG_TAG, "Device does not support Bluetooth.");
 		}
 		
-		if(!mBluetoothAdapter.isEnabled()) {
+		if(mBluetoothAdapter.isEnabled()) {
+		    isEnabled = true;
+		}
+		else {
 			Log.d(LOG_TAG, "Device Bluetooth is not enabled.");
 			isEnabled = false;
-		    //sIntent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+			//sIntent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
 		    //startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
 		}
-		isEnabled = true;
-		
-		Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-		if(pairedDevices.size() > 0) {
-		    // loop through paired devices
-		    for(BluetoothDevice device : pairedDevices) {
-				// add the name and address to an array adapter to show in a ListView
-		        //mArrayAdapter.add(device.getName()+"\n"+device.getAddress());
-		        Log.d(LOG_TAG, "Device: "+device.getName()+":"+device.getAddress());
-		        if(device.getAddress().equals(deviceMAC)) {
-		        	Log.d(LOG_TAG, "Set device: "+device.getName()+":"+device.getAddress());
-		        	mBluetoothDevice = device;
-		        }
-		    }
+		getPaired();
+	}
+	
+	public void enableBt() {
+		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();    
+		if(!mBluetoothAdapter.isEnabled()) {
+			mBluetoothAdapter.enable();
+			getPaired();
+		}
+	}
+	
+	public void disableBt() {
+		mBluetoothAdapter.disable();
+	}
+	
+	public void getPaired() {
+		if(isEnabled) {
+			pairedDevices = mBluetoothAdapter.getBondedDevices();
+			if(pairedDevices.size() > 0) {
+			    // loop through paired devices
+			    for(BluetoothDevice device : pairedDevices) {
+					// add the name and address to an array adapter to show in a ListView
+			        //mArrayAdapter.add(device.getName()+"\n"+device.getAddress());
+			        Log.d(LOG_TAG, "Device: "+device.getName()+":"+device.getAddress());
+			        if(device.getAddress().equals(deviceMAC)) {
+			        	Log.d(LOG_TAG, "Set device: "+device.getName()+":"+device.getAddress());
+			        	mBluetoothDevice = device;
+			        }
+			    }
+			}
 		}
 	}
 	
@@ -64,9 +86,14 @@ public class Bt {
 	}
 	
 	public void btConnect() {
-		Log.d(LOG_TAG, "Spawning ConnectThread");
-		ConnectThread connect = new ConnectThread(mBluetoothDevice);
-		connect.start();
+		if(isEnabled) {
+			Log.d(LOG_TAG, "Spawning ConnectThread");
+			ConnectThread connect = new ConnectThread(mBluetoothDevice);
+			connect.start();
+		}
+		else {
+			Log.d(LOG_TAG, "Bt Not enabled");
+		}
 	}
 	
 	public void btConnected() {

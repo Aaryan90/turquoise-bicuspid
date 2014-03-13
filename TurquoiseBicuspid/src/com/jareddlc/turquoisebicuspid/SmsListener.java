@@ -11,13 +11,11 @@ import android.util.Log;
 public class SmsListener extends BroadcastReceiver {
 	private static final String LOG_TAG = "TurquoiseBicuspid:SmsListener";
 	
-	final SmsManager sms = SmsManager.getDefault();
+	private static final SmsManager sms = SmsManager.getDefault();
 	
 	@Override
 	public void onReceive(Context conext, Intent intent) {			
 	    Bundle bundle = intent.getExtras();
-	    SmsMessage[] msgs = null;
-	    String msg_from;
 	    if(bundle != null) {
 	        try {
 	            Object[] pdus = (Object[]) bundle.get("pdus");

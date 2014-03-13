@@ -49,9 +49,22 @@ public class Activity_main extends Activity {
 		bTooth.btConnect();
 		switch_btState = (Switch)findViewById(R.id.switch_btState);
 		switch_btState.setChecked(bTooth.isEnabled);
+		switch_btState.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if(isChecked) {
+					Log.d(LOG_TAG, "Switch on");
+					bTooth.enableBt();
+		        } else {
+		        	Log.d(LOG_TAG, "Switch off");
+		        	bTooth.disableBt();
+		        }
+			}
+		});
 		
 		button_send = (Button)findViewById(R.id.button_send);
 		button_send.setOnClickListener(new View.OnClickListener() {
+			@Override
             public void onClick(View v) {
             	bTooth.send("Send Data");
                 Log.d(LOG_TAG, "Send Data");
