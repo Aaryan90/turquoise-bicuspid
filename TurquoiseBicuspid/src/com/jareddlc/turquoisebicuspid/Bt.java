@@ -9,25 +9,20 @@ import java.util.UUID;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import android.content.Context;
-import android.content.Intent;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.View;
 
 public class Bt {
 	private static final String LOG_TAG = "TurquoiseBicuspid:Bt";
-	private static String deviceName = "TurquoiseBicuspid";
+	//private static String deviceName = "TurquoiseBicuspid";
 	private static String deviceMAC = "20:13:12:06:90:58";
 	private static UUID mDeviceUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-	//private static final int REQUEST_ENABLE_BT = 10;
-	private static final int REQUEST_ENABLE_BT = 10;
 	private static Set<BluetoothDevice> pairedDevices;
 	private static BluetoothAdapter mBluetoothAdapter;
 	private static BluetoothDevice mBluetoothDevice;
 	private static BluetoothSocket mSocket;
 	private static InputStream mInStream;
     private static OutputStream mOutStream;
+    private static ConnectThread connect;
     private static ConnectedThread conx;
 	public static boolean isEnabled = false;
 	
@@ -35,23 +30,23 @@ public class Bt {
 		Log.d(LOG_TAG, "Initializing Bluetooth");
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		if(mBluetoothAdapter == null) {
-			Log.d(LOG_TAG, "Device does not support Bluetooth.");
+			Log.d(LOG_TAG, "Bluetooth not supported.");
 		}
-		
 		if(mBluetoothAdapter.isEnabled()) {
 		    isEnabled = true;
 		}
 		else {
-			Log.d(LOG_TAG, "Device Bluetooth is not enabled.");
+			Log.d(LOG_TAG, "Bluetooth is not enabled.");
 			isEnabled = false;
-			//sIntent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-		    //startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
 		}
 		getPaired();
 	}
 	
-	public void enableBt() {
-		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();    
+	public void BtEnable(String str) {
+		Log.d(LOG_TAG, str);
+	}
+	
+	public void enableBt() {   
 		if(!mBluetoothAdapter.isEnabled()) {
 			mBluetoothAdapter.enable();
 			getPaired();
@@ -85,10 +80,15 @@ public class Bt {
 		conx.write(str.getBytes());
 	}
 	
+	public void btDisconnect() {
+		conx.close();
+		connect.close();
+	}
+	
 	public void btConnect() {
 		if(isEnabled) {
 			Log.d(LOG_TAG, "Spawning ConnectThread");
-			ConnectThread connect = new ConnectThread(mBluetoothDevice);
+			connect = new ConnectThread(mBluetoothDevice);
 			connect.start();
 		}
 		else {
@@ -170,12 +170,13 @@ public class Bt {
 	    public void run() {
 	    	Log.d(LOG_TAG, "Running ConnectedThread");
 	        byte[] buffer = new byte[1024];
-	        int bytes;
+	        //int bytes;
 	 
 	        // listen to the InputStream
 	        while(true) {
 	            try {
-	                bytes = mInStream.read(buffer);
+	            	mInStream.read(buffer);
+	                //bytes = mInStream.read(buffer);
 					// Send the obtained bytes to the UI activity
 	                //mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer).sendToTarget();
 	            }

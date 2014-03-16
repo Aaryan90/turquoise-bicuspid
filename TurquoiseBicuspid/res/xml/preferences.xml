@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+	<PreferenceCategory android:title="@string/pref_category_connectivity" >
+        <SwitchPreference
+			android:title="@string/pref_connectivity_bluetooth"
+			android:key="pref_connectivity_bluetooth"/>
+        <ListPreference
+	        android:key="pref_connectivity_paired"
+	        android:title="@string/pref_connectivity_paired"
+	        android:dialogTitle="@string/perf_connectivity_paired_title"
+	        android:summary="@string/perf_connectivity_paired_select"
+	        android:entries="@array/perf_connectivity_paired_entries"
+	        android:entryValues="@array/perf_connectivity_paired_values"
+	        android:defaultValue="@string/perf_connectivity_paired_default" />
+        <CheckBoxPreference
+	        android:key="pref_connectivity_connected"
+	        android:title="@string/pref_connectivity_connected"
+	        android:summaryOff="@string/pref_connectivity_connected_off"
+	        android:defaultValue="true" />
+    </PreferenceCategory>
+    
+	<PreferenceCategory android:title="@string/pref_category_device" >
+	    <Preference 
+            android:key="pref_device"
+            android:title="@string/pref_device" />
+    </PreferenceCategory>
+    
+	<PreferenceCategory android:title="@string/pref_category_service" >
+	    <CheckBoxPreference
+	        android:key="pref_service"
+	        android:title="@string/pref_service"
+	        android:summaryOn="@string/pref_service_on"
+	        android:summaryOff="@string/pref_service_off"
+	        android:defaultValue="true" />
+    </PreferenceCategory>
+</PreferenceScreen>

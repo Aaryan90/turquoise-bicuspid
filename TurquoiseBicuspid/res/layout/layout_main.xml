@@ -17,20 +17,28 @@
         android:layout_marginRight="14dp"
         android:text="@string/text_btState" />
 
-    <Button
-        android:id="@+id/button_send"
+    <ToggleButton
+        android:id="@+id/toggle_service"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:text="@string/text_send" />
+        android:text="@string/toggle_service" />
 
     <ToggleButton
         android:id="@+id/toggle_on"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/button_send"
-        android:layout_alignLeft="@+id/button_send"
+        android:layout_above="@+id/toggle_service"
+        android:layout_alignLeft="@+id/toggle_service"
         android:text="@string/toggle_on" />
+
+    <ToggleButton
+        android:id="@+id/toggle_connect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/toggle_on"
+        android:layout_alignLeft="@+id/toggle_on"
+        android:text="@string/toggle_connect" />
 
 </RelativeLayout>

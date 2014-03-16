@@ -18,7 +18,7 @@
         android:label="@string/app_name"
         android:theme="@android:style/Theme.Holo" >
         <activity
-            android:name="com.jareddlc.turquoisebicuspid.Activity_main"
+            android:name="com.jareddlc.turquoisebicuspid.SettingsActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

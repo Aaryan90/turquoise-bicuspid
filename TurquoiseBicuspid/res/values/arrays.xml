@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="perf_connectivity_paired_entries">
+        <item name="0">No paired devices</item>
+    </string-array>
+    <string-array name="perf_connectivity_paired_values">
+        <item name="0">None</item>
+    </string-array>
+</resources>

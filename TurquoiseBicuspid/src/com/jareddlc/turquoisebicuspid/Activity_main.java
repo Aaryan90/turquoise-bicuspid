@@ -26,8 +26,9 @@ public class Activity_main extends Activity {
 	
 	// UI
 	private static Switch switch_btState;
-	private static Button button_send;
 	private static ToggleButton toggle_on;
+	private static ToggleButton toggle_service;
+	private static ToggleButton toggle_connect;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,23 +63,45 @@ public class Activity_main extends Activity {
 			}
 		});
 		
-		button_send = (Button)findViewById(R.id.button_send);
-		button_send.setOnClickListener(new View.OnClickListener() {
+		toggle_connect = (ToggleButton)findViewById(R.id.toggle_connect);
+		toggle_connect.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 			@Override
-            public void onClick(View v) {
-            	bTooth.send("Send Data");
-                Log.d(LOG_TAG, "Send Data");
-            }
-        });
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if(isChecked) {
+					Log.d(LOG_TAG, "Connect");
+					bTooth.btConnect();
+		        }
+				else {
+		        	Log.d(LOG_TAG, "Disconnect");
+		        	bTooth.btDisconnect();
+		        }
+			}
+		});
 		
 		toggle_on = (ToggleButton)findViewById(R.id.toggle_on);
 		toggle_on.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				if(isChecked) {
+					Log.d(LOG_TAG, "TurnOn");
 					bTooth.send("TurnOn");
-		        } else {
+		        }
+				else {
 		        	bTooth.send("TurnOff");
+		        	Log.d(LOG_TAG, "TurnOff");
+		        }
+			}
+		});
+		
+		toggle_service = (ToggleButton)findViewById(R.id.toggle_service);
+		toggle_service.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if(isChecked) {
+					Log.d(LOG_TAG, "Service start");
+		        }
+				else {
+		        	Log.d(LOG_TAG, "Service stop");
 		        }
 			}
 		});
