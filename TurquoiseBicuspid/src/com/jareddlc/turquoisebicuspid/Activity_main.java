@@ -8,21 +8,17 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
-import android.view.View;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.ToggleButton;
 
-import com.jareddlc.turquoisebicuspid.Bt;
+import com.jareddlc.turquoisebicuspid.Bluetooth;
 import com.jareddlc.turquoisebicuspid.CallListener;
 import com.jareddlc.turquoisebicuspid.SmsListener;
-import com.jareddlc.turquoisebicuspid.R.id;
 
 public class Activity_main extends Activity {
 	private static final String LOG_TAG = "TurquoiseBicuspid:Activity_main";
-	private static final int REQUEST_ENABLE_BT = 10;
-	private Bt bTooth;
+	private Bluetooth bTooth;
 	
 	// UI
 	private static Switch switch_btState;
@@ -46,7 +42,7 @@ public class Activity_main extends Activity {
 		this.registerReceiver(smsListener, smsFilter);
 		
 		// initialize Bluetooth
-		bTooth = new Bt();
+		bTooth = new Bluetooth();
 		bTooth.btConnect();
 		switch_btState = (Switch)findViewById(R.id.switch_btState);
 		switch_btState.setChecked(bTooth.isEnabled);
@@ -55,10 +51,10 @@ public class Activity_main extends Activity {
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				if(isChecked) {
 					Log.d(LOG_TAG, "Switch on");
-					bTooth.enableBt();
+					bTooth.enableBluetooth();
 		        } else {
 		        	Log.d(LOG_TAG, "Switch off");
-		        	bTooth.disableBt();
+		        	bTooth.disableBluetooth();
 		        }
 			}
 		});

@@ -5,6 +5,7 @@
 			android:title="@string/pref_connectivity_bluetooth"
 			android:key="pref_connectivity_bluetooth"/>
         <ListPreference
+            android:dependency="pref_connectivity_bluetooth"
 	        android:key="pref_connectivity_paired"
 	        android:title="@string/pref_connectivity_paired"
 	        android:dialogTitle="@string/perf_connectivity_paired_title"
@@ -13,6 +14,7 @@
 	        android:entryValues="@array/perf_connectivity_paired_values"
 	        android:defaultValue="@string/perf_connectivity_paired_default" />
         <CheckBoxPreference
+            android:dependency="pref_connectivity_paired"
 	        android:key="pref_connectivity_connected"
 	        android:title="@string/pref_connectivity_connected"
 	        android:summaryOff="@string/pref_connectivity_connected_off"

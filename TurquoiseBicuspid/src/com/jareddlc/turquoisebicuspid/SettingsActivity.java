@@ -3,6 +3,7 @@ package com.jareddlc.turquoisebicuspid;
 import android.app.Activity;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.ListPreference;
 import android.preference.SwitchPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -30,17 +31,38 @@ public class SettingsActivity extends Activity {
     	private static SwitchPreference pref_connectivity_bluetooth;
     	private static CheckBoxPreference pref_connectivity_connected;
     	private static CheckBoxPreference pref_service;
+    	private static ListPreference pref_connectivity_paired;
     	private static Preference pref_device;
     	
     	// private static objects
-    	private static Bt bluetooth;
+    	private static Bluetooth bluetooth;
     	
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
             
             // initialize Bluetooth
-            bluetooth = new Bt();
+            bluetooth = new Bluetooth();
+            
+            // load paired devices
+            pref_connectivity_paired = (ListPreference) getPreferenceManager().findPreference("pref_connectivity_paired");
+            if(bluetooth.isEnabled) {
+            	pref_connectivity_paired.setEntries(bluetooth.getEntries());
+                pref_connectivity_paired.setEntryValues(bluetooth.getEntryValues());
+            }
+            
+            pref_connectivity_paired.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {		
+				@Override
+				public boolean onPreferenceClick(Preference preference) {
+					Log.d(LOG_TAG, preference.getKey()+" clicked");
+					bluetooth.getPaired();
+					if(bluetooth.isEnabled) {
+		            	pref_connectivity_paired.setEntries(bluetooth.getEntries());
+		                pref_connectivity_paired.setEntryValues(bluetooth.getEntryValues());
+		            }
+					return true;
+				}
+			});
             
             // UI listeners
             pref_connectivity_bluetooth = (SwitchPreference) getPreferenceManager().findPreference("pref_connectivity_bluetooth");
@@ -48,7 +70,13 @@ public class SettingsActivity extends Activity {
 				@Override
 				public boolean onPreferenceChange(Preference preference, Object newValue) {
 					Log.d(LOG_TAG, preference.getKey()+" changed to: "+newValue.toString());
-					bluetooth.BtEnable(newValue.toString());
+					boolean value = (Boolean)newValue;
+					if(value) {
+						bluetooth.enableBluetooth();
+					}
+					else {
+						bluetooth.disableBluetooth();
+					}
 					return true;
 				}
 			});
