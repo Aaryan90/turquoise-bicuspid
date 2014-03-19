@@ -23,12 +23,14 @@
     
 	<PreferenceCategory android:title="@string/pref_category_device" >
 	    <Preference 
+	        android:dependency="pref_connectivity_connected"
             android:key="pref_device"
             android:title="@string/pref_device" />
     </PreferenceCategory>
     
 	<PreferenceCategory android:title="@string/pref_category_service" >
 	    <CheckBoxPreference
+	        android:dependency="pref_connectivity_bluetooth"
 	        android:key="pref_service"
 	        android:title="@string/pref_service"
 	        android:summaryOn="@string/pref_service_on"

@@ -3,10 +3,6 @@
 
     <string name="app_name">Turquoise Bicuspid</string>
     <string name="action_settings">Settings</string>
-    <string name="text_btState">Bluetooth</string>
-    <string name="toggle_on">LED</string>
-    <string name="toggle_service">Service</string>
-    <string name="toggle_connect">Connecteds</string>
     <string name="pref_category_connectivity">Connectivity</string>
     <string name="pref_connectivity_bluetooth">Bluetooth</string>
     <string name="pref_connectivity_connected">Connected</string>

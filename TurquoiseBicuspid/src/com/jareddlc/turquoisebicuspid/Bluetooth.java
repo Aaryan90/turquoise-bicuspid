@@ -25,10 +25,11 @@ public class Bluetooth {
 	private static InputStream mInStream;
     private static OutputStream mOutStream;
     private static ConnectThread connect;
-    private static ConnectedThread conx;
-	public boolean isEnabled = false;
+    private static HandleThread conx;
 	public static CharSequence[] pairedEntries;
 	public static CharSequence[] pairedEntryValues;
+	public boolean isEnabled = false;
+	public boolean isConnected = false;
 	
 	public Bluetooth() {
 		Log.d(LOG_TAG, "Initializing Bluetooth");
@@ -59,6 +60,21 @@ public class Bluetooth {
 		isEnabled = false;
 	}
 	
+	public void setDevice(String devMac) {
+		deviceMAC = devMac;
+		setPaired();
+	}
+	
+	public void setPaired() {
+		// loop through paired devices
+	    for(BluetoothDevice device : pairedDevices) {	    	
+	        if(device.getAddress().equals(deviceMAC)) {
+	        	Log.d(LOG_TAG, "Set device: "+device.getName()+":"+device.getAddress());
+	        	mBluetoothDevice = device;
+	        }
+	    }
+	}
+	
 	public void getPaired() {
 		if(isEnabled) {
 			pairedDevices = mBluetoothAdapter.getBondedDevices();
@@ -72,10 +88,10 @@ public class Bluetooth {
 			    	entries.add(device.getName());
 			    	values.add(device.getAddress());
 			    	
-			        if(device.getAddress().equals(deviceMAC)) {
+			        /*if(device.getAddress().equals(deviceMAC)) {
 			        	Log.d(LOG_TAG, "Set device: "+device.getName()+":"+device.getAddress());
 			        	mBluetoothDevice = device;
-			        }
+			        }*/
 			    }
 			    pairedEntries = entries.toArray(new CharSequence[entries.size()]);
 			    pairedEntryValues = values.toArray(new CharSequence[values.size()]);
@@ -92,16 +108,20 @@ public class Bluetooth {
     }
 	
 	public void send(String str) {
-		Log.d(LOG_TAG, "Sending");
-		conx.write(str.getBytes());
+		if(isEnabled) {
+			Log.d(LOG_TAG, "Sending:"+str);
+			conx.write(str.getBytes());
+		}
 	}
 	
-	public void btDisconnect() {
-		conx.close();
-		connect.close();
+	public void disconnectDevice() {
+		if(isConnected) {
+			conx.close();
+			connect.close();
+		}
 	}
 	
-	public void btConnect() {
+	public void connectDevice() {
 		if(isEnabled) {
 			Log.d(LOG_TAG, "Spawning ConnectThread");
 			connect = new ConnectThread(mBluetoothDevice);
@@ -110,12 +130,6 @@ public class Bluetooth {
 		else {
 			Log.d(LOG_TAG, "Bt Not enabled");
 		}
-	}
-	
-	public void btConnected() {
-		Log.d(LOG_TAG, "Spawning ConnectedThread");
-		ConnectedThread connected = new ConnectedThread(mSocket);
-		connected.start();
 	}
 	
 	private class ConnectThread extends Thread {
@@ -140,6 +154,7 @@ public class Bluetooth {
 	        try {
 	            // connect the device through the socket. This will block until it succeeds or throws an exception
 	        	mSocket.connect();
+	        	isConnected = true;
 	        }
 	        catch(IOException connectException) {
 	        	Log.e(LOG_TAG, "Error: mmSocket.connect()", connectException);
@@ -153,7 +168,7 @@ public class Bluetooth {
 	        }
 	 
 	        // Do work to manage the connection
-	        conx = new ConnectedThread(mSocket);
+	        conx = new HandleThread(mSocket);
 	        conx.start();
 	        String str = "Android connected.";
 	        conx.write(str.getBytes());
@@ -169,9 +184,9 @@ public class Bluetooth {
 	    }
 	}
 	
-	private class ConnectedThread extends Thread {
-	    public ConnectedThread(BluetoothSocket socket) {
-	    	Log.d(LOG_TAG, "Initializing ConnectedThread");
+	private class HandleThread extends Thread {
+	    public HandleThread(BluetoothSocket socket) {
+	    	Log.d(LOG_TAG, "Initializing HandleThread");
 	 
 	        // get the input and output streams
 	        try {
@@ -184,12 +199,12 @@ public class Bluetooth {
 	    }
 	 
 	    public void run() {
-	    	Log.d(LOG_TAG, "Running ConnectedThread");
+	    	Log.d(LOG_TAG, "Running HandleThread");
 	        byte[] buffer = new byte[1024];
 	        //int bytes;
 	 
 	        // listen to the InputStream
-	        while(true) {
+	        /*while(true) {
 	            try {
 	            	mInStream.read(buffer);
 	                //bytes = mInStream.read(buffer);
@@ -200,12 +215,11 @@ public class Bluetooth {
 	            	Log.e(LOG_TAG, "Error: mInStream.read()", e);
 	                break;
 	            }
-	        }
+	        }*/
 	    }
 	 
 	    public void write(byte[] bytes) {
 	        try {
-	        	Log.d(LOG_TAG, "writting: "+bytes);
 	            mOutStream.write(bytes);
 	        }
 	        catch(IOException e) {
@@ -215,7 +229,10 @@ public class Bluetooth {
 	 
 	    public void close() {
 	        try {
+	        	mInStream.close();
+	        	mOutStream.close();
 	            mSocket.close();
+	            isConnected = false;
 	        }
 	        catch(IOException e) {
 	        	Log.e(LOG_TAG, "Error: mSocket.close()", e);
