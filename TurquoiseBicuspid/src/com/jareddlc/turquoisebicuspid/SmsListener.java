@@ -9,6 +9,7 @@ import android.telephony.SmsMessage;
 import android.util.Log;
 
 public class SmsListener extends BroadcastReceiver {
+	// debug data
 	private static final String LOG_TAG = "TurquoiseBicuspid:SmsListener";
 	
 	private static final SmsManager sms = SmsManager.getDefault();

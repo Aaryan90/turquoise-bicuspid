@@ -11,12 +11,18 @@ import java.util.UUID;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 public class Bluetooth {
+	// debug data
 	private static final String LOG_TAG = "TurquoiseBicuspid:Bt";
-	//private static String deviceName = "TurquoiseBicuspid";
-	private static String deviceMAC = "20:13:12:06:90:58";
+	
+	// private static objects
+	private static Handler mHandler;
+	private static String deviceMAC;
 	private static UUID mDeviceUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 	private static Set<BluetoothDevice> pairedDevices;
 	private static BluetoothAdapter mBluetoothAdapter;
@@ -26,13 +32,15 @@ public class Bluetooth {
     private static OutputStream mOutStream;
     private static ConnectThread connect;
     private static HandleThread conx;
+    private static EnableBluetoothThread eBluetooth;
 	public static CharSequence[] pairedEntries;
 	public static CharSequence[] pairedEntryValues;
 	public boolean isEnabled = false;
 	public boolean isConnected = false;
 	
-	public Bluetooth() {
+	public Bluetooth(Handler mHndlr) {
 		Log.d(LOG_TAG, "Initializing Bluetooth");
+		mHandler = mHndlr;
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		if(mBluetoothAdapter == null) {
 			Log.d(LOG_TAG, "Bluetooth not supported.");
@@ -44,14 +52,26 @@ public class Bluetooth {
 			Log.d(LOG_TAG, "Bluetooth is not enabled.");
 			isEnabled = false;
 		}
-		getPaired();
 	}
 	
 	public void enableBluetooth() {   
 		if(!mBluetoothAdapter.isEnabled()) {
-			mBluetoothAdapter.enable();
-			isEnabled = true;
-			getPaired();
+			/*mBluetoothAdapter.enable();
+			while(!mBluetoothAdapter.isEnabled()) {
+                try
+                {
+                    Thread.sleep(100L);
+                }
+                catch (InterruptedException ie)
+                {
+                    // unexpected interruption while enabling bluetooth
+                    Thread.currentThread().interrupt(); // restore interrupted flag
+                    return;
+                }
+            }
+			isEnabled = true;*/
+			eBluetooth = new EnableBluetoothThread();
+			eBluetooth.start();
 		}
 	}
 	
@@ -67,7 +87,8 @@ public class Bluetooth {
 	
 	public void setPaired() {
 		// loop through paired devices
-	    for(BluetoothDevice device : pairedDevices) {	    	
+	    for(BluetoothDevice device : pairedDevices) {
+	    	Log.d(LOG_TAG, "looking for device");
 	        if(device.getAddress().equals(deviceMAC)) {
 	        	Log.d(LOG_TAG, "Set device: "+device.getName()+":"+device.getAddress());
 	        	mBluetoothDevice = device;
@@ -76,12 +97,11 @@ public class Bluetooth {
 	}
 	
 	public void getPaired() {
-		if(isEnabled) {
+		if(isEnabled) {			
 			pairedDevices = mBluetoothAdapter.getBondedDevices();
 			if(pairedDevices.size() > 0) {
 				List<CharSequence> entries = new ArrayList<CharSequence>();
 				List<CharSequence> values = new ArrayList<CharSequence>();
-				
 			    // loop through paired devices
 			    for(BluetoothDevice device : pairedDevices) {
 			    	Log.d(LOG_TAG, "Device: "+device.getName()+":"+device.getAddress());
@@ -96,15 +116,33 @@ public class Bluetooth {
 			    pairedEntries = entries.toArray(new CharSequence[entries.size()]);
 			    pairedEntryValues = values.toArray(new CharSequence[values.size()]);
 			}
+			else {
+				Log.d(LOG_TAG, "No pairedDevices");
+			}
+		}
+		else {
+			Log.d(LOG_TAG, "getPaired called without BT enabled");
 		}
 	}
 	
 	public CharSequence[] getEntries() {
-		return pairedEntries;
+		if(pairedEntries.length > 0) {
+			return pairedEntries;
+		}
+		else {
+			CharSequence[] entries = {"No paired Devices"};
+			return entries;
+		}
     }
 
-    public CharSequence[] getEntryValues() {
-		return pairedEntryValues;
+    public CharSequence[] getEntryValues() {  	
+    	if(pairedEntryValues.length > 0) {
+			return pairedEntryValues;
+		}
+		else {
+			CharSequence[] entryValues = {"None"};
+			return entryValues;
+		}
     }
 	
 	public void send(String str) {
@@ -200,7 +238,7 @@ public class Bluetooth {
 	 
 	    public void run() {
 	    	Log.d(LOG_TAG, "Running HandleThread");
-	        byte[] buffer = new byte[1024];
+	        //byte[] buffer = new byte[1024];
 	        //int bytes;
 	 
 	        // listen to the InputStream
@@ -238,6 +276,31 @@ public class Bluetooth {
 	        	Log.e(LOG_TAG, "Error: mSocket.close()", e);
 	        }
 	    }
+	}
+	
+	private class EnableBluetoothThread extends Thread {		
+		public void run() {
+			mBluetoothAdapter.enable();
+			while(!mBluetoothAdapter.isEnabled()) {
+                try
+                {
+                    Thread.sleep(100L);
+                }
+                catch (InterruptedException ie)
+                {
+                    // unexpected interruption while enabling bluetooth
+                    Thread.currentThread().interrupt(); // restore interrupted flag
+                    return;
+                }
+            }
+			isEnabled = true;
+			Log.d(LOG_TAG, "Sending message");
+			Message msg = mHandler.obtainMessage();
+            Bundle b = new Bundle();
+            b.putString("message", "isEnabled");
+            msg.setData(b);
+            mHandler.sendMessage(msg);
+		}
 	}
 }
 

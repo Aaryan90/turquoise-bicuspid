@@ -1,23 +1,36 @@
 package com.jareddlc.turquoisebicuspid;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
+import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.util.Log;
 
 public class SettingsActivity extends Activity {
+	// debug data
 	private static final String LOG_TAG = "TurquoiseBicuspid:SettingsActivity";
 	public static final String PREFS_NAME = "TurquoiseBicuspidSettings";
+	
+	private static SharedPreferences preferences;
+	private static SharedPreferences.Editor editor;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
         // load the PreferenceFragment
         Log.d(LOG_TAG, "Loading PreferenceFragment");
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = preferences.edit();
+        
         getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
     }
  
@@ -36,22 +49,36 @@ public class SettingsActivity extends Activity {
     	private static Preference pref_device;
     	
     	// private static objects
+    	private static Handler mHandler;
     	private static Bluetooth bluetooth;
-    	
-        public void onCreate(Bundle savedInstanceState) {
+
+		@SuppressLint("HandlerLeak")
+		public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             
             // load from preferences from xml
             addPreferencesFromResource(R.xml.preferences);
             
+            // setup handler
+            mHandler = new Handler() {
+				@Override
+				public void handleMessage(Message msg) {
+					Log.d(LOG_TAG, "Message received:");
+					setPairedDevices();
+					pref_connectivity_bluetooth.setChecked(true);
+				}
+			};
+            
             // initialize Bluetooth
-            bluetooth = new Bluetooth();
+            bluetooth = new Bluetooth(mHandler);
             
             // load paired devices
             pref_connectivity_paired = (ListPreference) getPreferenceManager().findPreference("pref_connectivity_paired");
             if(bluetooth.isEnabled) {
+            	/*bluetooth.getPaired();
             	pref_connectivity_paired.setEntries(bluetooth.getEntries());
-                pref_connectivity_paired.setEntryValues(bluetooth.getEntryValues());
+                pref_connectivity_paired.setEntryValues(bluetooth.getEntryValues());*/
+            	setPairedDevices();
             }
             
             // UI listeners
@@ -59,11 +86,6 @@ public class SettingsActivity extends Activity {
 				@Override
 				public boolean onPreferenceClick(Preference preference) {
 					Log.d(LOG_TAG, preference.getKey()+" clicked");
-					if(bluetooth.isEnabled) {
-						bluetooth.getPaired();
-		            	pref_connectivity_paired.setEntries(bluetooth.getEntries());
-		                pref_connectivity_paired.setEntryValues(bluetooth.getEntryValues());
-		            }
 					return true;
 				}
 			});
@@ -91,6 +113,7 @@ public class SettingsActivity extends Activity {
 					return true;
 				}
 			});
+            
             // grab current Bluetooth state
             if(bluetooth.isEnabled) {
             	pref_connectivity_bluetooth.setChecked(true);
@@ -140,6 +163,12 @@ public class SettingsActivity extends Activity {
 					return true;
 				}
 			});
+        }
+		
+		public void setPairedDevices() {
+			bluetooth.getPaired();
+        	pref_connectivity_paired.setEntries(bluetooth.getEntries());
+            pref_connectivity_paired.setEntryValues(bluetooth.getEntryValues());
         }
     }
 }
