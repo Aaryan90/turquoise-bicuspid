@@ -2,17 +2,20 @@ package com.jareddlc.turquoisebicuspid;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.util.Log;
+import android.widget.Toast;
 
 public class SettingsActivity extends Activity {
 	// debug data
@@ -21,6 +24,7 @@ public class SettingsActivity extends Activity {
 	
 	private static SharedPreferences preferences;
 	private static SharedPreferences.Editor editor;
+	private static Context context;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +32,7 @@ public class SettingsActivity extends Activity {
         
         // load the PreferenceFragment
         Log.d(LOG_TAG, "Loading PreferenceFragment");
+        context = getApplicationContext();
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor = preferences.edit();
         
@@ -66,6 +71,9 @@ public class SettingsActivity extends Activity {
 					Log.d(LOG_TAG, "Message received:");
 					setPairedDevices();
 					pref_connectivity_bluetooth.setChecked(true);
+					CharSequence text = "Bluetooth Enabled";
+					Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+					pref_connectivity_paired.setEnabled(true);
 				}
 			};
             
@@ -75,9 +83,6 @@ public class SettingsActivity extends Activity {
             // load paired devices
             pref_connectivity_paired = (ListPreference) getPreferenceManager().findPreference("pref_connectivity_paired");
             if(bluetooth.isEnabled) {
-            	/*bluetooth.getPaired();
-            	pref_connectivity_paired.setEntries(bluetooth.getEntries());
-                pref_connectivity_paired.setEntryValues(bluetooth.getEntryValues());*/
             	setPairedDevices();
             }
             
@@ -106,6 +111,9 @@ public class SettingsActivity extends Activity {
 					boolean value = (Boolean)newValue;
 					if(value) {
 						bluetooth.enableBluetooth();
+						CharSequence text = "Enabling...";
+						Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+						pref_connectivity_paired.setEnabled(false);
 					}
 					else {
 						bluetooth.disableBluetooth();
