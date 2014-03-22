@@ -3,12 +3,12 @@ TurquoiseBicuspid
 
 Applitcation that listens for phone notifications and can notify a bluetooth device of that action:
 
-Application listeners:
+Implemented application listeners:
 
 * Phone
 * SMS
 
-TODO:
+To be implemented:
 
 * Email
 * Facebook
