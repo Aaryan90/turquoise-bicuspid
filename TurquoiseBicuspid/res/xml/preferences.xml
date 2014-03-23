@@ -18,7 +18,7 @@
 	        android:key="pref_connectivity_connected"
 	        android:title="@string/pref_connectivity_connected"
 	        android:summaryOff="@string/pref_connectivity_connected_off"
-	        android:defaultValue="true" />
+	        android:defaultValue="false" />
     </PreferenceCategory>
     
 	<PreferenceCategory android:title="@string/pref_category_device" >

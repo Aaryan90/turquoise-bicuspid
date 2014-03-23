@@ -88,7 +88,6 @@ public class Bluetooth {
 	public void setPaired() {
 		// loop through paired devices
 	    for(BluetoothDevice device : pairedDevices) {
-	    	Log.d(LOG_TAG, "looking for device");
 	        if(device.getAddress().equals(deviceMAC)) {
 	        	Log.d(LOG_TAG, "Set device: "+device.getName()+":"+device.getAddress());
 	        	mBluetoothDevice = device;
@@ -193,6 +192,11 @@ public class Bluetooth {
 	            // connect the device through the socket. This will block until it succeeds or throws an exception
 	        	mSocket.connect();
 	        	isConnected = true;
+	        	Message msg = mHandler.obtainMessage();
+	            Bundle b = new Bundle();
+	            b.putString("bluetooth", "isConnected");
+	            msg.setData(b);
+	            mHandler.sendMessage(msg);
 	        }
 	        catch(IOException connectException) {
 	        	Log.e(LOG_TAG, "Error: mmSocket.connect()", connectException);
@@ -294,10 +298,9 @@ public class Bluetooth {
                 }
             }
 			isEnabled = true;
-			Log.d(LOG_TAG, "Sending message");
 			Message msg = mHandler.obtainMessage();
             Bundle b = new Bundle();
-            b.putString("message", "isEnabled");
+            b.putString("bluetooth", "isEnabled");
             msg.setData(b);
             mHandler.sendMessage(msg);
 		}
