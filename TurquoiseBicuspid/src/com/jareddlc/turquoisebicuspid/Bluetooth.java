@@ -202,6 +202,11 @@ public class Bluetooth {
 	        	Log.e(LOG_TAG, "Error: mmSocket.connect()", connectException);
 	            try {
 	            	mSocket.close();
+	            	Message msg = mHandler.obtainMessage();
+		            Bundle b = new Bundle();
+		            b.putString("bluetooth", "isConnectedFailed");
+		            msg.setData(b);
+		            mHandler.sendMessage(msg);
 	            }
 	            catch (IOException closeException) {
 	            	Log.e(LOG_TAG, "Error: mmSocket.close()", closeException);

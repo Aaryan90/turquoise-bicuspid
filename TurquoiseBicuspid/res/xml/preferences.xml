@@ -37,4 +37,24 @@
 	        android:summaryOff="@string/pref_service_off"
 	        android:defaultValue="true" />
     </PreferenceCategory>
+    
+	<PreferenceCategory android:title="@string/pref_category_sms" >
+	    <CheckBoxPreference
+	        android:dependency="pref_connectivity_connected"
+	        android:key="pref_sms"
+	        android:title="@string/pref_sms"
+	        android:summaryOn="@string/pref_sms_on"
+	        android:summaryOff="@string/pref_sms_off"
+	        android:defaultValue="false" />
+    </PreferenceCategory>
+    
+	<PreferenceCategory android:title="@string/pref_category_phone" >
+	    <CheckBoxPreference
+	        android:dependency="pref_connectivity_connected"
+	        android:key="pref_phone"
+	        android:title="@string/pref_phone"
+	        android:summaryOn="@string/pref_phone_on"
+	        android:summaryOff="@string/pref_phone_off"
+	        android:defaultValue="false" />
+    </PreferenceCategory>
 </PreferenceScreen>

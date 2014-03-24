@@ -52,6 +52,8 @@ public class SettingsActivity extends Activity {
     	private static CheckBoxPreference pref_service;
     	private static ListPreference pref_connectivity_paired;
     	private static Preference pref_device;
+    	private static Preference pref_sms;
+    	private static Preference pref_phone;
     	
     	// private static objects
     	private static Handler mHandler;
@@ -88,6 +90,13 @@ public class SettingsActivity extends Activity {
 						CharSequence text = "Bluetooth Connected";
 						Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
 						pref_connectivity_connected.setEnabled(true);
+					}
+					if(bluetoothMsg.equals("isConnectedFailed")) {
+						Log.d(LOG_TAG, "Bluetooth Connected");
+						CharSequence text = "Bluetooth Connected failed";
+						Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+						pref_connectivity_connected.setEnabled(true);
+						pref_connectivity_connected.setChecked(false);
 					}
 				}
 			};
@@ -197,6 +206,40 @@ public class SettingsActivity extends Activity {
 					return true;
 				}
 			});
+            
+            pref_sms = (CheckBoxPreference) getPreferenceManager().findPreference("pref_sms");
+            pref_sms.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					Log.d(LOG_TAG, preference.getKey()+" changed to: "+newValue.toString());
+					boolean value = (Boolean)newValue;
+					if(value) {
+						Log.d(LOG_TAG, "Should turn on sms notifications");
+					}
+					else {
+						Log.d(LOG_TAG, "Should turn off sms notifications");
+					}
+					return true;
+				}
+			});
+            
+            pref_phone = (CheckBoxPreference) getPreferenceManager().findPreference("pref_phone");
+            pref_phone.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					Log.d(LOG_TAG, preference.getKey()+" changed to: "+newValue.toString());
+					boolean value = (Boolean)newValue;
+					if(value) {
+						Log.d(LOG_TAG, "Should turn on phone notifications");
+					}
+					else {
+						Log.d(LOG_TAG, "Should turn off phone notifications");
+					}
+					return true;
+				}
+			});
+            
+            
         }
 		
 		public void setPairedDevices() {

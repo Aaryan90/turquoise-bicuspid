@@ -17,5 +17,13 @@
     <string name="pref_category_service">Service</string>
     <string name="pref_service">Service</string><string name="pref_service_on">Running</string>
     <string name="pref_service_off">Click to start service</string>
+    <string name="pref_category_sms">Text Notifications</string>
+    <string name="pref_sms">Text Messages</string>
+    <string name="pref_sms_on">Listening to text messages</string>
+    <string name="pref_sms_off">Click to enable text messages</string>
+    <string name="pref_category_phone">Phone Notifications</string>
+    <string name="pref_phone">Phone calls</string>
+    <string name="pref_phone_on">Listening to phone calls</string>
+    <string name="pref_phone_off">Click to enable phone calls</string>
     
 </resources>
