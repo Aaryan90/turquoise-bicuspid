@@ -3,13 +3,13 @@ package com.jareddlc.turquoisebicuspid;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
-import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
 import android.preference.Preference;
@@ -104,14 +104,8 @@ public class SettingsActivity extends Activity {
             // initialize Bluetooth
             bluetooth = new Bluetooth(mHandler);
             
-            // load paired devices
-            pref_connectivity_paired = (ListPreference) getPreferenceManager().findPreference("pref_connectivity_paired");
-            if(bluetooth.isEnabled) {
-            	setPairedDevices();
-            	restorePreferences();
-            }
-            
             // UI listeners
+            pref_connectivity_paired = (ListPreference) getPreferenceManager().findPreference("pref_connectivity_paired");
             pref_connectivity_paired.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {		
 				@Override
 				public boolean onPreferenceClick(Preference preference) {
@@ -189,9 +183,11 @@ public class SettingsActivity extends Activity {
 					boolean value = (Boolean)newValue;
 					if(value) {
 						Log.d(LOG_TAG, "Should turn on service");
+						getActivity().startService(new Intent(getActivity(),SettingsService.class));
 					}
 					else {
 						Log.d(LOG_TAG, "Should turn off service");
+						getActivity().stopService(new Intent(getActivity(),SettingsService.class));
 					}
 					return true;
 				}
@@ -214,10 +210,14 @@ public class SettingsActivity extends Activity {
 					Log.d(LOG_TAG, preference.getKey()+" changed to: "+newValue.toString());
 					boolean value = (Boolean)newValue;
 					if(value) {
-						Log.d(LOG_TAG, "Should turn on sms notifications");
+						SettingsService.setSms(true);
+						editor.putBoolean("saved_pref_sms", true);
+						editor.commit();
 					}
 					else {
-						Log.d(LOG_TAG, "Should turn off sms notifications");
+						SettingsService.setSms(false);
+						editor.putBoolean("saved_pref_sms", false);
+						editor.commit();
 					}
 					return true;
 				}
@@ -230,16 +230,28 @@ public class SettingsActivity extends Activity {
 					Log.d(LOG_TAG, preference.getKey()+" changed to: "+newValue.toString());
 					boolean value = (Boolean)newValue;
 					if(value) {
-						Log.d(LOG_TAG, "Should turn on phone notifications");
+						SettingsService.setPhone(true);
+						editor.putBoolean("saved_pref_phone", true);
+						editor.commit();
 					}
 					else {
-						Log.d(LOG_TAG, "Should turn off phone notifications");
+						SettingsService.setPhone(false);
+						editor.putBoolean("saved_pref_phone", false);
+						editor.commit();
 					}
 					return true;
 				}
 			});
             
-            
+            // restore preferences
+            if(bluetooth.isEnabled) {
+            	setPairedDevices();
+            	restorePreferences();
+            	if(!bluetooth.isConnected) {
+            		pref_connectivity_connected.setChecked(false);
+            		pref_service.setChecked(false);
+            	}
+            }
         }
 		
 		public void setPairedDevices() {
@@ -253,6 +265,9 @@ public class SettingsActivity extends Activity {
 			Log.d(LOG_TAG, "Restore preference: "+saved_pref_connectivity_paired_entry+"=:"+saved_pref_connectivity_paired_value);
 			bluetooth.setDevice(saved_pref_connectivity_paired_value);
 			pref_connectivity_paired.setSummary(saved_pref_connectivity_paired_entry);
+		}
+		public void restoreService() {
+			
 		}
      }
 }
