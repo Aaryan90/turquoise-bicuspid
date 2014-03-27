@@ -24,6 +24,7 @@ public class SettingsActivity extends Activity {
 	
 	private static SharedPreferences preferences;
 	private static SharedPreferences.Editor editor;
+	private static SavedPreferences sPrefs;
 	private static Context context;
 	
     @Override
@@ -35,6 +36,7 @@ public class SettingsActivity extends Activity {
         context = getApplicationContext();
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor = preferences.edit();
+        sPrefs = new SavedPreferences(context);
         
         getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
     }
@@ -66,14 +68,12 @@ public class SettingsActivity extends Activity {
             // load from preferences from xml
             addPreferencesFromResource(R.xml.preferences);
             
-            // setup handler
+            // setup bluetooth handler
             mHandler = new Handler() {
 				@Override
 				public void handleMessage(Message msg) {
 					String bluetoothMsg = msg.getData().getString("bluetooth");
-					Log.d(LOG_TAG, "Message received:"+bluetoothMsg);
 					if(bluetoothMsg.equals("isEnabled")) {
-						
 						setPairedDevices();
 						pref_connectivity_bluetooth.setChecked(true);
 						CharSequence text = "Bluetooth Enabled";
@@ -92,7 +92,7 @@ public class SettingsActivity extends Activity {
 						pref_connectivity_connected.setEnabled(true);
 					}
 					if(bluetoothMsg.equals("isConnectedFailed")) {
-						Log.d(LOG_TAG, "Bluetooth Connected");
+						Log.d(LOG_TAG, "Bluetooth Connected Failed");
 						CharSequence text = "Bluetooth Connected failed";
 						Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
 						pref_connectivity_connected.setEnabled(true);
@@ -109,22 +109,18 @@ public class SettingsActivity extends Activity {
             pref_connectivity_paired.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {		
 				@Override
 				public boolean onPreferenceClick(Preference preference) {
-					Log.d(LOG_TAG, preference.getKey()+" clicked");
 					return true;
 				}
 			});
             pref_connectivity_paired.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 				@Override
 				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					Log.d(LOG_TAG, preference.getKey()+": "+newValue.toString());
 					bluetooth.setDevice(newValue.toString());
-					editor.putString("saved_pref_connectivity_paired_value", newValue.toString());
-					editor.commit();
 					int index = pref_connectivity_paired.findIndexOfValue(newValue.toString());
 				    CharSequence[] entries = pref_connectivity_paired.getEntries();
+				    editor.putString("saved_pref_connectivity_paired_value", newValue.toString());
 				    editor.putString("saved_pref_connectivity_paired_entry", entries[index].toString());
 					editor.commit();
-				    Log.d(LOG_TAG, preference.getKey()+": "+entries[index]);
 					return true;
 				}
 			});
@@ -133,43 +129,39 @@ public class SettingsActivity extends Activity {
             pref_connectivity_bluetooth.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 				@Override
 				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					Log.d(LOG_TAG, preference.getKey()+" changed to: "+newValue.toString());
-					boolean value = (Boolean)newValue;
-					if(value) {
+					if((Boolean)newValue) {
 						bluetooth.enableBluetooth();
 						CharSequence text = "Enabling...";
 						Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
 						pref_connectivity_paired.setEnabled(false);
+						editor.putBoolean("saved_pref_connectivity_bluetooth", true);
+						editor.commit();
 					}
 					else {
 						bluetooth.disableBluetooth();
+						editor.putBoolean("saved_pref_connectivity_bluetooth", false);
+						editor.commit();
 					}
 					return true;
 				}
 			});
             
-            // grab current Bluetooth state
-            if(bluetooth.isEnabled) {
-            	pref_connectivity_bluetooth.setChecked(true);
-            }
-            else {
-            	pref_connectivity_bluetooth.setChecked(false);
-            }
-            
             pref_connectivity_connected = (CheckBoxPreference) getPreferenceManager().findPreference("pref_connectivity_connected");
             pref_connectivity_connected.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 				@Override
 				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					Log.d(LOG_TAG, preference.getKey()+" changed to: "+newValue.toString());
-					boolean value = (Boolean)newValue;
-					if(value) {
+					if((Boolean)newValue) {
 						bluetooth.connectDevice();
 						CharSequence text = "Connecting...";
 						Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
 						pref_connectivity_connected.setEnabled(false);
+						editor.putBoolean("saved_pref_connectivity_connected", true);
+						editor.commit();
 					}
 					else {
 						bluetooth.disconnectDevice();
+						editor.putBoolean("saved_pref_connectivity_connected", false);
+						editor.commit();
 					}
 					return true;
 				}
@@ -179,15 +171,15 @@ public class SettingsActivity extends Activity {
             pref_service.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 				@Override
 				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					Log.d(LOG_TAG, preference.getKey()+" changed to: "+newValue.toString());
-					boolean value = (Boolean)newValue;
-					if(value) {
-						Log.d(LOG_TAG, "Should turn on service");
+					if((Boolean)newValue) {
 						getActivity().startService(new Intent(getActivity(),SettingsService.class));
+						editor.putBoolean("saved_pref_service", true);
+						editor.commit();
 					}
 					else {
-						Log.d(LOG_TAG, "Should turn off service");
 						getActivity().stopService(new Intent(getActivity(),SettingsService.class));
+						editor.putBoolean("saved_pref_service", false);
+						editor.commit();
 					}
 					return true;
 				}
@@ -197,7 +189,6 @@ public class SettingsActivity extends Activity {
             pref_device.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {		
 				@Override
 				public boolean onPreferenceClick(Preference preference) {
-					Log.d(LOG_TAG, preference.getKey()+" clicked");
 					bluetooth.send("TurnOn");
 					return true;
 				}
@@ -207,9 +198,7 @@ public class SettingsActivity extends Activity {
             pref_sms.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 				@Override
 				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					Log.d(LOG_TAG, preference.getKey()+" changed to: "+newValue.toString());
-					boolean value = (Boolean)newValue;
-					if(value) {
+					if((Boolean)newValue) {
 						SettingsService.setSms(true);
 						editor.putBoolean("saved_pref_sms", true);
 						editor.commit();
@@ -227,9 +216,7 @@ public class SettingsActivity extends Activity {
             pref_phone.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 				@Override
 				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					Log.d(LOG_TAG, preference.getKey()+" changed to: "+newValue.toString());
-					boolean value = (Boolean)newValue;
-					if(value) {
+					if((Boolean)newValue) {
 						SettingsService.setPhone(true);
 						editor.putBoolean("saved_pref_phone", true);
 						editor.commit();
@@ -242,6 +229,14 @@ public class SettingsActivity extends Activity {
 					return true;
 				}
 			});
+            
+            // grab current Bluetooth state
+            if(bluetooth.isEnabled) {
+            	pref_connectivity_bluetooth.setChecked(true);
+            }
+            else {
+            	pref_connectivity_bluetooth.setChecked(false);
+            }
             
             // restore preferences
             if(bluetooth.isEnabled) {
