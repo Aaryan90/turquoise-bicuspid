@@ -69,7 +69,6 @@ public class SettingsService extends Service {
 		}
 	}
 
-
 	@Override
 	public IBinder onBind(Intent intent) {
 		Log.d(LOG_TAG, "onBind");

@@ -41,7 +41,7 @@ public class SavedPreferences {
 		saved_pref_sms = preferences.getBoolean("saved_pref_sms", false);
 		saved_pref_phone = preferences.getBoolean("saved_pref_phone", false);
 		saved_pref_connectivity_paired_value = preferences.getString("saved_pref_connectivity_paired_value", PREFS_DEFAULT);
-		saved_pref_connectivity_paired_entry = preferences.getString(saved_pref_connectivity_paired_entry, PREFS_DEFAULT);
+		saved_pref_connectivity_paired_entry = preferences.getString("saved_pref_connectivity_paired_entry", PREFS_DEFAULT);
 
 	}
 }

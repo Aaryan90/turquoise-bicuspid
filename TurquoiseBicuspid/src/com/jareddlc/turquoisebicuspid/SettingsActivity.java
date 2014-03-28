@@ -67,6 +67,7 @@ public class SettingsActivity extends Activity {
             
             // load from preferences from xml
             addPreferencesFromResource(R.xml.preferences);
+            getActivity();
             
             // setup bluetooth handler
             mHandler = new Handler() {
@@ -74,16 +75,12 @@ public class SettingsActivity extends Activity {
 				public void handleMessage(Message msg) {
 					String bluetoothMsg = msg.getData().getString("bluetooth");
 					if(bluetoothMsg.equals("isEnabled")) {
-						setPairedDevices();
-						pref_connectivity_bluetooth.setChecked(true);
 						CharSequence text = "Bluetooth Enabled";
 						Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
-						pref_connectivity_paired.setEnabled(true);
 						
-						// restore prefs
-						Log.d(LOG_TAG, "Restoring preferences");
-						restorePreferences();
-						setPairedDevices();
+						SettingsFragment.this.restorePreferences();				
+						pref_connectivity_bluetooth.setChecked(true);
+						pref_connectivity_paired.setEnabled(true);
 					}
 					if(bluetoothMsg.equals("isConnected")) {
 						Log.d(LOG_TAG, "Bluetooth Connected");
@@ -230,39 +227,27 @@ public class SettingsActivity extends Activity {
 				}
 			});
             
-            // grab current Bluetooth state
-            if(bluetooth.isEnabled) {
-            	pref_connectivity_bluetooth.setChecked(true);
-            }
-            else {
-            	pref_connectivity_bluetooth.setChecked(false);
-            }
-            
             // restore preferences
             if(bluetooth.isEnabled) {
-            	setPairedDevices();
-            	restorePreferences();
+            	pref_connectivity_bluetooth.setChecked(true);
+            	this.restorePreferences();
             	if(!bluetooth.isConnected) {
             		pref_connectivity_connected.setChecked(false);
             		pref_service.setChecked(false);
             	}
             }
+            else {
+            	pref_connectivity_bluetooth.setChecked(false);
+            }
         }
 		
-		public void setPairedDevices() {
-			bluetooth.getPaired();
-        	pref_connectivity_paired.setEntries(bluetooth.getEntries());
-            pref_connectivity_paired.setEntryValues(bluetooth.getEntryValues());
-        }
 		public void restorePreferences() {
-			String saved_pref_connectivity_paired_value = preferences.getString("saved_pref_connectivity_paired_value", "DEFAULT");
-			String saved_pref_connectivity_paired_entry = preferences.getString("saved_pref_connectivity_paired_entry", "DEFAULT");
-			Log.d(LOG_TAG, "Restore preference: "+saved_pref_connectivity_paired_entry+"=:"+saved_pref_connectivity_paired_value);
-			bluetooth.setDevice(saved_pref_connectivity_paired_value);
-			pref_connectivity_paired.setSummary(saved_pref_connectivity_paired_entry);
-		}
-		public void restoreService() {
-			
+			Log.d(LOG_TAG, "Restore paired device: "+sPrefs.saved_pref_connectivity_paired_value+":"+sPrefs.saved_pref_connectivity_paired_entry);
+			bluetooth.getPaired();
+			bluetooth.setDevice(sPrefs.saved_pref_connectivity_paired_value);
+			pref_connectivity_paired.setSummary(sPrefs.saved_pref_connectivity_paired_entry);
+			pref_connectivity_paired.setEntries(bluetooth.getEntries());
+            pref_connectivity_paired.setEntryValues(bluetooth.getEntryValues());
 		}
      }
 }

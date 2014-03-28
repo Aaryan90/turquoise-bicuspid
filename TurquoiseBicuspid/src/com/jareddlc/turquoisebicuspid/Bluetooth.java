@@ -106,11 +106,6 @@ public class Bluetooth {
 			    	Log.d(LOG_TAG, "Device: "+device.getName()+":"+device.getAddress());
 			    	entries.add(device.getName());
 			    	values.add(device.getAddress());
-			    	
-			        /*if(device.getAddress().equals(deviceMAC)) {
-			        	Log.d(LOG_TAG, "Set device: "+device.getName()+":"+device.getAddress());
-			        	mBluetoothDevice = device;
-			        }*/
 			    }
 			    pairedEntries = entries.toArray(new CharSequence[entries.size()]);
 			    pairedEntryValues = values.toArray(new CharSequence[values.size()]);
