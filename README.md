@@ -10,7 +10,7 @@ Implemented application listeners:
 
 To be implemented:
 
-* Email
-* Facebook
-* Twitter
-* many much more!
+* Email (stock)
+* Facebook (is it possible?)
+* Twitter (is it possible?)
+* others ?
