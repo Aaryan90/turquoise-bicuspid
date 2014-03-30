@@ -2,9 +2,9 @@ package com.jareddlc.turquoisebicuspid;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -22,21 +22,12 @@ public class SettingsActivity extends Activity {
 	private static final String LOG_TAG = "TurquoiseBicuspid:SettingsActivity";
 	public static final String PREFS_NAME = "TurquoiseBicuspidSettings";
 	
-	private static SharedPreferences preferences;
-	private static SharedPreferences.Editor editor;
-	private static SavedPreferences sPrefs;
-	private static Context context;
-	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
         // load the PreferenceFragment
         Log.d(LOG_TAG, "Loading PreferenceFragment");
-        context = getApplicationContext();
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        editor = preferences.edit();
-        sPrefs = new SavedPreferences(context);
         
         getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
     }
@@ -65,9 +56,13 @@ public class SettingsActivity extends Activity {
 		public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             
-            // load from preferences from xml
+            // load preferences from xml
             addPreferencesFromResource(R.xml.preferences);
-            getActivity();
+            
+            // load saved preferences
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            final Editor editor = preferences.edit();
+            final SavedPreferences sPrefs = new SavedPreferences(getActivity());
             
             // setup bluetooth handler
             mHandler = new Handler() {
@@ -76,22 +71,22 @@ public class SettingsActivity extends Activity {
 					String bluetoothMsg = msg.getData().getString("bluetooth");
 					if(bluetoothMsg.equals("isEnabled")) {
 						CharSequence text = "Bluetooth Enabled";
-						Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+						Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
 						
-						SettingsFragment.this.restorePreferences();				
+						SettingsFragment.this.restorePreferences(sPrefs);				
 						pref_connectivity_bluetooth.setChecked(true);
 						pref_connectivity_paired.setEnabled(true);
 					}
 					if(bluetoothMsg.equals("isConnected")) {
 						Log.d(LOG_TAG, "Bluetooth Connected");
 						CharSequence text = "Bluetooth Connected";
-						Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+						Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
 						pref_connectivity_connected.setEnabled(true);
 					}
 					if(bluetoothMsg.equals("isConnectedFailed")) {
 						Log.d(LOG_TAG, "Bluetooth Connected Failed");
 						CharSequence text = "Bluetooth Connected failed";
-						Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+						Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
 						pref_connectivity_connected.setEnabled(true);
 						pref_connectivity_connected.setChecked(false);
 					}
@@ -129,7 +124,7 @@ public class SettingsActivity extends Activity {
 					if((Boolean)newValue) {
 						bluetooth.enableBluetooth();
 						CharSequence text = "Enabling...";
-						Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+						Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
 						pref_connectivity_paired.setEnabled(false);
 						editor.putBoolean("saved_pref_connectivity_bluetooth", true);
 						editor.commit();
@@ -150,7 +145,7 @@ public class SettingsActivity extends Activity {
 					if((Boolean)newValue) {
 						bluetooth.connectDevice();
 						CharSequence text = "Connecting...";
-						Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+						Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
 						pref_connectivity_connected.setEnabled(false);
 						editor.putBoolean("saved_pref_connectivity_connected", true);
 						editor.commit();
@@ -230,7 +225,9 @@ public class SettingsActivity extends Activity {
             // restore preferences
             if(bluetooth.isEnabled) {
             	pref_connectivity_bluetooth.setChecked(true);
-            	this.restorePreferences();
+            	editor.putBoolean("saved_pref_connectivity_bluetooth", true);
+				editor.commit();
+            	this.restorePreferences(sPrefs);
             	if(!bluetooth.isConnected) {
             		pref_connectivity_connected.setChecked(false);
             		pref_service.setChecked(false);
@@ -238,10 +235,12 @@ public class SettingsActivity extends Activity {
             }
             else {
             	pref_connectivity_bluetooth.setChecked(false);
+            	editor.putBoolean("saved_pref_connectivity_bluetooth", false);
+				editor.commit();
             }
         }
 		
-		public void restorePreferences() {
+		public void restorePreferences(SavedPreferences sPrefs) {
 			Log.d(LOG_TAG, "Restore paired device: "+sPrefs.saved_pref_connectivity_paired_value+":"+sPrefs.saved_pref_connectivity_paired_entry);
 			bluetooth.getPaired();
 			bluetooth.setDevice(sPrefs.saved_pref_connectivity_paired_value);

@@ -21,18 +21,12 @@ public class SavedPreferences {
 	public String saved_pref_connectivity_paired_value;
 	public String saved_pref_connectivity_paired_entry;
 	
-	private static SharedPreferences preferences;
-	private static SharedPreferences.Editor editor;
-	
 	public SavedPreferences(Context context) {
-		preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        editor = preferences.edit();
-		loadSaved();
-	}
-	
-	public void loadSaved() {
-		Log.d(LOG_TAG, "Loading saved preferences");
 		
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        //Editor editor = preferences.edit();
+
+        Log.d(LOG_TAG, "Loading saved preferences");
 		saved_pref_connectivity_bluetooth = preferences.getBoolean("saved_pref_connectivity_bluetooth", false);
 		saved_pref_connectivity_paired = preferences.getBoolean("saved_pref_connectivity_paired", false);
 		saved_pref_connectivity_connected = preferences.getBoolean("saved_pref_connectivity_connected", false);
@@ -42,6 +36,5 @@ public class SavedPreferences {
 		saved_pref_phone = preferences.getBoolean("saved_pref_phone", false);
 		saved_pref_connectivity_paired_value = preferences.getString("saved_pref_connectivity_paired_value", PREFS_DEFAULT);
 		saved_pref_connectivity_paired_entry = preferences.getString("saved_pref_connectivity_paired_entry", PREFS_DEFAULT);
-
 	}
 }
