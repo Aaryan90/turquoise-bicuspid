@@ -6,4 +6,36 @@
     <string-array name="perf_connectivity_paired_values">
         <item name="0">None</item>
     </string-array>
+    <string-array name="pref_notification_type_entries">
+        <item name="blink">Blink</item>
+        <item name="pulse">Pulse</item>
+    </string-array>
+    <string-array name="pref_notification_type_values">
+        <item name="blink">blink</item>
+        <item name="pulse">pulse</item>
+    </string-array>
+    <string-array name="pref_notification_time_entries">
+        <item name="1000">1000 ms</item>
+        <item name="500">500 ms</item>
+        <item name="250">250 ms</item>
+        <item name="100">100 ms</item>
+    </string-array>
+    <string-array name="pref_notification_time_values">
+        <item name="1000">1000</item>
+        <item name="500">500</item>
+        <item name="250">250</item>
+        <item name="100">100</item>
+    </string-array>
+    <string-array name="pref_notification_repeat_entries">
+        <item name="30">30 sec</item>
+        <item name="15">15 sec</item>
+        <item name="5">5 sec</item>
+        <item name="3">3 sec</item>
+    </string-array>
+    <string-array name="pref_notification_repeat_values">
+        <item name="30">30</item>
+        <item name="15">15</item>
+        <item name="5">5</item>
+        <item name="3">3</item>
+    </string-array>
 </resources>

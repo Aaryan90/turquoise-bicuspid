@@ -46,7 +46,13 @@ public class SettingsActivity extends Activity {
     	private static ListPreference pref_connectivity_paired;
     	private static Preference pref_device;
     	private static Preference pref_sms;
+    	private static ListPreference pref_sms_type;
+    	private static ListPreference pref_sms_time;
+    	private static ListPreference pref_sms_repeat;
     	private static Preference pref_phone;
+    	private static ListPreference pref_phone_type;
+    	private static ListPreference pref_phone_time;
+    	private static ListPreference pref_phone_repeat;
     	
     	// private static objects
     	private static Handler mHandler;
@@ -203,6 +209,42 @@ public class SettingsActivity extends Activity {
 					return true;
 				}
 			});
+            pref_sms_type = (ListPreference) getPreferenceManager().findPreference("pref_sms_type");
+            pref_sms_type.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					int index = pref_sms_type.findIndexOfValue(newValue.toString());
+				    CharSequence[] entries = pref_sms_type.getEntries();
+				    editor.putString("saved_pref_sms_type_value", newValue.toString());
+				    editor.putString("saved_pref_sms_type_entry", entries[index].toString());
+					editor.commit();
+					return true;
+				}
+			});
+            pref_sms_time = (ListPreference) getPreferenceManager().findPreference("pref_sms_time");
+            pref_sms_time.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					int index = pref_sms_time.findIndexOfValue(newValue.toString());
+				    CharSequence[] entries = pref_sms_time.getEntries();
+				    editor.putString("saved_pref_sms_time_value", newValue.toString());
+				    editor.putString("saved_pref_sms_time_entry", entries[index].toString());
+					editor.commit();
+					return true;
+				}
+			});
+            pref_sms_repeat = (ListPreference) getPreferenceManager().findPreference("pref_sms_repeat");
+            pref_sms_repeat.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					int index = pref_sms_repeat.findIndexOfValue(newValue.toString());
+				    CharSequence[] entries = pref_sms_repeat.getEntries();
+				    editor.putString("saved_pref_sms_repeat_value", newValue.toString());
+				    editor.putString("saved_pref_sms_repeat_entry", entries[index].toString());
+					editor.commit();
+					return true;
+				}
+			});
             
             pref_phone = (CheckBoxPreference) getPreferenceManager().findPreference("pref_phone");
             pref_phone.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -218,6 +260,42 @@ public class SettingsActivity extends Activity {
 						editor.putBoolean("saved_pref_phone", false);
 						editor.commit();
 					}
+					return true;
+				}
+			});
+            pref_phone_type = (ListPreference) getPreferenceManager().findPreference("pref_phone_type");
+            pref_phone_type.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					int index = pref_phone_type.findIndexOfValue(newValue.toString());
+				    CharSequence[] entries = pref_phone_type.getEntries();
+				    editor.putString("saved_pref_phone_type_value", newValue.toString());
+				    editor.putString("saved_pref_phone_type_entry", entries[index].toString());
+					editor.commit();
+					return true;
+				}
+			});
+            pref_phone_time = (ListPreference) getPreferenceManager().findPreference("pref_phone_time");
+            pref_phone_time.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					int index = pref_phone_time.findIndexOfValue(newValue.toString());
+				    CharSequence[] entries = pref_phone_time.getEntries();
+				    editor.putString("saved_pref_phone_time_value", newValue.toString());
+				    editor.putString("saved_pref_phone_time_entry", entries[index].toString());
+					editor.commit();
+					return true;
+				}
+			});
+            pref_phone_repeat = (ListPreference) getPreferenceManager().findPreference("pref_phone_repeat");
+            pref_phone_repeat.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					int index = pref_phone_repeat.findIndexOfValue(newValue.toString());
+				    CharSequence[] entries = pref_phone_repeat.getEntries();
+				    editor.putString("saved_pref_phone_repeat_value", newValue.toString());
+				    editor.putString("saved_pref_phone_repeat_entry", entries[index].toString());
+					editor.commit();
 					return true;
 				}
 			});

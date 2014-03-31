@@ -8,7 +8,7 @@
     <string name="pref_connectivity_connected">Connected</string>
     <string name="pref_connectivity_connected_on">to device success</string>
     <string name="pref_connectivity_connected_off">Click to connect to device</string>
-    <string name="pref_connectivity_paired">Selected device</string>
+    <string name="pref_connectivity_paired">Selected Device</string>
     <string name="perf_connectivity_paired_title" >Select a device</string>
     <string name="perf_connectivity_paired_select">Click to select a paired device</string>
     <string name="perf_connectivity_paired_default">No paired devices</string>
@@ -22,8 +22,14 @@
     <string name="pref_sms_on">Listening to text messages</string>
     <string name="pref_sms_off">Click to enable text messages</string>
     <string name="pref_category_phone">Phone Notifications</string>
-    <string name="pref_phone">Phone calls</string>
+    <string name="pref_phone">Phone Calls</string>
     <string name="pref_phone_on">Listening to phone calls</string>
     <string name="pref_phone_off">Click to enable phone calls</string>
+    <string name="pref_notification_type">Notification Type</string>
+    <string name="pref_notification_type_summary">Select a type</string><string name="pref_notification_time">Notification Time</string>
+    <string name="pref_notification_time_summary" >Select a time</string><string name="pref_notification_repeat">Repeat Every</string>
+    
+    
+    <string name="pref_notification_repeat_summary">Select repeat every</string>
     
 </resources>
