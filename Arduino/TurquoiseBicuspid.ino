@@ -2,10 +2,8 @@
 
 SoftwareSerial sSerial(9, 10); // TX, RX
 String BUFFER = "";
+char DELIMETER = ':';
 int LED = 13;
-int msPhoneHigh = 500;
-int msPhoneLow = 100;
-int msSMS = 100;
 
 void setup()
 {
@@ -23,43 +21,53 @@ void setup()
 
 void loop()
 {
-   // read device output if available.
-   if(sSerial.available()) {
-     // while there is more to be read, keep reading.
-     while(sSerial.available()) {
-       BUFFER += (char)sSerial.read();
-     }
-     Serial.println(BUFFER);
-     
-     if(BUFFER == "TurnOn") {
-       phone();
-     }
-     if(BUFFER == "TurnOff") {
-       digitalWrite(LED, LOW);
-     }
-     
-     BUFFER = "";
-   }
+  String type = "";
+  int time = 0;
+  // read from bluetooth
+  if(sSerial.available()) {
+    while(sSerial.available()) {
+      BUFFER += (char)sSerial.read();
+    }
+    
+    String buff = "";
+    for(int i=0; i<BUFFER.length(); i++) {
+      buff += BUFFER[i];
+      
+      // delimeter
+      if(BUFFER[i] == ':') {
+        buff[i] = '\0';
+        type = buff;
+        buff = "";
+      }
+      
+      // end of string
+      if(i == (BUFFER.length()-1)) {
+        time = buff.toInt();
+      }
+    }
+    BUFFER = "";
+    
+    if(type == "blink") {
+      blink(time);
+    }
+    else if(type == "pulse") {
+      
+    }
+    
+  }
   
-   // read user input if available.
-   if(Serial.available()){
-       delay(10);
-       sSerial.write(Serial.read());
-   }
-}
-
-void phone()
-{
-  for(int i=0; i<5; i++) 
-  {
-    digitalWrite(LED, HIGH);
-    delay(msPhoneHigh);
-    digitalWrite(LED, LOW);
-    delay(msPhoneLow);   
+  // AT commands
+  if(Serial.available()){
+    delay(10);
+    sSerial.write(Serial.read());
   }
 }
 
-void sms()
-{
-  
+void blink(int time) {
+  for(int i=0; i<5; i++) {
+    digitalWrite(LED, HIGH);
+    delay(time);
+    digitalWrite(LED, LOW);
+    delay(time);
+  }
 }

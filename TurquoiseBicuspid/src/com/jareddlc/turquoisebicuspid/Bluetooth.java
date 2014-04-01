@@ -139,10 +139,11 @@ public class Bluetooth {
 		}
     }
 	
-	public void send(String str) {
+	public void send(String type, String time) {
 		if(isEnabled) {
-			Log.d(LOG_TAG, "Sending:"+str);
-			conx.write(str.getBytes());
+			String send = type+":"+time;
+			Log.d(LOG_TAG, "Sending:"+send);
+			conx.write(send.getBytes());
 		}
 	}
 	

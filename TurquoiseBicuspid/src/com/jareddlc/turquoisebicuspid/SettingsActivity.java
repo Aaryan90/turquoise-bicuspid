@@ -187,7 +187,7 @@ public class SettingsActivity extends Activity {
             pref_device.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {		
 				@Override
 				public boolean onPreferenceClick(Preference preference) {
-					bluetooth.send("TurnOn");
+					bluetooth.send("blink", "100");
 					return true;
 				}
 			});
