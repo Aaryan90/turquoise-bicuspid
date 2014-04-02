@@ -21,6 +21,8 @@ public class SavedPreferences {
 	public String saved_pref_sms_type_entry;
 	public String saved_pref_sms_time_value;
 	public String saved_pref_sms_time_entry;
+	public String saved_pref_sms_loop_value;
+	public String saved_pref_sms_loop_entry;
 	public String saved_pref_sms_repeat_value;
 	public String saved_pref_sms_repeat_entry;
 	public boolean saved_pref_phone;
@@ -28,6 +30,8 @@ public class SavedPreferences {
 	public String saved_pref_phone_type_entry;
 	public String saved_pref_phone_time_value;
 	public String saved_pref_phone_time_entry;
+	public String saved_pref_phone_loop_value;
+	public String saved_pref_phone_loop_entry;
 	public String saved_pref_phone_repeat_value;
 	public String saved_pref_phone_repeat_entry;
 	public String saved_pref_connectivity_paired_value;
@@ -49,6 +53,8 @@ public class SavedPreferences {
 		saved_pref_sms_type_entry = preferences.getString("saved_pref_sms_type_entry", PREFS_DEFAULT);
 		saved_pref_sms_time_value = preferences.getString("saved_pref_sms_time_value", PREFS_DEFAULT);
 		saved_pref_sms_time_entry = preferences.getString("saved_pref_sms_time_entry", PREFS_DEFAULT);
+		saved_pref_sms_loop_value = preferences.getString("saved_pref_sms_loop_value", PREFS_DEFAULT);
+		saved_pref_sms_loop_entry = preferences.getString("saved_pref_sms_loop_entry", PREFS_DEFAULT);
 		saved_pref_sms_repeat_value = preferences.getString("saved_pref_sms_repeat_value", PREFS_DEFAULT);
 		saved_pref_sms_repeat_entry = preferences.getString("saved_pref_sms_repeat_entry", PREFS_DEFAULT);
 		saved_pref_phone = preferences.getBoolean("saved_pref_phone", false);
@@ -56,6 +62,8 @@ public class SavedPreferences {
 		saved_pref_phone_type_entry = preferences.getString("saved_pref_phone_type_entry", PREFS_DEFAULT);
 		saved_pref_phone_time_value = preferences.getString("saved_pref_phone_time_value", PREFS_DEFAULT);
 		saved_pref_phone_time_entry = preferences.getString("saved_pref_phone_time_entry", PREFS_DEFAULT);
+		saved_pref_phone_loop_value = preferences.getString("saved_pref_phone_loop_value", PREFS_DEFAULT);
+		saved_pref_phone_loop_entry = preferences.getString("saved_pref_phone_loop_entry", PREFS_DEFAULT);
 		saved_pref_phone_repeat_value = preferences.getString("saved_pref_phone_repeat_value", PREFS_DEFAULT);
 		saved_pref_phone_repeat_entry = preferences.getString("saved_pref_phone_repeat_entry", PREFS_DEFAULT);
 		saved_pref_connectivity_paired_value = preferences.getString("saved_pref_connectivity_paired_value", PREFS_DEFAULT);

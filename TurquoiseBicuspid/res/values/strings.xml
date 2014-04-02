@@ -26,10 +26,11 @@
     <string name="pref_phone_on">Listening to phone calls</string>
     <string name="pref_phone_off">Click to enable phone calls</string>
     <string name="pref_notification_type">Notification Type</string>
-    <string name="pref_notification_type_summary">Select a type</string><string name="pref_notification_time">Notification Time</string>
-    <string name="pref_notification_time_summary" >Select a time</string><string name="pref_notification_repeat">Repeat Every</string>
-    
-    
-    <string name="pref_notification_repeat_summary">Select repeat every</string>
-    
+    <string name="pref_notification_type_summary">Select a type</string>
+    <string name="pref_notification_time">Notification Time</string>
+    <string name="pref_notification_time_summary" >Select a time</string>
+    <string name="pref_notification_loop">Number of Blinks</string>
+    <string name="pref_notification_loop_summary">Select number of blinks</string>
+    <string name="pref_notification_repeat">Repeat Every</string> 
+    <string name="pref_notification_repeat_summary">Select repeat every</string>  
 </resources>

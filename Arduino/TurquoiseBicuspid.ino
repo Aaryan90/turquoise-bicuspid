@@ -23,6 +23,7 @@ void loop()
 {
   String type = "";
   int time = 0;
+  int looper = 0;
   // read from bluetooth
   if(sSerial.available()) {
     while(sSerial.available()) {
@@ -30,28 +31,40 @@ void loop()
     }
     
     String buff = "";
+    int parsed = 0;
     for(int i=0; i<BUFFER.length(); i++) {
       buff += BUFFER[i];
       
       // delimeter
       if(BUFFER[i] == ':') {
-        buff[i] = '\0';
-        type = buff;
         buff = "";
       }
       
-      // end of string
+      // grab value
+      if(BUFFER[i+1] == ':') {
+        if(parsed == 0) {
+          type = buff;
+          parsed++;
+        }
+        else if(parsed >= 1) {
+          looper = buff.toInt();
+        }
+        buff = "";
+      }
+      
+      // grab last value
       if(i == (BUFFER.length()-1)) {
         time = buff.toInt();
       }
     }
     BUFFER = "";
+    Serial.println(type+":"+time+":"+looper);
     
     if(type == "blink") {
-      blink(time);
+      blink(time, looper);
     }
     else if(type == "pulse") {
-      
+      blink(time, looper);
     }
     
   }
@@ -63,8 +76,8 @@ void loop()
   }
 }
 
-void blink(int time) {
-  for(int i=0; i<5; i++) {
+void blink(int time, int looper) {
+  for(int i=0; i<looper; i++) {
     digitalWrite(LED, HIGH);
     delay(time);
     digitalWrite(LED, LOW);

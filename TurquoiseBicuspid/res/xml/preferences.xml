@@ -62,6 +62,13 @@
 	        android:entryValues="@array/pref_notification_time_values" />
 	    <ListPreference
             android:dependency="pref_sms"
+	        android:key="pref_sms_loop"
+	        android:title="@string/pref_notification_loop"
+	        android:summary="@string/pref_notification_loop_summary"
+	        android:entries="@array/pref_notification_loop_entries"
+	        android:entryValues="@array/pref_notification_loop_values" />
+	    <ListPreference
+            android:dependency="pref_sms"
 	        android:key="pref_sms_repeat"
 	        android:title="@string/pref_notification_repeat"
 	        android:summary="@string/pref_notification_repeat_summary"
@@ -91,6 +98,13 @@
 	        android:summary="@string/pref_notification_time_summary"
 	        android:entries="@array/pref_notification_time_entries"
 	        android:entryValues="@array/pref_notification_time_values" />
+	    <ListPreference
+            android:dependency="pref_phone"
+	        android:key="pref_phone_loop"
+	        android:title="@string/pref_notification_loop"
+	        android:summary="@string/pref_notification_loop_summary"
+	        android:entries="@array/pref_notification_loop_entries"
+	        android:entryValues="@array/pref_notification_loop_values" />
 	    <ListPreference
             android:dependency="pref_phone"
 	        android:key="pref_phone_repeat"
