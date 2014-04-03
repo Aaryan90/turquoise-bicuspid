@@ -1,6 +1,6 @@
 #include <SoftwareSerial.h>
 
-SoftwareSerial sSerial(9, 10); // TX, RX
+SoftwareSerial btSerial(9, 10); // TX, RX
 String BUFFER = "";
 char DELIMETER = ':';
 int LED = 13;
@@ -13,10 +13,10 @@ void setup()
    Serial.println("Type AT commands!");
 
    // JY-MCU v1.08 defaults to 9600.
-   sSerial.begin(9600);
-   sSerial.write("AT+BAUD4");
-   sSerial.write("AT+NAMETurquoiseBicuspid");
-   sSerial.write("AT+PIN1234");
+   btSerial.begin(9600);
+   btSerial.write("AT+BAUD4");
+   btSerial.write("AT+NAMETurquoiseBicuspid");
+   btSerial.write("AT+PIN1234");
 }
 
 void loop()
@@ -25,11 +25,12 @@ void loop()
   int time = 0;
   int looper = 0;
   // read from bluetooth
-  if(sSerial.available()) {
-    while(sSerial.available()) {
-      BUFFER += (char)sSerial.read();
+  if(btSerial.available()) {
+    while(btSerial.available()) {
+      BUFFER += (char)btSerial.read();
     }
     
+    Serial.println(BUFFER);
     String buff = "";
     int parsed = 0;
     for(int i=0; i<BUFFER.length(); i++) {
@@ -57,8 +58,10 @@ void loop()
         time = buff.toInt();
       }
     }
+    
     BUFFER = "";
     Serial.println(type+":"+time+":"+looper);
+    btSerial.write(time);
     
     if(type == "blink") {
       blink(time, looper);
@@ -66,13 +69,12 @@ void loop()
     else if(type == "pulse") {
       blink(time, looper);
     }
-    
   }
   
   // AT commands
   if(Serial.available()){
     delay(10);
-    sSerial.write(Serial.read());
+    btSerial.write(Serial.read());
   }
 }
 

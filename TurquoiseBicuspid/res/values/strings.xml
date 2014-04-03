@@ -5,7 +5,7 @@
     <string name="action_settings">Settings</string>
     <string name="pref_category_connectivity">Connectivity</string>
     <string name="pref_connectivity_bluetooth">Bluetooth</string>
-    <string name="pref_connectivity_connected">Connected</string>
+    <string name="pref_connectivity_connected">Connect</string>
     <string name="pref_connectivity_connected_on">to device success</string>
     <string name="pref_connectivity_connected_off">Click to connect to device</string>
     <string name="pref_connectivity_paired">Selected Device</string>

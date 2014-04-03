@@ -1,10 +1,13 @@
 package com.jareddlc.turquoisebicuspid;
 
+import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -12,7 +15,7 @@ import android.widget.Toast;
 
 public class SettingsService extends Service {
 	// debug data
-	private static final String LOG_TAG = "TurquoiseBicuspid:SettingsActivity";
+	private static final String LOG_TAG = "TurquoiseBicuspid:SettingsService";
 	
 	private static boolean smsEnabled = true;
 	private static boolean phoneEnabled = true;
@@ -20,6 +23,9 @@ public class SettingsService extends Service {
 	private SmsListener smsListener;
 	private TelephonyManager telephony;
 	private IntentFilter smsFilter;
+	
+	private Handler mHandler;
+	private static Bluetooth bluetooth;
 	
 	public static void setSms(boolean value) {
 		Log.d(LOG_TAG, "SMS: "+value);
@@ -31,10 +37,44 @@ public class SettingsService extends Service {
 		phoneEnabled = value;
 	}
 	
+	@SuppressLint("HandlerLeak")
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 	    Toast.makeText(this, "Service running", Toast.LENGTH_SHORT).show();
 	    Log.d(LOG_TAG, "Service running");
+	    
+	    final SavedPreferences sPrefs = new SavedPreferences(this);
+
+	 // setup bluetooth handler
+        mHandler = new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				String bluetoothMsg = msg.getData().getString("bluetooth");
+				if(bluetoothMsg.equals("isEnabled")) {
+					CharSequence text = "Bluetooth Enabled";
+					Toast.makeText(SettingsService.this, text, Toast.LENGTH_SHORT).show();
+				}
+				if(bluetoothMsg.equals("isConnected")) {
+					Log.d(LOG_TAG, "Bluetooth Connected");
+					CharSequence text = "Bluetooth Connected";
+					Toast.makeText(SettingsService.this, text, Toast.LENGTH_SHORT).show();
+				}
+				if(bluetoothMsg.equals("isConnectedFailed")) {
+					Log.d(LOG_TAG, "Bluetooth Connected Failed");
+					CharSequence text = "Bluetooth Connected failed";
+					Toast.makeText(SettingsService.this, text, Toast.LENGTH_SHORT).show();
+				}
+			}
+		};
+        
+        // initialize Bluetooth
+        bluetooth = new Bluetooth(mHandler);
+        
+        if(bluetooth.isEnabled) {
+        	bluetooth.getPaired();
+			bluetooth.setDevice(sPrefs.saved_pref_connectivity_paired_value);
+        	bluetooth.connectDevice();
+        }
 	    
 		// register listeners
 	    if(smsEnabled) {

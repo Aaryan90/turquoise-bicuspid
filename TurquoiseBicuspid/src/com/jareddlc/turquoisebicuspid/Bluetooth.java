@@ -1,5 +1,6 @@
 package com.jareddlc.turquoisebicuspid;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -56,20 +57,6 @@ public class Bluetooth {
 	
 	public void enableBluetooth() {   
 		if(!mBluetoothAdapter.isEnabled()) {
-			/*mBluetoothAdapter.enable();
-			while(!mBluetoothAdapter.isEnabled()) {
-                try
-                {
-                    Thread.sleep(100L);
-                }
-                catch (InterruptedException ie)
-                {
-                    // unexpected interruption while enabling bluetooth
-                    Thread.currentThread().interrupt(); // restore interrupted flag
-                    return;
-                }
-            }
-			isEnabled = true;*/
 			eBluetooth = new EnableBluetoothThread();
 			eBluetooth.start();
 		}
@@ -243,22 +230,23 @@ public class Bluetooth {
 	 
 	    public void run() {
 	    	Log.d(LOG_TAG, "Running HandleThread");
-	        //byte[] buffer = new byte[1024];
-	        //int bytes;
-	 
+	    	ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+	    	int bufferSize = 1024;
+	    	byte[] buffer = new byte[bufferSize];
+	        
 	        // listen to the InputStream
-	        /*while(true) {
+	        while(true) {
 	            try {
-	            	mInStream.read(buffer);
-	                //bytes = mInStream.read(buffer);
-					// Send the obtained bytes to the UI activity
-	                //mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer).sendToTarget();
+	                int bytes = mInStream.read(buffer);
+	                byteArray.write(buffer, 0, bytes);
+	                Log.d(LOG_TAG, "Received: "+byteArray);
+	                byteArray.reset();
 	            }
 	            catch(IOException e) {
 	            	Log.e(LOG_TAG, "Error: mInStream.read()", e);
 	                break;
 	            }
-	        }*/
+	        }
 	    }
 	 
 	    public void write(byte[] bytes) {
