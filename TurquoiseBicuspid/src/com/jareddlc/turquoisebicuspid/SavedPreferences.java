@@ -6,7 +6,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class SavedPreferences {
-	private static final String LOG_TAG = "TurquoiseBicuspid:SettingsActivity";
+	private static final String LOG_TAG = "TurquoiseBicuspid:SavedPreferences";
 	public static final String PREFS_NAME = "TurquoiseBicuspidSettings";
 	public static final String PREFS_DEFAULT = "DEFAULT";
 	

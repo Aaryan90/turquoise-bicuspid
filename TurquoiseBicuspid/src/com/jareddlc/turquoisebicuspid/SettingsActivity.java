@@ -312,7 +312,7 @@ public class SettingsActivity extends Activity {
 				public boolean onPreferenceChange(Preference preference, Object newValue) {
 					int index = pref_phone_loop.findIndexOfValue(newValue.toString());
 				    CharSequence[] entries = pref_phone_loop.getEntries();
-				    editor.putString("saved_pref_phone_loopt_value", newValue.toString());
+				    editor.putString("saved_pref_phone_loop_value", newValue.toString());
 				    editor.putString("saved_pref_phone_loop_entry", entries[index].toString());
 					editor.commit();
 					bluetooth.send(pref_phone_type.getValue(), newValue.toString(), pref_phone_time.getValue());
