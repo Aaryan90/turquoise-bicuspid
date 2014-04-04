@@ -4,18 +4,18 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.telephony.SmsManager;
+import android.support.v4.content.LocalBroadcastManager;
+//import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
 public class SmsListener extends BroadcastReceiver {
-	// debug data
 	private static final String LOG_TAG = "TurquoiseBicuspid:SmsListener";
 	
-	private static final SmsManager sms = SmsManager.getDefault();
+	//private static final SmsManager sms = SmsManager.getDefault();
 	
 	@Override
-	public void onReceive(Context conext, Intent intent) {			
+	public void onReceive(Context context, Intent intent) {			
 	    Bundle bundle = intent.getExtras();
 	    if(bundle != null) {
 	        try {
@@ -28,7 +28,11 @@ public class SmsListener extends BroadcastReceiver {
 	                String senderNum = phoneNumber;
 	                String message = currentMessage.getDisplayMessageBody();
 	                
-	                Log.d(LOG_TAG, "SMS: "+senderNum+" message: "+message);
+	                Log.d(LOG_TAG, "SMS: "+senderNum+" - "+message);
+					Intent msg = new Intent("sms");
+					msg.putExtra("message", message);
+					msg.putExtra("sender", senderNum);
+					LocalBroadcastManager.getInstance(context).sendBroadcast(msg);
 	            }
 	        }
 	        catch(Exception e) {

@@ -2,12 +2,14 @@ package com.jareddlc.turquoisebicuspid;
 
 import android.annotation.SuppressLint;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -44,8 +46,11 @@ public class SettingsService extends Service {
 	    Log.d(LOG_TAG, "Service running");
 	    
 	    final SavedPreferences sPrefs = new SavedPreferences(this);
+	    
+	    // register broadcast events
+	 	LocalBroadcastManager.getInstance(this).registerReceiver(smsReceiver, new IntentFilter("sms"));
 
-	 // setup bluetooth handler
+	    // setup bluetooth handler
         mHandler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
@@ -98,6 +103,7 @@ public class SettingsService extends Service {
 	public void onDestroy() {
 		Toast.makeText(this, "Service stopped", Toast.LENGTH_SHORT).show();
 		Log.d(LOG_TAG, "Service stopped");
+		bluetooth.disconnectDevice();
 		
 		// unregister listeners
 		if(smsEnabled) {
@@ -114,4 +120,13 @@ public class SettingsService extends Service {
 		Log.d(LOG_TAG, "onBind");
 		return null;
 	}
+	
+	private BroadcastReceiver smsReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String message = intent.getStringExtra("message");
+			String sender = intent.getStringExtra("sender");
+			Log.d(LOG_TAG, "Recieved SMS message: "+sender+" - "+message);
+		}
+	};
 }

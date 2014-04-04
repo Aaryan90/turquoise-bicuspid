@@ -10,14 +10,14 @@ public class CallListener extends PhoneStateListener {
 	public void onCallStateChanged(int state, String incomingNumber) {
 		switch(state) {
 			case TelephonyManager.CALL_STATE_IDLE:
-			  Log.d(LOG_TAG, "IDLE");
-			  break;
+				Log.d(LOG_TAG, "Phone: Idle");
+				break;
 			case TelephonyManager.CALL_STATE_OFFHOOK:
-			  Log.d(LOG_TAG, "OFFHOOK");
-			  break;
+				Log.d(LOG_TAG, "Phone: Offhook");
+				break;
 			case TelephonyManager.CALL_STATE_RINGING:
-			  Log.d(LOG_TAG, "RINGING");
-			  break;
+				Log.d(LOG_TAG, "Phone: Ringing - "+incomingNumber);
+				break;
 		}
 	}
 }
