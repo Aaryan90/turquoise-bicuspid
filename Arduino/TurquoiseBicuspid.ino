@@ -1,9 +1,17 @@
 #include <SoftwareSerial.h>
 
 SoftwareSerial btSerial(9, 10); // TX, RX
+
+// Global
 String BUFFER = "";
 char DELIMETER = ':';
 int LED = 13;
+
+// Defaults
+String TYPE = "blink";
+int TIME = 100;
+int LOOP = 3;
+int REPT = 15;
 
 void setup()
 {
@@ -34,14 +42,15 @@ void loop()
     String buff = "";
     int parsed = 0;
     for(int i=0; i<BUFFER.length(); i++) {
+      // copy buffer
       buff += BUFFER[i];
       
-      // delimeter
+      // clear buffer
       if(BUFFER[i] == ':') {
         buff = "";
       }
       
-      // grab value
+      // get a value
       if(BUFFER[i+1] == ':') {
         if(parsed == 0) {
           type = buff;
@@ -53,16 +62,21 @@ void loop()
         buff = "";
       }
       
-      // grab last value
+      // get last value
       if(i == (BUFFER.length()-1)) {
         time = buff.toInt();
       }
     }
-    
     BUFFER = "";
+    
     Serial.println(type+":"+time+":"+looper);
     btSerial.write(time);
     
+    // validation
+    // type["blink", "pulse"]
+    // time[500, 250, 100, 50]
+    // loop[1, 2, 3]
+    // rept[30, 15, 5, 3]
     if(type == "blink") {
       blink(time, looper);
     }
