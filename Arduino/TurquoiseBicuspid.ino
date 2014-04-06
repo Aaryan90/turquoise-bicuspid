@@ -100,3 +100,13 @@ void blink(int time, int looper) {
     delay(time);
   }
 }
+
+void pulse(int time, int looper) {
+  // same as above, but with pwm
+}
+
+void repeat(int rept) {
+  // repeat every x seconds,
+  // until a clear command
+  // is issued
+}
