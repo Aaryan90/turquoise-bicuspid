@@ -29,11 +29,11 @@ public class SettingsService extends Service {
 	private String pref_sms_type;
 	private String pref_sms_time;
 	private String pref_sms_loop;
-	//private String pref_sms_repeat;
+	private String pref_sms_repeat;
 	private String pref_phone_type;
 	private String pref_phone_time;
 	private String pref_phone_loop;
-	//private String pref_phone_repeat;
+	private String pref_phone_repeat;
 	
 	private Handler mHandler;
 	private static Bluetooth bluetooth;
@@ -59,11 +59,11 @@ public class SettingsService extends Service {
 	    pref_sms_type = sPrefs.saved_pref_sms_type_value;
 	    pref_sms_time = sPrefs.saved_pref_sms_time_value;
 		pref_sms_loop = sPrefs.saved_pref_sms_loop_value;
-		//pref_sms_repeat = sPrefs.saved_pref_sms_repeat_value;
+		pref_sms_repeat = sPrefs.saved_pref_sms_repeat_value;
 		pref_phone_type = sPrefs.saved_pref_phone_type_value;
 	    pref_phone_time = sPrefs.saved_pref_phone_time_value;
 		pref_phone_loop = sPrefs.saved_pref_phone_loop_value;
-		//pref_phone_repeat = sPrefs.saved_pref_phone_repeat_value;
+		pref_phone_repeat = sPrefs.saved_pref_phone_repeat_value;
 	    
 	    // register broadcast events
 	 	LocalBroadcastManager.getInstance(this).registerReceiver(smsReceiver, new IntentFilter("sms"));
@@ -147,7 +147,7 @@ public class SettingsService extends Service {
 			String message = intent.getStringExtra("message");
 			String sender = intent.getStringExtra("sender");
 			Log.d(LOG_TAG, "Recieved SMS message: "+sender+" - "+message);
-			bluetooth.send(pref_sms_type, pref_sms_loop, pref_sms_time);
+			bluetooth.send(pref_sms_type, pref_sms_loop, pref_sms_time, pref_sms_repeat);
 		}
 	};
 	
@@ -156,7 +156,7 @@ public class SettingsService extends Service {
 		public void onReceive(Context context, Intent intent) {
 			String sender = intent.getStringExtra("sender");
 			Log.d(LOG_TAG, "Recieved PHONE: "+sender);
-			bluetooth.send(pref_phone_type, pref_phone_loop, pref_phone_time);
+			bluetooth.send(pref_phone_type, pref_phone_loop, pref_phone_time, pref_phone_repeat);
 		}
 	};
 }

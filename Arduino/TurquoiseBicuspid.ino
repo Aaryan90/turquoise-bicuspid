@@ -9,9 +9,10 @@ int LED = 13;
 
 // Defaults
 String TYPE = "blink";
-int TIME = 100;
-int LOOP = 3;
-int REPT = 15;
+int TIME = 100;  // 500, 250, 100, 50 (milliseconds)
+int LOOP = 3;    // 3, 2, 1
+int REPT = 15000;   // 30000, 15000, 5000, 3000 (milliseconds)
+boolean REPEATING = false;
 
 void setup()
 {
@@ -32,13 +33,14 @@ void loop()
   String type = "";
   int time = 0;
   int looper = 0;
+  int repeat = 0;
   // read from bluetooth
   if(btSerial.available()) {
     while(btSerial.available()) {
       BUFFER += (char)btSerial.read();
     }
     
-    Serial.println(BUFFER);
+    Serial.println("BUFFER: "+BUFFER);
     String buff = "";
     int parsed = 0;
     for(int i=0; i<BUFFER.length(); i++) {
@@ -56,20 +58,26 @@ void loop()
           type = buff;
           parsed++;
         }
-        else if(parsed >= 1) {
+        else if(parsed == 1) {
           looper = buff.toInt();
+          parsed++;
+        }
+        else if(parsed == 2) {
+          time = buff.toInt();
+          parsed++;
         }
         buff = "";
       }
       
       // get last value
       if(i == (BUFFER.length()-1)) {
-        time = buff.toInt();
+        repeat = buff.toInt();
       }
     }
     BUFFER = "";
     
-    Serial.println(type+":"+time+":"+looper);
+    // type+":"+loop+":"+time+":"+repeat
+    Serial.println(type+":"+looper+":"+time+":"+repeat);
     btSerial.write(time);
     
     // validation
@@ -83,6 +91,10 @@ void loop()
     else if(type == "pulse") {
       blink(time, looper);
     }
+    else {
+      // error in data, perform default
+      blink(time, looper);
+    }
   }
   
   // AT commands
@@ -92,6 +104,10 @@ void loop()
   }
 }
 
+// blink - blinks an LED
+// params:
+//   time: int - time for the delay between on/off
+//   looper: int - amount of times blink the LED
 void blink(int time, int looper) {
   for(int i=0; i<looper; i++) {
     digitalWrite(LED, HIGH);
@@ -101,12 +117,25 @@ void blink(int time, int looper) {
   }
 }
 
+// pulse - blinks an LED
+// params:
+//   time: int - time for the delay between on/off
+//   looper: int - amount of times pulse the LED
 void pulse(int time, int looper) {
   // same as above, but with pwm
 }
 
+// reapeat - repeats a function
+// params:
+//   rept: int - milliseconds to call function
 void repeat(int rept) {
-  // repeat every x seconds,
-  // until a clear command
-  // is issued
+  int time = millis();
+  
+  while(REPEATING == true) {
+    int current = millis();
+    
+    if(current - time > rept) {
+      Serial.println("repeating");
+    }
+  }
 }
