@@ -252,6 +252,7 @@ public class Bluetooth {
 	    public void write(byte[] bytes) {
 	        try {
 	            mOutStream.write(bytes);
+	            mOutStream.flush();
 	        }
 	        catch(IOException e) {
 	        	Log.e(LOG_TAG, "Error: mOutStream.write()", e);

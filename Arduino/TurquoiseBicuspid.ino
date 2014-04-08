@@ -4,6 +4,7 @@ SoftwareSerial btSerial(9, 10); // TX, RX
 
 // Global
 String BUFFER = "";
+String BUFFSTORE = "";
 char DELIMETER = ':';
 int LED = 13;
 
@@ -12,7 +13,7 @@ String TYPE = "blink";
 int TIME = 100;  // 500, 250, 100, 50 (milliseconds)
 int LOOP = 3;    // 3, 2, 1
 int REPT = 15000;   // 30000, 15000, 5000, 3000 (milliseconds)
-boolean REPEATING = false;
+boolean REPEATING = true;
 
 void setup()
 {
@@ -39,6 +40,7 @@ void loop()
     while(btSerial.available()) {
       BUFFER += (char)btSerial.read();
     }
+    BUFFSTORE = BUFFER;
     
     Serial.println("BUFFER: "+BUFFER);
     String buff = "";
@@ -86,14 +88,17 @@ void loop()
     // loop[1, 2, 3]
     // rept[30, 15, 5, 3]
     if(type == "blink") {
-      blink(time, looper);
+      //blink(looper, time);
+      repeater(looper, time, repeat);
     }
     else if(type == "pulse") {
-      blink(time, looper);
+      //blink(looper, time);
+      repeater(looper, time, repeat);
     }
     else {
       // error in data, perform default
-      blink(time, looper);
+      //blink(looper, time);
+      repeater(looper, time, repeat);
     }
   }
   
@@ -106,9 +111,9 @@ void loop()
 
 // blink - blinks an LED
 // params:
-//   time: int - time for the delay between on/off
 //   looper: int - amount of times blink the LED
-void blink(int time, int looper) {
+//   time: int - time for the delay between on/off
+void blink(int looper, int time) {
   for(int i=0; i<looper; i++) {
     digitalWrite(LED, HIGH);
     delay(time);
@@ -119,23 +124,27 @@ void blink(int time, int looper) {
 
 // pulse - blinks an LED
 // params:
-//   time: int - time for the delay between on/off
 //   looper: int - amount of times pulse the LED
-void pulse(int time, int looper) {
+//   time: int - time for the delay between on/off
+void pulse(int looper, int time) {
   // same as above, but with pwm
 }
 
 // reapeat - repeats a function
 // params:
+//   looper: int - amount of times to blink the LED
+//   time: int - milliseconds to blink
 //   rept: int - milliseconds to call function
-void repeat(int rept) {
-  int time = millis();
-  
+void repeater(int looper, int time, int rept) {
+  int start = millis();
+
   while(REPEATING == true) {
     int current = millis();
-    
-    if(current - time > rept) {
-      Serial.println("repeating");
+    int diff = current - start;
+    Serial.println(diff);
+    if(diff > rept) {
+      blink(looper, time);
+      start = millis();
     }
   }
 }
