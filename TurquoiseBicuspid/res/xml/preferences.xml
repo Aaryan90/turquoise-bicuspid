@@ -67,13 +67,6 @@
 	        android:summary="@string/pref_notification_loop_summary"
 	        android:entries="@array/pref_notification_loop_entries"
 	        android:entryValues="@array/pref_notification_loop_values" />
-	    <ListPreference
-            android:dependency="pref_sms"
-	        android:key="pref_sms_repeat"
-	        android:title="@string/pref_notification_repeat"
-	        android:summary="@string/pref_notification_repeat_summary"
-	        android:entries="@array/pref_notification_repeat_entries"
-	        android:entryValues="@array/pref_notification_repeat_values" />
     </PreferenceCategory>
     
 	<PreferenceCategory android:title="@string/pref_category_phone" >
@@ -105,9 +98,12 @@
 	        android:summary="@string/pref_notification_loop_summary"
 	        android:entries="@array/pref_notification_loop_entries"
 	        android:entryValues="@array/pref_notification_loop_values" />
+    </PreferenceCategory>
+    
+	<PreferenceCategory android:title="@string/pref_category_repeat" >
 	    <ListPreference
-            android:dependency="pref_phone"
-	        android:key="pref_phone_repeat"
+            android:dependency="pref_connectivity_connected"
+	        android:key="pref_repeat"
 	        android:title="@string/pref_notification_repeat"
 	        android:summary="@string/pref_notification_repeat_summary"
 	        android:entries="@array/pref_notification_repeat_entries"

@@ -31,6 +31,7 @@
     <string name="pref_notification_time_summary" >Select a time</string>
     <string name="pref_notification_loop">Number of Blinks</string>
     <string name="pref_notification_loop_summary">Select number of blinks</string>
-    <string name="pref_notification_repeat">Repeat Every</string> 
-    <string name="pref_notification_repeat_summary">Select repeat every</string>  
+    <string name="pref_notification_repeat">Repeat Notification</string> 
+    <string name="pref_notification_repeat_summary">Select repeat notification</string>
+    <string name="pref_category_repeat">Repeat Notifications</string>  
 </resources>

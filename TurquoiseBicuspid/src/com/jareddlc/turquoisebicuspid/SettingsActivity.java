@@ -49,12 +49,11 @@ public class SettingsActivity extends Activity {
     	private static ListPreference pref_sms_type;
     	private static ListPreference pref_sms_time;
     	private static ListPreference pref_sms_loop;
-    	private static ListPreference pref_sms_repeat;
     	private static Preference pref_phone;
     	private static ListPreference pref_phone_type;
     	private static ListPreference pref_phone_time;
     	private static ListPreference pref_phone_loop;
-    	private static ListPreference pref_phone_repeat;
+    	private static ListPreference pref_repeat;
     	
     	// private static objects
     	private static Handler mHandler;
@@ -220,7 +219,7 @@ public class SettingsActivity extends Activity {
 				    editor.putString("saved_pref_sms_type_value", newValue.toString());
 				    editor.putString("saved_pref_sms_type_entry", entries[index].toString());
 					editor.commit();
-					bluetooth.send(newValue.toString(), pref_sms_loop.getValue(), pref_sms_time.getValue(), pref_sms_repeat.getValue());
+					bluetooth.send(newValue.toString(), pref_sms_loop.getValue(), pref_sms_time.getValue(), pref_repeat.getValue());
 					return true;
 				}
 			});
@@ -233,7 +232,7 @@ public class SettingsActivity extends Activity {
 				    editor.putString("saved_pref_sms_time_value", newValue.toString());
 				    editor.putString("saved_pref_sms_time_entry", entries[index].toString());
 					editor.commit();
-					bluetooth.send(pref_sms_type.getValue(), pref_sms_loop.getValue(), newValue.toString(), pref_sms_repeat.getValue());
+					bluetooth.send(pref_sms_type.getValue(), pref_sms_loop.getValue(), newValue.toString(), pref_repeat.getValue());
 					return true;
 				}
 			});
@@ -246,19 +245,7 @@ public class SettingsActivity extends Activity {
 				    editor.putString("saved_pref_sms_loop_value", newValue.toString());
 				    editor.putString("saved_pref_sms_loop_entry", entries[index].toString());
 					editor.commit();
-					bluetooth.send(pref_sms_type.getValue(), newValue.toString(), pref_sms_time.getValue(), pref_sms_repeat.getValue());
-					return true;
-				}
-			});
-            pref_sms_repeat = (ListPreference) getPreferenceManager().findPreference("pref_sms_repeat");
-            pref_sms_repeat.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-				@Override
-				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					int index = pref_sms_repeat.findIndexOfValue(newValue.toString());
-				    CharSequence[] entries = pref_sms_repeat.getEntries();
-				    editor.putString("saved_pref_sms_repeat_value", newValue.toString());
-				    editor.putString("saved_pref_sms_repeat_entry", entries[index].toString());
-					editor.commit();
+					bluetooth.send(pref_sms_type.getValue(), newValue.toString(), pref_sms_time.getValue(), pref_repeat.getValue());
 					return true;
 				}
 			});
@@ -289,7 +276,7 @@ public class SettingsActivity extends Activity {
 				    editor.putString("saved_pref_phone_type_value", newValue.toString());
 				    editor.putString("saved_pref_phone_type_entry", entries[index].toString());
 					editor.commit();
-					bluetooth.send(newValue.toString(), pref_phone_loop.getValue(), pref_phone_time.getValue(), pref_phone_repeat.getValue());
+					bluetooth.send(newValue.toString(), pref_phone_loop.getValue(), pref_phone_time.getValue(), pref_repeat.getValue());
 					return true;
 				}
 			});
@@ -302,7 +289,7 @@ public class SettingsActivity extends Activity {
 				    editor.putString("saved_pref_phone_time_value", newValue.toString());
 				    editor.putString("saved_pref_phone_time_entry", entries[index].toString());
 					editor.commit();
-					bluetooth.send(pref_phone_type.getValue(), pref_phone_loop.getValue(), newValue.toString(), pref_phone_repeat.getValue());
+					bluetooth.send(pref_phone_type.getValue(), pref_phone_loop.getValue(), newValue.toString(), pref_repeat.getValue());
 					return true;
 				}
 			});
@@ -315,18 +302,19 @@ public class SettingsActivity extends Activity {
 				    editor.putString("saved_pref_phone_loop_value", newValue.toString());
 				    editor.putString("saved_pref_phone_loop_entry", entries[index].toString());
 					editor.commit();
-					bluetooth.send(pref_phone_type.getValue(), newValue.toString(), pref_phone_time.getValue(), pref_phone_repeat.getValue());
+					bluetooth.send(pref_phone_type.getValue(), newValue.toString(), pref_phone_time.getValue(), pref_repeat.getValue());
 					return true;
 				}
 			});
-            pref_phone_repeat = (ListPreference) getPreferenceManager().findPreference("pref_phone_repeat");
-            pref_phone_repeat.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            
+            pref_repeat = (ListPreference) getPreferenceManager().findPreference("pref_repeat");
+            pref_repeat.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 				@Override
 				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					int index = pref_phone_repeat.findIndexOfValue(newValue.toString());
-				    CharSequence[] entries = pref_phone_repeat.getEntries();
-				    editor.putString("saved_pref_phone_repeat_value", newValue.toString());
-				    editor.putString("saved_pref_phone_repeat_entry", entries[index].toString());
+					int index = pref_repeat.findIndexOfValue(newValue.toString());
+					CharSequence[] entries = pref_repeat.getEntries();
+					editor.putString("saved_pref_repeat_value", newValue.toString());
+					editor.putString("saved_pref_repeat_entry", entries[index].toString());
 					editor.commit();
 					return true;
 				}

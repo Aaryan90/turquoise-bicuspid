@@ -97,6 +97,9 @@ void loop()
     else if(type == "pulse") {
       blink(looper, time);
     }
+    else if(type == "clear") {
+      REPEATING = false;
+    }
     else {
       blink(looper, time);
     }
