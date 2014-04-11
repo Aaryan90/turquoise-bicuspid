@@ -4,15 +4,14 @@ SoftwareSerial btSerial(9, 10); // TX, RX
 
 // Global
 String BUFFER = "";
-String BUFFSTORE = "";
 char DELIMETER = ':';
 int LED = 13;
 int TIME_START = 0;
 
 // Defaults
 String TYPE = "blink";   // blink, pulse
-int TIME = 100;          // 500, 250, 100, 50 (milliseconds)
 int LOOP = 3;            // 3, 2, 1
+int TIME = 100;          // 500, 250, 100, 50 (milliseconds)
 int REPT = 15000;        // 30000, 15000, 5000, 3000 (milliseconds)
 boolean REPEATING = false;
 
@@ -34,17 +33,12 @@ void setup()
 
 void loop()
 {
-  String type = "";
-  int time = 0;
-  int looper = 0;
-  int repeat = 0;
   // read from bluetooth
   if(btSerial.available()) {
     while(btSerial.available()) {
       BUFFER += (char)btSerial.read();
       delay(1);
     }
-    BUFFSTORE = BUFFER;
     
     Serial.println("BUFFER: "+BUFFER);
     String buff = "";
@@ -61,15 +55,15 @@ void loop()
       // get a value
       if(BUFFER[i+1] == ':') {
         if(index == 0) {
-          type = buff;
+          TYPE = buff;
           index++;
         }
         else if(index == 1) {
-          looper = buff.toInt();
+          LOOP = buff.toInt();
           index++;
         }
         else if(index == 2) {
-          time = buff.toInt();
+          TIME = buff.toInt();
           index++;
         }
         buff = "";
@@ -77,31 +71,34 @@ void loop()
       
       // get last value
       if(i == (BUFFER.length()-1)) {
-        repeat = buff.toInt();
-        REPEATING = true;
+        REPT = buff.toInt();
+        if(REPT > 0)
+        {
+          REPEATING = true;
+        }
       }
     }
     BUFFER = "";
     
-    Serial.println(type+":"+looper+":"+time+":"+repeat);
-    btSerial.write(time);
+    Serial.println(TYPE+":"+LOOP+":"+TIME+":"+REPT);
+    //btSerial.write(TIME);
     
     // validation
-    // type["blink", "pulse"]
-    // time[500, 250, 100, 50]
-    // loop[1, 2, 3]
-    // rept[30, 15, 5, 3]
-    if(type == "blink") {
-      blink(looper, time);
+    // TYPE["blink", "pulse"]
+    // TIME[500, 250, 100, 50]
+    // LOOP[1, 2, 3]
+    // REPT[30, 15, 5, 3]
+    if(TYPE == "blink") {
+      blink(LOOP, TIME);
     }
-    else if(type == "pulse") {
-      blink(looper, time);
+    else if(TYPE == "pulse") {
+      blink(LOOP, TIME);
     }
-    else if(type == "clear") {
+    else if(TYPE == "clear") {
       REPEATING = false;
     }
     else {
-      blink(looper, time);
+      blink(LOOP, TIME);
     }
   }
   
@@ -111,7 +108,7 @@ void loop()
     TIME_START = millis();
     if(REPEATING) {
       Serial.println("repeat");
-      blink(looper, time);
+      blink(LOOP, TIME);
     }
   }
   
