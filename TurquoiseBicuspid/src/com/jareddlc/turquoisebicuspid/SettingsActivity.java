@@ -45,6 +45,7 @@ public class SettingsActivity extends Activity {
     	private static CheckBoxPreference pref_service;
     	private static ListPreference pref_connectivity_paired;
     	private static Preference pref_device;
+    	private static Preference pref_clear;
     	private static Preference pref_sms;
     	private static ListPreference pref_sms_type;
     	private static ListPreference pref_sms_time;
@@ -189,6 +190,15 @@ public class SettingsActivity extends Activity {
 				@Override
 				public boolean onPreferenceClick(Preference preference) {
 					bluetooth.send("blink", "3", "50", "5000");
+					return true;
+				}
+			});
+            
+            pref_clear = (Preference) getPreferenceManager().findPreference("pref_clear");
+            pref_clear.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {		
+				@Override
+				public boolean onPreferenceClick(Preference preference) {
+					bluetooth.send("blink", "3", "50", "-1");
 					return true;
 				}
 			});

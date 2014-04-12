@@ -12,7 +12,7 @@ int TIME_START = 0;
 String TYPE = "blink";   // blink, pulse
 int LOOP = 3;            // 3, 2, 1
 int TIME = 100;          // 500, 250, 100, 50 (milliseconds)
-int REPT = 15000;        // 30000, 15000, 5000, 3000 (milliseconds)
+int REPT = 15000;        // 30000, 15000, 5000, 3000, -1 (milliseconds)
 boolean REPEATING = false;
 
 void setup()
@@ -76,6 +76,9 @@ void loop()
         {
           REPEATING = true;
         }
+        else if(REPT == -1) {
+          REPEATING = false;
+        }
       }
     }
     BUFFER = "";
@@ -87,7 +90,7 @@ void loop()
     // TYPE["blink", "pulse"]
     // TIME[500, 250, 100, 50]
     // LOOP[1, 2, 3]
-    // REPT[30, 15, 5, 3]
+    // REPT[30, 15, 5, 3, -1]
     if(TYPE == "blink") {
       blink(LOOP, TIME);
     }
@@ -104,7 +107,7 @@ void loop()
   
   int time_end = millis();
   int time_diff = time_end - TIME_START;
-  if(time_diff > 5000) {
+  if(time_diff > REPT) {
     TIME_START = millis();
     if(REPEATING) {
       Serial.println("repeat");

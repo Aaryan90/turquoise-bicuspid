@@ -26,6 +26,10 @@
 	        android:dependency="pref_connectivity_connected"
             android:key="pref_device"
             android:title="@string/pref_device" />
+	    <Preference 
+	        android:dependency="pref_connectivity_connected"
+            android:key="pref_clear"
+            android:title="@string/pref_clear" />
     </PreferenceCategory>
     
 	<PreferenceCategory android:title="@string/pref_category_service" >
