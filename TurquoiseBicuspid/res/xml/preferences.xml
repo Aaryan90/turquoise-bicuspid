@@ -26,13 +26,9 @@
 	        android:dependency="pref_connectivity_connected"
             android:key="pref_device"
             android:title="@string/pref_device" />
-	    <Preference 
-	        android:dependency="pref_connectivity_connected"
-            android:key="pref_clear"
-            android:title="@string/pref_clear" />
     </PreferenceCategory>
     
-	<PreferenceCategory android:title="@string/pref_category_service" >
+	<PreferenceCategory android:title="@string/pref_category_device" >
 	    <CheckBoxPreference
 	        android:dependency="pref_connectivity_bluetooth"
 	        android:key="pref_service"
@@ -40,11 +36,16 @@
 	        android:summaryOn="@string/pref_service_on"
 	        android:summaryOff="@string/pref_service_off"
 	        android:defaultValue="true" />
+	    <Preference 
+	        android:dependency="pref_service"
+            android:key="pref_clear"
+            android:title="@string/pref_clear"
+            android:summary="@string/pref_clear_summary"/>
     </PreferenceCategory>
     
 	<PreferenceCategory android:title="@string/pref_category_sms" >
 	    <CheckBoxPreference
-	        android:dependency="pref_connectivity_connected"
+	        android:dependency="pref_service"
 	        android:key="pref_sms"
 	        android:title="@string/pref_sms"
 	        android:summaryOn="@string/pref_sms_on"
@@ -75,7 +76,7 @@
     
 	<PreferenceCategory android:title="@string/pref_category_phone" >
 	    <CheckBoxPreference
-	        android:dependency="pref_connectivity_connected"
+	        android:dependency="pref_service"
 	        android:key="pref_phone"
 	        android:title="@string/pref_phone"
 	        android:summaryOn="@string/pref_phone_on"
@@ -106,7 +107,7 @@
     
 	<PreferenceCategory android:title="@string/pref_category_repeat" >
 	    <ListPreference
-            android:dependency="pref_connectivity_connected"
+            android:dependency="pref_service"
 	        android:key="pref_repeat"
 	        android:title="@string/pref_notification_repeat"
 	        android:summary="@string/pref_notification_repeat_summary"

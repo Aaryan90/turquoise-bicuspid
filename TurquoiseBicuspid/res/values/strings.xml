@@ -14,9 +14,10 @@
     <string name="perf_connectivity_paired_default">No paired devices</string>
     <string name="pref_category_device">Device</string>
     <string name="pref_device">Turn On</string>
-    <string name="pref_category_service">Service</string>
-    <string name="pref_service">Service</string><string name="pref_service_on">Running</string>
-    <string name="pref_service_off">Click to start service</string>
+    <string name="pref_category_service">Background Mode</string>
+    <string name="pref_service">Turn On</string>
+    <string name="pref_service_on">Running</string>
+    <string name="pref_service_off">Click to run (background)</string>
     <string name="pref_category_sms">Text Notifications</string>
     <string name="pref_sms">Text Messages</string>
     <string name="pref_sms_on">Listening to text messages</string>
@@ -34,5 +35,6 @@
     <string name="pref_notification_repeat">Repeat Notification</string> 
     <string name="pref_notification_repeat_summary">Select repeat notification</string>
     <string name="pref_category_repeat">Repeat Notifications</string>
-    <string name="pref_clear">Clear</string>  
+    <string name="pref_clear">Clear</string>
+    <string name="pref_clear_summary">Click to clear notification</string>  
 </resources>

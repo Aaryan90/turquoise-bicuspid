@@ -178,6 +178,7 @@ public class SettingsActivity extends Activity {
 					}
 					else {
 						getActivity().stopService(new Intent(getActivity(),SettingsService.class));
+						bluetooth.disconnectDevice();
 						editor.putBoolean("saved_pref_service", false);
 						editor.commit();
 					}
