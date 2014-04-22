@@ -233,20 +233,18 @@ public class Bluetooth {
 	    	ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
 	    	int bufferSize = 1024;
 	    	byte[] buffer = new byte[bufferSize];
-	        
-	        // listen to the InputStream
-	        while(true) {
-	            try {
-	                int bytes = mInStream.read(buffer);
-	                byteArray.write(buffer, 0, bytes);
-	                Log.d(LOG_TAG, "Received: "+byteArray);
-	                byteArray.reset();
-	            }
-	            catch(IOException e) {
-	            	Log.e(LOG_TAG, "Error: mInStream.read()", e);
-	                break;
-	            }
-	        }
+	    	
+	    	// listen to the InputStream
+	    	try {
+		    	while(mInStream.available() > 0) {
+			    	int bytes = mInStream.read(buffer);
+			    	byteArray.write(buffer, 0, bytes);
+			    	Log.d(LOG_TAG, "Received: "+byteArray);
+			    	byteArray.reset();
+		    	}
+	    	} catch (IOException e) {
+	    		Log.e(LOG_TAG, "Error: mInStream.read()", e);
+	    	}
 	    }
 	 
 	    public void write(byte[] bytes) {

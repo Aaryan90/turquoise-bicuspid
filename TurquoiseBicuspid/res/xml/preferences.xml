@@ -13,24 +13,11 @@
 	        android:entries="@array/perf_connectivity_paired_entries"
 	        android:entryValues="@array/perf_connectivity_paired_values"
 	        android:defaultValue="@string/perf_connectivity_paired_default" />
-        <CheckBoxPreference
-            android:dependency="pref_connectivity_paired"
-	        android:key="pref_connectivity_connected"
-	        android:title="@string/pref_connectivity_connected"
-	        android:summaryOff="@string/pref_connectivity_connected_off"
-	        android:defaultValue="false" />
-    </PreferenceCategory>
-    
-	<PreferenceCategory android:title="@string/pref_category_device" >
-	    <Preference 
-	        android:dependency="pref_connectivity_connected"
-            android:key="pref_device"
-            android:title="@string/pref_device" />
     </PreferenceCategory>
     
 	<PreferenceCategory android:title="@string/pref_category_device" >
 	    <CheckBoxPreference
-	        android:dependency="pref_connectivity_bluetooth"
+	        android:dependency="pref_connectivity_paired"
 	        android:key="pref_service"
 	        android:title="@string/pref_service"
 	        android:summaryOn="@string/pref_service_on"

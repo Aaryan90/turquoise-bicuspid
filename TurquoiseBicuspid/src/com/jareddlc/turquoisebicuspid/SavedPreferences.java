@@ -13,8 +13,6 @@ public class SavedPreferences {
 	// saved values
 	public boolean saved_pref_connectivity_bluetooth;
 	public boolean saved_pref_connectivity_paired;
-	public boolean saved_pref_connectivity_connected;
-	public boolean saved_pref_device;
 	public boolean saved_pref_service;
 	public boolean saved_pref_sms;
 	public String saved_pref_sms_type_value;
@@ -47,8 +45,6 @@ public class SavedPreferences {
         Log.d(LOG_TAG, "Loading saved preferences");
 		saved_pref_connectivity_bluetooth = preferences.getBoolean("saved_pref_connectivity_bluetooth", false);
 		saved_pref_connectivity_paired = preferences.getBoolean("saved_pref_connectivity_paired", false);
-		saved_pref_connectivity_connected = preferences.getBoolean("saved_pref_connectivity_connected", false);
-		saved_pref_device = preferences.getBoolean("saved_pref_device", false);
 		saved_pref_service = preferences.getBoolean("saved_pref_service", false);
 		saved_pref_sms = preferences.getBoolean("saved_pref_sms", false);
 		saved_pref_sms_type_value = preferences.getString("saved_pref_sms_type_value", PREFS_DEFAULT);

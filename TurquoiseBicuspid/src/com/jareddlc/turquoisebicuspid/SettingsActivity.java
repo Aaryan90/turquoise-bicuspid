@@ -41,10 +41,8 @@ public class SettingsActivity extends Activity {
     	
     	// UI objects
     	private static SwitchPreference pref_connectivity_bluetooth;
-    	private static CheckBoxPreference pref_connectivity_connected;
     	private static CheckBoxPreference pref_service;
     	private static ListPreference pref_connectivity_paired;
-    	private static Preference pref_device;
     	private static Preference pref_clear;
     	private static Preference pref_sms;
     	private static ListPreference pref_sms_type;
@@ -89,14 +87,14 @@ public class SettingsActivity extends Activity {
 						Log.d(LOG_TAG, "Bluetooth Connected");
 						CharSequence text = "Bluetooth Connected";
 						Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
-						pref_connectivity_connected.setEnabled(true);
+						pref_service.setEnabled(true);
 					}
 					if(bluetoothMsg.equals("isConnectedFailed")) {
 						Log.d(LOG_TAG, "Bluetooth Connected Failed");
 						CharSequence text = "Bluetooth Connected failed";
 						Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
-						pref_connectivity_connected.setEnabled(true);
-						pref_connectivity_connected.setChecked(false);
+						pref_service.setEnabled(true);
+						pref_service.setChecked(false);
 					}
 				}
 			};
@@ -146,27 +144,6 @@ public class SettingsActivity extends Activity {
 				}
 			});
             
-            pref_connectivity_connected = (CheckBoxPreference) getPreferenceManager().findPreference("pref_connectivity_connected");
-            pref_connectivity_connected.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-				@Override
-				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					if((Boolean)newValue) {
-						bluetooth.connectDevice();
-						CharSequence text = "Connecting...";
-						Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
-						pref_connectivity_connected.setEnabled(false);
-						editor.putBoolean("saved_pref_connectivity_connected", true);
-						editor.commit();
-					}
-					else {
-						bluetooth.disconnectDevice();
-						editor.putBoolean("saved_pref_connectivity_connected", false);
-						editor.commit();
-					}
-					return true;
-				}
-			});
-            
             pref_service = (CheckBoxPreference) getPreferenceManager().findPreference("pref_service");
             pref_service.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 				@Override
@@ -182,15 +159,6 @@ public class SettingsActivity extends Activity {
 						editor.putBoolean("saved_pref_service", false);
 						editor.commit();
 					}
-					return true;
-				}
-			});
-
-            pref_device = (Preference) getPreferenceManager().findPreference("pref_device");
-            pref_device.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {		
-				@Override
-				public boolean onPreferenceClick(Preference preference) {
-					bluetooth.send("blink", "3", "50", "0");
 					return true;
 				}
 			});
@@ -338,7 +306,6 @@ public class SettingsActivity extends Activity {
 				editor.commit();
             	this.restorePreferences(sPrefs);
             	if(!bluetooth.isConnected) {
-            		pref_connectivity_connected.setChecked(false);
             		pref_service.setChecked(false);
             	}
             }
