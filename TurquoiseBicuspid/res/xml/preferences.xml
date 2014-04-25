@@ -13,6 +13,10 @@
 	        android:entries="@array/perf_connectivity_paired_entries"
 	        android:entryValues="@array/perf_connectivity_paired_values"
 	        android:defaultValue="@string/perf_connectivity_paired_default" />
+        <com.jareddlc.turquoisebicuspid.ColorPickerPreference
+                android:key="pref_color_test"
+                android:defaultValue="0xff6699cc" 
+                android:title="Pick a color" />
     </PreferenceCategory>
     
 	<PreferenceCategory android:title="@string/pref_category_device" >
