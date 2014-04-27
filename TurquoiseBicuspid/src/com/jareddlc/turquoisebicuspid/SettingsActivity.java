@@ -48,10 +48,12 @@ public class SettingsActivity extends Activity {
     	private static ListPreference pref_sms_type;
     	private static ListPreference pref_sms_time;
     	private static ListPreference pref_sms_loop;
+    	private static ColorPickerPreference pref_sms_color;
     	private static Preference pref_phone;
     	private static ListPreference pref_phone_type;
     	private static ListPreference pref_phone_time;
     	private static ListPreference pref_phone_loop;
+    	private static ColorPickerPreference pref_phone_color;
     	private static ListPreference pref_repeat;
     	
     	// private static objects
@@ -229,6 +231,16 @@ public class SettingsActivity extends Activity {
 				}
 			});
             
+            pref_sms_color = (ColorPickerPreference) getPreferenceManager().findPreference("pref_sms_color");
+            pref_sms_color.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					editor.putString("saved_pref_sms_color", Integer.toHexString((Integer)newValue));
+					editor.commit();
+					return true;
+				}
+			});
+            
             pref_phone = (CheckBoxPreference) getPreferenceManager().findPreference("pref_phone");
             pref_phone.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 				@Override
@@ -282,6 +294,16 @@ public class SettingsActivity extends Activity {
 				    editor.putString("saved_pref_phone_loop_entry", entries[index].toString());
 					editor.commit();
 					bluetooth.send(pref_phone_type.getValue(), newValue.toString(), pref_phone_time.getValue(), "0");
+					return true;
+				}
+			});
+            
+            pref_phone_color = (ColorPickerPreference) getPreferenceManager().findPreference("pref_phone_color");
+            pref_phone_color.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					editor.putString("saved_pref_phone_color", Integer.toHexString((Integer)newValue));
+					editor.commit();
 					return true;
 				}
 			});

@@ -30,6 +30,8 @@
     <string name="pref_notification_repeat">Repeat Notification</string> 
     <string name="pref_notification_repeat_summary">Select repeat notification</string>
     <string name="pref_category_repeat">Repeat Notifications</string>
+    <string name="pref_notification_color">Notification color</string>
+    <string name="pref_notification_color_summary">Select a color</string>
     <string name="pref_clear">Clear</string>
     <string name="pref_clear_summary">Click to clear notification</string>  
 </resources>
