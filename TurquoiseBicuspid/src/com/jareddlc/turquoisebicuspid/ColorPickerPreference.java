@@ -8,7 +8,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.preference.Preference;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 public class ColorPickerPreference extends Preference {
@@ -135,5 +134,13 @@ public class ColorPickerPreference extends Preference {
                 return new SavedState[size];
             }
         };
+    }
+    
+    public int getValue() {
+    	return value;
+    }
+    
+    public String getHexValue() {
+    	return Integer.toHexString(value).substring(2);
     }
 }

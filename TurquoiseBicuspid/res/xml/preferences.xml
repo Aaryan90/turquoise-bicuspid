@@ -60,6 +60,7 @@
 	        android:entries="@array/pref_notification_loop_entries"
 	        android:entryValues="@array/pref_notification_loop_values" />
 	    <com.jareddlc.turquoisebicuspid.ColorPickerPreference
+	        android:dependency="pref_sms"
 			android:key="pref_sms_color"
 			android:defaultValue="0xffffffff" 
 			android:title="@string/pref_notification_color"
@@ -96,6 +97,7 @@
 	        android:entries="@array/pref_notification_loop_entries"
 	        android:entryValues="@array/pref_notification_loop_values" />
 	    <com.jareddlc.turquoisebicuspid.ColorPickerPreference
+	        android:dependency="pref_phone"
 			android:key="pref_phone_color"
 			android:defaultValue="0xffffffff" 
 			android:title="@string/pref_notification_color"

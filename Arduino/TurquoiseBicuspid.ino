@@ -7,6 +7,9 @@ String BUFFER = "";
 char DELIMETER = ':';
 int LED = 13;
 int TIME_START = 0;
+int REDPIN = 6;
+int GREPIN = 3;
+int BLUPIN = 5;
 
 // Defaults
 String TYPE = "blink";   // blink, pulse
@@ -17,7 +20,10 @@ boolean REPEATING = false;
 
 void setup()
 {
-   pinMode(LED, OUTPUT); 
+   pinMode(LED, OUTPUT);
+   pinMode(REDPIN, OUTPUT);
+   pinMode(GREPIN, OUTPUT);
+   pinMode(BLUPIN, OUTPUT);
   
    Serial.begin(9600);
    Serial.println("Type AT commands!");
@@ -119,6 +125,7 @@ void loop()
   if(Serial.available()){
     delay(10);
     btSerial.write(Serial.read());
+    blinkRGB();
   }
 }
 
@@ -132,6 +139,20 @@ void blink(int looper, int time) {
     delay(time);
     digitalWrite(LED, LOW);
     delay(time);
+  }
+}
+
+// blinkRGB - blinks an RGB LED
+// params:
+//   looper: int - amount of times blink the LED
+//   time: int - time for the delay between on/off
+//   color: String - hex color
+void blinkRGB() {
+  for(int i=0; i<3; i++) {
+    analogWrite(REDPIN, 255);
+    analogWrite(GREPIN, 255);
+    analogWrite(BLUPIN, 255); 
+    delay(100);
   }
 }
 
