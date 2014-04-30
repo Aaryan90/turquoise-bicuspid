@@ -128,7 +128,7 @@ public class Bluetooth {
 	
 	public void send(String type, String loop, String time, String repeat, String color) {
 		if(isEnabled) {
-			String send = type+":"+loop+":"+time+":"+repeat;
+			String send = type+":"+loop+":"+time+":"+repeat+":"+color+":";
 			Log.d(LOG_TAG, "Sending: "+send);
 			conx.write(send.getBytes());
 		}

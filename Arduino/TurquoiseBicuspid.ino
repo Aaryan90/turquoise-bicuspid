@@ -16,6 +16,10 @@ String TYPE = "blink";   // blink, pulse
 int LOOP = 3;            // 3, 2, 1
 int TIME = 100;          // 500, 250, 100, 50 (milliseconds)
 int REPT = 15000;        // 30000, 15000, 5000, 3000, -1 (milliseconds)
+int RED = 255;           // 0-255
+int GRE = 255;           // 0-255
+int BLU = 255;           // 0-255
+
 boolean REPEATING = false;
 
 void setup()
@@ -72,24 +76,29 @@ void loop()
           TIME = buff.toInt();
           index++;
         }
+        else if(index == 3) {
+          REPT = buff.toInt();
+          if(REPT > 0)
+          {
+            REPEATING = true;
+          }
+          else if(REPT == -1) {
+            REPEATING = false;
+          }
+          index++;
+        }
+        else if(index == 4) {
+          RED = HEXToRGB(buff[0], buff[1]);
+          GRE = HEXToRGB(buff[2], buff[3]);
+          BLU = HEXToRGB(buff[4], buff[5]);
+          index++;
+        }
         buff = "";
-      }
-      
-      // get last value
-      if(i == (BUFFER.length()-1)) {
-        REPT = buff.toInt();
-        if(REPT > 0)
-        {
-          REPEATING = true;
-        }
-        else if(REPT == -1) {
-          REPEATING = false;
-        }
       }
     }
     BUFFER = "";
     
-    Serial.println(TYPE+":"+LOOP+":"+TIME+":"+REPT);
+    Serial.println(TYPE+":"+LOOP+":"+TIME+":"+REPT+":"+RED+":"+GRE+":"+BLU);
     //btSerial.write(TIME);
     
     // validation
@@ -162,4 +171,30 @@ void blinkRGB() {
 //   time: int - time for the delay between on/off
 void pulse(int looper, int time) {
   // same as above, but with pwm
+}
+
+int HEXToRGB(char first, char second) {
+  int f = CharToHEX(first);
+  int s = CharToHEX(second);
+  return (f*16)+s;
+}
+
+int CharToHEX(char x) {
+  int y = 0;
+  if(x == '1') y = 1;
+  else if(x == '2') y = 2;
+  else if(x == '3') y = 3;
+  else if(x == '4') y = 4;
+  else if(x == '5') y = 5;
+  else if(x == '6') y = 6;
+  else if(x == '7') y = 7;
+  else if(x == '8') y = 8;
+  else if(x == '9') y = 9;
+  else if(x == 'a') y = 10;
+  else if(x == 'b') y = 11;
+  else if(x == 'c') y = 12;
+  else if(x == 'd') y = 13;
+  else if(x == 'e') y = 14;
+  else if(x == 'f') y = 15;
+  return y;
 }
