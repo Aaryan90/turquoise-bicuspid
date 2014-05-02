@@ -107,16 +107,18 @@ void loop()
     // LOOP[1, 2, 3]
     // REPT[30, 15, 5, 3, -1]
     if(TYPE == "blink") {
-      blink(LOOP, TIME);
+      blinkRGB(LOOP, TIME, RED, GRE, BLU);
     }
     else if(TYPE == "pulse") {
-      blink(LOOP, TIME);
+      //blink(LOOP, TIME);
+      blinkRGB(LOOP, TIME, RED, GRE, BLU);
     }
     else if(TYPE == "clear") {
       REPEATING = false;
     }
     else {
-      blink(LOOP, TIME);
+      //blink(LOOP, TIME);
+      blinkRGB(LOOP, TIME, RED, GRE, BLU);
     }
   }
   
@@ -126,7 +128,8 @@ void loop()
     TIME_START = millis();
     if(REPEATING) {
       Serial.println("repeat");
-      blink(LOOP, TIME);
+      //blink(LOOP, TIME);
+      blinkRGB(LOOP, TIME, RED, GRE, BLU);
     }
   }
   
@@ -134,7 +137,6 @@ void loop()
   if(Serial.available()){
     delay(10);
     btSerial.write(Serial.read());
-    blinkRGB();
   }
 }
 
@@ -155,13 +157,19 @@ void blink(int looper, int time) {
 // params:
 //   looper: int - amount of times blink the LED
 //   time: int - time for the delay between on/off
-//   color: String - hex color
-void blinkRGB() {
-  for(int i=0; i<3; i++) {
-    analogWrite(REDPIN, 255);
-    analogWrite(GREPIN, 255);
-    analogWrite(BLUPIN, 255); 
-    delay(100);
+//   red: int - red 
+//   gre: int - green
+//   blu: int - blue
+void blinkRGB(int looper, int time, int red, int gre, int blu) {
+  for(int i=0; i<looper; i++) {
+    analogWrite(REDPIN, red);
+    analogWrite(GREPIN, gre);
+    analogWrite(BLUPIN, blu);
+    delay(time);
+    analogWrite(REDPIN, 0);
+    analogWrite(GREPIN, 0);
+    analogWrite(BLUPIN, 0);
+    delay(time);
   }
 }
 

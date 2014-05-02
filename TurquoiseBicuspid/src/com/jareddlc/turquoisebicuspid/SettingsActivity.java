@@ -237,7 +237,7 @@ public class SettingsActivity extends Activity {
 				public boolean onPreferenceChange(Preference preference, Object newValue) {
 					editor.putString("saved_pref_sms_color", Integer.toHexString((Integer)newValue));
 					editor.commit();
-					bluetooth.send(pref_sms_type.getValue(), pref_sms_loop.getValue(), pref_sms_time.getValue(), "0", pref_sms_color.getHexValue());
+					bluetooth.send(pref_sms_type.getValue(), pref_sms_loop.getValue(), pref_sms_time.getValue(), "0", Integer.toHexString((Integer)newValue).substring(2));
 					return true;
 				}
 			});
@@ -305,7 +305,7 @@ public class SettingsActivity extends Activity {
 				public boolean onPreferenceChange(Preference preference, Object newValue) {
 					editor.putString("saved_pref_phone_color", Integer.toHexString((Integer)newValue));
 					editor.commit();
-					bluetooth.send(pref_phone_type.getValue(), pref_phone_loop.getValue(), pref_phone_time.getValue(), "0", pref_phone_color.getHexValue());
+					bluetooth.send(pref_phone_type.getValue(), pref_phone_loop.getValue(), pref_phone_time.getValue(), "0", Integer.toHexString((Integer)newValue).substring(2));
 					return true;
 				}
 			});

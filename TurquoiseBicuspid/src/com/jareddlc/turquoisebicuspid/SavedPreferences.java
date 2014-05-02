@@ -40,11 +40,14 @@ public class SavedPreferences {
 	public String saved_pref_repeat_entry;
 	
 	public SavedPreferences(Context context) {
-		
+		this.load(context);
+	}
+	
+	public void load(Context context) {
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         //Editor editor = preferences.edit();
-
-        Log.d(LOG_TAG, "Loading saved preferences");
+		
+		Log.d(LOG_TAG, "Loading saved preferences");
 		saved_pref_connectivity_bluetooth = preferences.getBoolean("saved_pref_connectivity_bluetooth", false);
 		saved_pref_connectivity_paired = preferences.getBoolean("saved_pref_connectivity_paired", false);
 		saved_pref_service = preferences.getBoolean("saved_pref_service", false);
