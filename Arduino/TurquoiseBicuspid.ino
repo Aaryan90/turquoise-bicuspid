@@ -5,7 +5,7 @@ SoftwareSerial btSerial(9, 10); // TX, RX
 // Global
 String BUFFER = "";
 char DELIMETER = ':';
-int LED = 13;
+int LED = 11;
 int TIME_START = 0;
 int REDPIN = 6;
 int GREPIN = 3;
@@ -110,8 +110,8 @@ void loop()
       blinkRGB(LOOP, TIME, RED, GRE, BLU);
     }
     else if(TYPE == "pulse") {
-      //blink(LOOP, TIME);
-      blinkRGB(LOOP, TIME, RED, GRE, BLU);
+      //pulse(LOOP, TIME);
+      pulseRGB(LOOP, TIME, RED, GRE, BLU);
     }
     else if(TYPE == "clear") {
       REPEATING = false;
@@ -173,12 +173,83 @@ void blinkRGB(int looper, int time, int red, int gre, int blu) {
   }
 }
 
-// pulse - blinks an LED
+// pulse - pulse an LED
 // params:
 //   looper: int - amount of times pulse the LED
 //   time: int - time for the delay between on/off
 void pulse(int looper, int time) {
-  // same as above, but with pwm
+  int DELAY = 1;
+  if(time == 500) {
+    DELAY = 8;
+  }
+  else if(time == 250) {
+    DELAY = 5;
+  }
+  else if(time == 100) {
+    DELAY = 3;
+  }
+  else if(time == 50) {
+    DELAY = 1;
+  }
+  for(int i=0; i<looper; i++) {
+    for(int j=0; j<255; j++) {
+      analogWrite(LED, j);
+      delay(DELAY);
+    }
+    for(int k=255; k>=0; k--) {
+      analogWrite(LED, k);
+      delay(DELAY);
+    }
+  }
+}
+
+// pulse - pulse an RGB LED
+// params:
+//   looper: int - amount of times pulse the LED
+//   time: int - time for the delay between on/off
+//   red: int - red 
+//   gre: int - green
+//   blu: int - blue
+void pulseRGB(int looper, int time, int red, int gre, int blu) {
+  int DELAY = 1;
+  if(time == 500) {
+    DELAY = 8;
+  }
+  else if(time == 250) {
+    DELAY = 5;
+  }
+  else if(time == 100) {
+    DELAY = 3;
+  }
+  else if(time == 50) {
+    DELAY = 1;
+  }
+  for(int i=0; i<looper; i++) {
+    for(int j=0; j<255; j++) {
+      if(j <= red) {
+        analogWrite(REDPIN, j);
+      }
+      if(j <= gre) {
+        analogWrite(GREPIN, j);
+      }
+      if(j <= blu) {
+        analogWrite(BLUPIN, j);
+      }
+      delay(DELAY);
+    }
+    for(int k=255; k>=0; k--) {
+      if(k <= red) {
+        analogWrite(REDPIN, k);
+      }
+      if(k <= gre) {
+        analogWrite(GREPIN, k);
+      }
+      if(k <= blu) {
+        analogWrite(BLUPIN, k);
+      }
+      delay(DELAY);
+    }
+  }
 }
 
 int HEXToRGB(char first, char second) {
