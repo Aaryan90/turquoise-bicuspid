@@ -14,6 +14,7 @@ import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -200,7 +201,8 @@ public class SettingsActivity extends Activity {
 				    editor.putString("saved_pref_sms_type_value", newValue.toString());
 				    editor.putString("saved_pref_sms_type_entry", entries[index].toString());
 					editor.commit();
-					bluetooth.send(newValue.toString(), pref_sms_loop.getValue(), pref_sms_time.getValue(), "0", pref_sms_color.getHexValue());
+					bluetooth.send(newValue.toString(), pref_sms_loop.getValue(), pref_sms_time.getValue(), "-1", pref_sms_color.getHexValue());
+					notifyService();
 					return true;
 				}
 			});
@@ -213,7 +215,8 @@ public class SettingsActivity extends Activity {
 				    editor.putString("saved_pref_sms_time_value", newValue.toString());
 				    editor.putString("saved_pref_sms_time_entry", entries[index].toString());
 					editor.commit();
-					bluetooth.send(pref_sms_type.getValue(), pref_sms_loop.getValue(), newValue.toString(), "0", pref_sms_color.getHexValue());
+					bluetooth.send(pref_sms_type.getValue(), pref_sms_loop.getValue(), newValue.toString(), "-1", pref_sms_color.getHexValue());
+					notifyService();
 					return true;
 				}
 			});
@@ -226,7 +229,8 @@ public class SettingsActivity extends Activity {
 				    editor.putString("saved_pref_sms_loop_value", newValue.toString());
 				    editor.putString("saved_pref_sms_loop_entry", entries[index].toString());
 					editor.commit();
-					bluetooth.send(pref_sms_type.getValue(), newValue.toString(), pref_sms_time.getValue(), "0", pref_sms_color.getHexValue());
+					bluetooth.send(pref_sms_type.getValue(), newValue.toString(), pref_sms_time.getValue(), "-1", pref_sms_color.getHexValue());
+					notifyService();
 					return true;
 				}
 			});
@@ -235,9 +239,10 @@ public class SettingsActivity extends Activity {
             pref_sms_color.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 				@Override
 				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					editor.putString("saved_pref_sms_color", Integer.toHexString((Integer)newValue));
+					editor.putString("saved_pref_sms_color", Integer.toHexString((Integer)newValue).substring(2));
 					editor.commit();
-					bluetooth.send(pref_sms_type.getValue(), pref_sms_loop.getValue(), pref_sms_time.getValue(), "0", Integer.toHexString((Integer)newValue).substring(2));
+					bluetooth.send(pref_sms_type.getValue(), pref_sms_loop.getValue(), pref_sms_time.getValue(), "-1", Integer.toHexString((Integer)newValue).substring(2));
+					notifyService();
 					return true;
 				}
 			});
@@ -268,7 +273,8 @@ public class SettingsActivity extends Activity {
 				    editor.putString("saved_pref_phone_type_value", newValue.toString());
 				    editor.putString("saved_pref_phone_type_entry", entries[index].toString());
 					editor.commit();
-					bluetooth.send(newValue.toString(), pref_phone_loop.getValue(), pref_phone_time.getValue(), "0", pref_phone_color.getHexValue());
+					bluetooth.send(newValue.toString(), pref_phone_loop.getValue(), pref_phone_time.getValue(), "-1", pref_phone_color.getHexValue());
+					notifyService();
 					return true;
 				}
 			});
@@ -281,7 +287,8 @@ public class SettingsActivity extends Activity {
 				    editor.putString("saved_pref_phone_time_value", newValue.toString());
 				    editor.putString("saved_pref_phone_time_entry", entries[index].toString());
 					editor.commit();
-					bluetooth.send(pref_phone_type.getValue(), pref_phone_loop.getValue(), newValue.toString(), "0", pref_phone_color.getHexValue());
+					bluetooth.send(pref_phone_type.getValue(), pref_phone_loop.getValue(), newValue.toString(), "-1", pref_phone_color.getHexValue());
+					notifyService();
 					return true;
 				}
 			});
@@ -294,7 +301,8 @@ public class SettingsActivity extends Activity {
 				    editor.putString("saved_pref_phone_loop_value", newValue.toString());
 				    editor.putString("saved_pref_phone_loop_entry", entries[index].toString());
 					editor.commit();
-					bluetooth.send(pref_phone_type.getValue(), newValue.toString(), pref_phone_time.getValue(), "0", pref_phone_color.getHexValue());
+					bluetooth.send(pref_phone_type.getValue(), newValue.toString(), pref_phone_time.getValue(), "-1", pref_phone_color.getHexValue());
+					notifyService();
 					return true;
 				}
 			});
@@ -303,9 +311,10 @@ public class SettingsActivity extends Activity {
             pref_phone_color.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 				@Override
 				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					editor.putString("saved_pref_phone_color", Integer.toHexString((Integer)newValue));
+					editor.putString("saved_pref_phone_color", Integer.toHexString((Integer)newValue).substring(2));
 					editor.commit();
-					bluetooth.send(pref_phone_type.getValue(), pref_phone_loop.getValue(), pref_phone_time.getValue(), "0", Integer.toHexString((Integer)newValue).substring(2));
+					bluetooth.send(pref_phone_type.getValue(), pref_phone_loop.getValue(), pref_phone_time.getValue(), "-1", Integer.toHexString((Integer)newValue).substring(2));
+					notifyService();
 					return true;
 				}
 			});
@@ -319,6 +328,7 @@ public class SettingsActivity extends Activity {
 					editor.putString("saved_pref_repeat_value", newValue.toString());
 					editor.putString("saved_pref_repeat_entry", entries[index].toString());
 					editor.commit();
+					notifyService();
 					return true;
 				}
 			});
@@ -339,6 +349,12 @@ public class SettingsActivity extends Activity {
 				editor.commit();
             }
         }
+		
+		public void notifyService() {
+			Log.d(LOG_TAG, "Broadcasting prefChange");
+			Intent msg = new Intent("prefChange");
+			LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(msg);
+		}
 		
 		public void restorePreferences(SavedPreferences sPrefs) {
 			Log.d(LOG_TAG, "Restore paired device: "+sPrefs.saved_pref_connectivity_paired_value+":"+sPrefs.saved_pref_connectivity_paired_entry);
