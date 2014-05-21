@@ -6,6 +6,8 @@ SoftwareSerial btSerial(9, 10); // TX, RX
 String BUFFER = "";
 char DELIMETER = ':';
 int LED = 11;
+int BUT = 2;
+int BUTT_STATE = 0;
 int TIME_START = 0;
 int REDPIN = 6;
 int GREPIN = 3;
@@ -24,6 +26,7 @@ boolean REPEATING = false;
 
 void setup()
 {
+   pinMode(BUT, INPUT); 
    pinMode(LED, OUTPUT);
    pinMode(REDPIN, OUTPUT);
    pinMode(GREPIN, OUTPUT);
@@ -43,6 +46,15 @@ void setup()
 
 void loop()
 {
+  BUTT_STATE = digitalRead(BUT);
+  if(BUTT_STATE == HIGH) {
+    Serial.println("Clear");
+    REPEATING = false;
+    //digitalWrite(LED, HIGH);
+  }
+  else {
+    //digitalWrite(LED, LOW);
+  }
   // read from bluetooth
   if(btSerial.available()) {
     while(btSerial.available()) {
