@@ -6610,7 +6610,6 @@ http://www.micrel.com&lt;p&gt;
 <part name="R4" library="rcl" deviceset="R-US_" device="R1206" value="10kΩ"/>
 <part name="S2" library="switch-omron" deviceset="10-XX" device=""/>
 <part name="S3" library="switch-omron" deviceset="10-XX" device=""/>
-<part name="S4" library="switch-omron" deviceset="10-XX" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -6631,7 +6630,6 @@ http://www.micrel.com&lt;p&gt;
 <instance part="R4" gate="G$1" x="66.04" y="43.18"/>
 <instance part="S2" gate="1" x="45.72" y="50.8" rot="R180"/>
 <instance part="S3" gate="1" x="53.34" y="50.8" rot="R180"/>
-<instance part="S4" gate="1" x="60.96" y="50.8" rot="R180"/>
 </instances>
 <busses>
 </busses>
@@ -6698,8 +6696,7 @@ http://www.micrel.com&lt;p&gt;
 <wire x1="15.24" y1="60.96" x2="38.1" y2="60.96" width="0.1524" layer="91"/>
 <wire x1="38.1" y1="60.96" x2="45.72" y2="60.96" width="0.1524" layer="91"/>
 <wire x1="45.72" y1="60.96" x2="53.34" y2="60.96" width="0.1524" layer="91"/>
-<wire x1="53.34" y1="60.96" x2="60.96" y2="60.96" width="0.1524" layer="91"/>
-<wire x1="60.96" y1="60.96" x2="73.66" y2="60.96" width="0.1524" layer="91"/>
+<wire x1="53.34" y1="60.96" x2="73.66" y2="60.96" width="0.1524" layer="91"/>
 <wire x1="73.66" y1="60.96" x2="73.66" y2="-25.4" width="0.1524" layer="91"/>
 <pinref part="S1" gate="1" pin="P"/>
 <wire x1="38.1" y1="55.88" x2="38.1" y2="60.96" width="0.1524" layer="91"/>
@@ -6707,12 +6704,9 @@ http://www.micrel.com&lt;p&gt;
 <wire x1="45.72" y1="55.88" x2="45.72" y2="60.96" width="0.1524" layer="91"/>
 <pinref part="S3" gate="1" pin="P"/>
 <wire x1="53.34" y1="55.88" x2="53.34" y2="60.96" width="0.1524" layer="91"/>
-<pinref part="S4" gate="1" pin="P"/>
-<wire x1="60.96" y1="55.88" x2="60.96" y2="60.96" width="0.1524" layer="91"/>
 <junction x="38.1" y="60.96"/>
 <junction x="45.72" y="60.96"/>
 <junction x="53.34" y="60.96"/>
-<junction x="60.96" y="60.96"/>
 </segment>
 </net>
 <net name="N$1" class="0">
@@ -6844,9 +6838,6 @@ http://www.micrel.com&lt;p&gt;
 <wire x1="45.72" y1="43.18" x2="45.72" y2="45.72" width="0.1524" layer="91"/>
 <pinref part="S3" gate="1" pin="S"/>
 <wire x1="53.34" y1="43.18" x2="53.34" y2="45.72" width="0.1524" layer="91"/>
-<pinref part="S4" gate="1" pin="S"/>
-<wire x1="60.96" y1="43.18" x2="60.96" y2="45.72" width="0.1524" layer="91"/>
-<junction x="60.96" y="43.18"/>
 <junction x="53.34" y="43.18"/>
 <junction x="45.72" y="43.18"/>
 <junction x="38.1" y="43.18"/>
