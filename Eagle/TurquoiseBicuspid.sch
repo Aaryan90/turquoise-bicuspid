@@ -6470,12 +6470,46 @@ http://www.micrel.com&lt;p&gt;
 <nets>
 <net name="5V" class="0">
 <segment>
-<wire x1="-15.24" y1="66.04" x2="71.12" y2="66.04" width="0.1524" layer="91"/>
+<wire x1="-15.24" y1="66.04" x2="30.48" y2="66.04" width="0.1524" layer="91"/>
+<wire x1="30.48" y1="66.04" x2="71.12" y2="66.04" width="0.1524" layer="91"/>
 <wire x1="71.12" y1="43.18" x2="71.12" y2="66.04" width="0.1524" layer="91"/>
 <pinref part="R4" gate="G$1" pin="2"/>
 <pinref part="ATTINY85-20SU" gate="G$1" pin="VCC"/>
 <wire x1="-15.24" y1="22.86" x2="-15.24" y2="25.4" width="0.1524" layer="91"/>
 <wire x1="-15.24" y1="66.04" x2="-15.24" y2="22.86" width="0.1524" layer="91"/>
+<junction x="30.48" y="66.04"/>
+<pinref part="ATTINY85-20SU" gate="G$1" pin="NRES/PB5"/>
+<wire x1="35.56" y1="35.56" x2="35.56" y2="43.18" width="0.1524" layer="91"/>
+<wire x1="35.56" y1="35.56" x2="30.48" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="30.48" y1="35.56" x2="17.78" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="17.78" y1="35.56" x2="17.78" y2="22.86" width="0.1524" layer="91"/>
+<pinref part="R4" gate="G$1" pin="1"/>
+<wire x1="60.96" y1="43.18" x2="53.34" y2="43.18" width="0.1524" layer="91"/>
+<wire x1="53.34" y1="43.18" x2="45.72" y2="43.18" width="0.1524" layer="91"/>
+<wire x1="45.72" y1="43.18" x2="38.1" y2="43.18" width="0.1524" layer="91"/>
+<pinref part="S2" gate="1" pin="S"/>
+<wire x1="38.1" y1="43.18" x2="35.56" y2="43.18" width="0.1524" layer="91"/>
+<wire x1="45.72" y1="43.18" x2="45.72" y2="45.72" width="0.1524" layer="91"/>
+<pinref part="S3" gate="1" pin="S"/>
+<wire x1="53.34" y1="43.18" x2="53.34" y2="45.72" width="0.1524" layer="91"/>
+<junction x="53.34" y="43.18"/>
+<junction x="45.72" y="43.18"/>
+<pinref part="S1" gate="1" pin="S"/>
+<wire x1="38.1" y1="45.72" x2="38.1" y2="43.18" width="0.1524" layer="91"/>
+<junction x="38.1" y="43.18"/>
+<junction x="30.48" y="35.56"/>
+<wire x1="30.48" y1="66.04" x2="30.48" y2="35.56" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="3.3VREG" gate="G1" pin="IN"/>
+<wire x1="-12.7" y1="45.72" x2="-10.16" y2="45.72" width="0.1524" layer="91"/>
+<wire x1="-12.7" y1="43.18" x2="-12.7" y2="45.72" width="0.1524" layer="91"/>
+<junction x="-15.24" y="43.18"/>
+<wire x1="-15.24" y1="48.26" x2="-15.24" y2="43.18" width="0.1524" layer="91"/>
+<wire x1="-15.24" y1="43.18" x2="-12.7" y2="43.18" width="0.1524" layer="91"/>
+<pinref part="USB1" gate="G$1" pin="1"/>
+<wire x1="-40.64" y1="22.86" x2="-40.64" y2="43.18" width="0.1524" layer="91"/>
+<wire x1="-40.64" y1="43.18" x2="-15.24" y2="43.18" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="GND" class="0">
@@ -6593,47 +6627,12 @@ http://www.micrel.com&lt;p&gt;
 <wire x1="20.32" y1="-10.16" x2="20.32" y2="-7.62" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$4" class="0">
-<segment>
-<pinref part="ATTINY85-20SU" gate="G$1" pin="NRES/PB5"/>
-<wire x1="35.56" y1="35.56" x2="35.56" y2="43.18" width="0.1524" layer="91"/>
-<wire x1="35.56" y1="35.56" x2="17.78" y2="35.56" width="0.1524" layer="91"/>
-<wire x1="17.78" y1="35.56" x2="17.78" y2="22.86" width="0.1524" layer="91"/>
-<pinref part="R4" gate="G$1" pin="1"/>
-<wire x1="60.96" y1="43.18" x2="53.34" y2="43.18" width="0.1524" layer="91"/>
-<wire x1="53.34" y1="43.18" x2="45.72" y2="43.18" width="0.1524" layer="91"/>
-<wire x1="45.72" y1="43.18" x2="38.1" y2="43.18" width="0.1524" layer="91"/>
-<pinref part="S2" gate="1" pin="S"/>
-<wire x1="38.1" y1="43.18" x2="35.56" y2="43.18" width="0.1524" layer="91"/>
-<wire x1="45.72" y1="43.18" x2="45.72" y2="45.72" width="0.1524" layer="91"/>
-<pinref part="S3" gate="1" pin="S"/>
-<wire x1="53.34" y1="43.18" x2="53.34" y2="45.72" width="0.1524" layer="91"/>
-<junction x="53.34" y="43.18"/>
-<junction x="45.72" y="43.18"/>
-<pinref part="S1" gate="1" pin="S"/>
-<wire x1="38.1" y1="45.72" x2="38.1" y2="43.18" width="0.1524" layer="91"/>
-<junction x="38.1" y="43.18"/>
-</segment>
-</net>
 <net name="N$6" class="0">
 <segment>
 <pinref part="HM-10" gate="G$1" pin="GND"/>
 <wire x1="35.56" y1="-2.54" x2="33.02" y2="-2.54" width="0.1524" layer="91"/>
 <pinref part="J0" gate="G$1" pin="2"/>
 <wire x1="33.02" y1="-2.54" x2="33.02" y2="-12.7" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$14" class="0">
-<segment>
-<pinref part="3.3VREG" gate="G1" pin="IN"/>
-<wire x1="-12.7" y1="45.72" x2="-10.16" y2="45.72" width="0.1524" layer="91"/>
-<wire x1="-12.7" y1="43.18" x2="-12.7" y2="45.72" width="0.1524" layer="91"/>
-<junction x="-15.24" y="43.18"/>
-<wire x1="-15.24" y1="48.26" x2="-15.24" y2="43.18" width="0.1524" layer="91"/>
-<wire x1="-15.24" y1="43.18" x2="-12.7" y2="43.18" width="0.1524" layer="91"/>
-<pinref part="USB1" gate="G$1" pin="1"/>
-<wire x1="-40.64" y1="22.86" x2="-40.64" y2="43.18" width="0.1524" layer="91"/>
-<wire x1="-40.64" y1="43.18" x2="-15.24" y2="43.18" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$23" class="0">
