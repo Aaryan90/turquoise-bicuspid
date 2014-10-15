@@ -2,11 +2,14 @@ package com.jareddlc.turquoisebicuspid;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
@@ -60,6 +63,7 @@ public class SettingsActivity extends Activity {
     	// private static objects
     	private static Handler mHandler;
     	private static Bluetooth bluetooth;
+    	private static BluetoothLeService bluetoothLeService;
 
 		@SuppressLint("HandlerLeak")
 		public void onCreate(Bundle savedInstanceState) {
@@ -103,7 +107,27 @@ public class SettingsActivity extends Activity {
 			};
             
             // initialize Bluetooth
-            bluetooth = new Bluetooth(mHandler);
+			bluetooth = new Bluetooth(mHandler);
+            Log.d(LOG_TAG, "about to load BluetoothLeService");
+            getActivity().startService(new Intent(getActivity(),BluetoothLeService.class));
+            BluetoothLeService.init(mHandler);
+            
+            /*final ServiceConnection mServiceConnection = new ServiceConnection() {
+            	
+                @Override
+                public void onServiceConnected(ComponentName componentName, IBinder service) {
+                	Log.d(LOG_TAG, "LocalBinder");
+                	bluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
+                    // Automatically connects to the device upon successful start-up initialization.
+                    bluetoothLeService.connectBLE();
+                    Log.d(LOG_TAG, "connectBLE");
+                }
+
+                @Override
+                public void onServiceDisconnected(ComponentName componentName) {
+                	bluetoothLeService = null;
+				}
+            };*/
             
             // UI listeners
             pref_connectivity_paired = (ListPreference) getPreferenceManager().findPreference("pref_connectivity_paired");
