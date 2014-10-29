@@ -108,16 +108,15 @@ public class SettingsActivity extends Activity {
             
             // initialize Bluetooth
 			bluetooth = new Bluetooth(mHandler);
-            Log.d(LOG_TAG, "about to load BluetoothLeService");
-            getActivity().startService(new Intent(getActivity(),BluetoothLeService.class));
-            BluetoothLeService.init(mHandler);
             
-            /*final ServiceConnection mServiceConnection = new ServiceConnection() {
+            final ServiceConnection mServiceConnection = new ServiceConnection() {
             	
                 @Override
                 public void onServiceConnected(ComponentName componentName, IBinder service) {
                 	Log.d(LOG_TAG, "LocalBinder");
+                	Log.d(LOG_TAG, "about to load BluetoothLeService");
                 	bluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
+                	bluetoothLeService.init(mHandler);
                     // Automatically connects to the device upon successful start-up initialization.
                     bluetoothLeService.connectBLE();
                     Log.d(LOG_TAG, "connectBLE");
@@ -127,7 +126,9 @@ public class SettingsActivity extends Activity {
                 public void onServiceDisconnected(ComponentName componentName) {
                 	bluetoothLeService = null;
 				}
-            };*/
+            };
+            Intent gattServiceIntent = new Intent(getActivity(), BluetoothLeService.class);
+            getActivity().bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
             
             // UI listeners
             pref_connectivity_paired = (ListPreference) getPreferenceManager().findPreference("pref_connectivity_paired");
@@ -146,6 +147,7 @@ public class SettingsActivity extends Activity {
 				    editor.putString("saved_pref_connectivity_paired_value", newValue.toString());
 				    editor.putString("saved_pref_connectivity_paired_entry", entries[index].toString());
 					editor.commit();
+					pref_connectivity_paired.setSummary(entries[index].toString());
 					return true;
 				}
 			});

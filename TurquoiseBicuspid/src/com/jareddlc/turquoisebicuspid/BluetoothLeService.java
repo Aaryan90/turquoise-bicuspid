@@ -36,8 +36,8 @@ public class BluetoothLeService extends Service {
 	public static CharSequence[] pairedEntryValues;
 	private static EnableBluetoothThread enBluetooth;
 	public int mConnectionState = 0;
-	public boolean isEnabled = false;
-	public boolean isConnected = false;
+	public static boolean isEnabled = false;
+	public static boolean isConnected = false;
 	
 	private static final int STATE_DISCONNECTED = 0;
     private static final int STATE_CONNECTING = 1;
@@ -146,24 +146,24 @@ public class BluetoothLeService extends Service {
 		}
 	}
 	
-	public void enableBluetooth() {   
+	public static void enableBluetooth() {   
 		if(!mBluetoothAdapter.isEnabled()) {
-			enBluetooth = new EnableBluetoothThread();
-			enBluetooth.start();
+			//enBluetooth = new EnableBluetoothThread();
+			//enBluetooth.start();
 		}
 	}
 	
-	public void disableBluetooth() {
+	public static void disableBluetooth() {
 		mBluetoothAdapter.disable();
 		isEnabled = false;
 	}
 	
-	public void setDevice(String devMac) {
+	public static void setDevice(String devMac) {
 		deviceMAC = devMac;
 		setPaired();
 	}
 	
-	public void setPaired() {
+	public static void setPaired() {
 		// loop through paired devices
 	    for(BluetoothDevice device : pairedDevices) {
 	        if(device.getAddress().equals(deviceMAC)) {
@@ -217,7 +217,7 @@ public class BluetoothLeService extends Service {
 		}
     }
     
-    public void send(String type, String loop, String time, String repeat, String color) {
+    public static void send(String type, String loop, String time, String repeat, String color) {
 		if(isEnabled) {
 			String send = type+":"+loop+":"+time+":"+repeat+":"+color+":";
 			Log.d(LOG_TAG, "Sending: "+send);
@@ -225,7 +225,7 @@ public class BluetoothLeService extends Service {
 		}
 	}
     
-    public void disconnectDevice() {
+    public static void disconnectDevice() {
 		if(isConnected) {
 			//TODO: disconnect
 		}
