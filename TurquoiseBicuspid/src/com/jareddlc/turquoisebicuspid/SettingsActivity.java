@@ -3,6 +3,7 @@ package com.jareddlc.turquoisebicuspid;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -115,7 +116,7 @@ public class SettingsActivity extends Activity {
                 public void onServiceConnected(ComponentName componentName, IBinder service) {
                 	Log.d(LOG_TAG, "LocalBinder");
                 	Log.d(LOG_TAG, "about to load BluetoothLeService");
-                	bluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
+                	bluetoothLeService = ((BluetoothLeService.LocalBinder)service).getService();
                 	bluetoothLeService.init(mHandler);
                     // Automatically connects to the device upon successful start-up initialization.
                     bluetoothLeService.connectBLE();
@@ -128,7 +129,7 @@ public class SettingsActivity extends Activity {
 				}
             };
             Intent gattServiceIntent = new Intent(getActivity(), BluetoothLeService.class);
-            getActivity().bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+			getActivity().bindService(gattServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
             
             // UI listeners
             pref_connectivity_paired = (ListPreference) getPreferenceManager().findPreference("pref_connectivity_paired");

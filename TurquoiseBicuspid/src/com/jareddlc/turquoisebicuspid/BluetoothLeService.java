@@ -116,6 +116,7 @@ public class BluetoothLeService extends Service {
 	
 	@Override
 	public IBinder onBind(Intent intent) {
+		Log.d(LOG_TAG, "BluetoothLe onBind.");
 		return mBinder;
 	}
 	
