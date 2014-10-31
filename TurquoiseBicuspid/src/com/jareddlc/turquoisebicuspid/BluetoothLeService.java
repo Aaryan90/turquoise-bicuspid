@@ -92,22 +92,6 @@ public class BluetoothLeService extends Service {
         }
     };
 	
-	public BluetoothLeService(Handler mHndlr) {
-		Log.d(LOG_TAG, "Initializing BluetoothLe");
-		mHandler = mHndlr;
-		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-		if(mBluetoothAdapter == null) {
-			Log.d(LOG_TAG, "Bluetooth not supported.");
-		}
-		if(mBluetoothAdapter.isEnabled()) {
-		    isEnabled = true;
-		}
-		else {
-			Log.d(LOG_TAG, "Bluetooth is not enabled.");
-			isEnabled = false;
-		}
-	}
-	
 	public class LocalBinder extends Binder {
         BluetoothLeService getService() {
             return BluetoothLeService.this;
