@@ -11,7 +11,10 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattService;
+import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Bundle;
@@ -29,12 +32,14 @@ public class BluetoothLeService extends Service {
 	private static String deviceMAC;
 	private static UUID mDeviceUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 	private static Set<BluetoothDevice> pairedDevices;
+	private static BluetoothManager mBluetoothManager;
 	private static BluetoothAdapter mBluetoothAdapter;
 	private static BluetoothDevice mBluetoothDevice;
+	private String mBluetoothDeviceAddress;
 	private static BluetoothGatt mBluetoothGatt;
+	private static EnableBluetoothThread eBluetooth;
 	public static CharSequence[] pairedEntries;
 	public static CharSequence[] pairedEntryValues;
-	private static EnableBluetoothThread enBluetooth;
 	public int mConnectionState = 0;
 	public static boolean isEnabled = false;
 	public static boolean isConnected = false;
@@ -42,6 +47,7 @@ public class BluetoothLeService extends Service {
 	private static final int STATE_DISCONNECTED = 0;
     private static final int STATE_CONNECTING = 1;
     private static final int STATE_CONNECTED = 2;
+    private static final int REQUEST_ENABLE_BT = 1;
     
     public final static String ACTION_GATT_CONNECTED = "ACTION_GATT_CONNECTED";
     public final static String ACTION_GATT_DISCONNECTED = "ACTION_GATT_DISCONNECTED";
@@ -54,6 +60,7 @@ public class BluetoothLeService extends Service {
     private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+        	Log.d(LOG_TAG, "BluetoothLe onConnectionStateChange: "+status);
             if(newState == BluetoothProfile.STATE_CONNECTED) {
             	Log.d(LOG_TAG, "BluetoothLe Connected to GATT: "+status);
             	mConnectionState = STATE_CONNECTED;
@@ -91,6 +98,25 @@ public class BluetoothLeService extends Service {
             broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
         }
     };
+    
+    private void broadcastUpdate(final String action) {
+        final Intent intent = new Intent(action);
+        sendBroadcast(intent);
+    }
+	
+	private void broadcastUpdate(final String action, final BluetoothGattCharacteristic characteristic) {
+		final Intent intent = new Intent(action);
+		// For all other profiles, writes the data formatted in HEX.
+        final byte[] data = characteristic.getValue();
+        if(data != null && data.length > 0) {
+            final StringBuilder stringBuilder = new StringBuilder(data.length);
+	        for(byte byteChar : data) {
+	        	stringBuilder.append(String.format("%02X ", byteChar));
+	        }   
+	        intent.putExtra(EXTRA_DATA, new String(data) + "\n" + stringBuilder.toString());
+        }
+        sendBroadcast(intent);
+	}
 	
 	public class LocalBinder extends Binder {
         BluetoothLeService getService() {
@@ -106,39 +132,126 @@ public class BluetoothLeService extends Service {
 	
 	@Override
     public boolean onUnbind(Intent intent) {
-		if(mBluetoothGatt != null) {
-			mBluetoothGatt.close();
-	        mBluetoothGatt = null;
-        }
+		close();
         return super.onUnbind(intent);
     }
 	
 	private final IBinder mBinder = new LocalBinder();
 	
-	public static void init(Handler mHndlr) {
-		Log.d(LOG_TAG, "Initializing BluetoothLe");
+	public boolean initialize() {
+		Log.d(LOG_TAG, "BLE Initialize.");
+        if(mBluetoothManager == null) {
+        	Log.d(LOG_TAG, "Initialize BluetoothManager.");
+        	mBluetoothManager = (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
+            if(mBluetoothManager == null) {
+            	Log.e(LOG_TAG, "Unable to initialize BluetoothManager.");
+                return false;
+            }
+        }        
+
+        mBluetoothAdapter = mBluetoothManager.getAdapter();
+        if(mBluetoothAdapter == null) {
+            Log.e(LOG_TAG, "Unable to obtain a BluetoothAdapter.");
+            return false;
+        }
+        return true;
+    }
+	
+    public boolean connect(final String address) {
+    	Log.d(LOG_TAG, "BLE connect: "+address);
+        if(mBluetoothAdapter == null || address == null) {
+	        Log.d(LOG_TAG, "BluetoothAdapter not initialized or unspecified address.");
+	        return false;
+        }
+
+        if(mBluetoothDeviceAddress != null && address.equals(mBluetoothDeviceAddress) && mBluetoothGatt != null) {
+            Log.d(LOG_TAG, "Trying to use an existing mBluetoothGatt for connection.");
+            if(mBluetoothGatt.connect()) {
+                mConnectionState = STATE_CONNECTING;
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+        if (device == null) {
+            Log.d(LOG_TAG, "Device not found.  Unable to connect.");
+            return false;
+        }
+        // We want to directly connect to the device, so we are setting the autoConnect parameter to false.
+        mBluetoothGatt = device.connectGatt(this, false, mGattCallback);
+        Log.d(LOG_TAG, "Trying to create a new connection.");
+        mBluetoothDeviceAddress = address;
+        mConnectionState = STATE_CONNECTING;
+        return true;
+    }
+    
+    public void disconnect() {
+    	Log.d(LOG_TAG, "BLE disconnect");
+        if(mBluetoothAdapter == null || mBluetoothGatt == null) {
+            Log.d(LOG_TAG, "BluetoothAdapter not initialized");
+            return;
+        }
+        mBluetoothGatt.disconnect();
+    }
+    
+    public void close() {
+    	Log.d(LOG_TAG, "BLE close");
+        if(mBluetoothGatt == null) {
+            return;
+        }
+        mBluetoothGatt.close();
+        mBluetoothGatt = null;
+    }
+    
+    public void readCharacteristic(BluetoothGattCharacteristic characteristic) {
+        if(mBluetoothAdapter == null || mBluetoothGatt == null) {
+            Log.w(LOG_TAG, "BluetoothAdapter not initialized");
+            return;
+        }
+        mBluetoothGatt.readCharacteristic(characteristic);
+    }
+    
+    public void setCharacteristicNotification(BluetoothGattCharacteristic characteristic, boolean enabled) {
+		if(mBluetoothAdapter == null || mBluetoothGatt == null) {
+			Log.w(LOG_TAG, "BluetoothAdapter not initialized");
+			return;
+		}
+		mBluetoothGatt.setCharacteristicNotification(characteristic, enabled);
+	}
+    
+    public List<BluetoothGattService> getSupportedGattServices() {
+        if(mBluetoothGatt == null) {
+        	return null;
+        }
+        return mBluetoothGatt.getServices();
+    }
+    
+    
+    /*****/
+    
+    public void setHandler(Handler mHndlr) {
+    	Log.d(LOG_TAG, "Setting handler");
 		mHandler = mHndlr;
-		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-		if(mBluetoothAdapter == null) {
-			Log.d(LOG_TAG, "Bluetooth not supported.");
-		}
-		if(mBluetoothAdapter.isEnabled()) {
-		    //isEnabled = true;
-		}
-		else {
-			Log.d(LOG_TAG, "Bluetooth is not enabled.");
-			//isEnabled = false;
-		}
-	}
+    }
 	
-	public static void enableBluetooth() {   
+	public void enableBluetooth() {
 		if(!mBluetoothAdapter.isEnabled()) {
-			//enBluetooth = new EnableBluetoothThread();
-			//enBluetooth.start();
+			/*Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+			enableBtIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(enableBtIntent);
+			startActivityForResult(enableBtIntent);*/
+			//mBluetoothAdapter.enable();
+			eBluetooth = new EnableBluetoothThread();
+			eBluetooth.start();
 		}
 	}
 	
-	public static void disableBluetooth() {
+	
+	
+	public void disableBluetooth() {
 		mBluetoothAdapter.disable();
 		isEnabled = false;
 	}
@@ -158,7 +271,7 @@ public class BluetoothLeService extends Service {
 	    }
 	}
 	
-	public void getPaired() {
+	public static void getPaired() {
 		if(isEnabled) {			
 			pairedDevices = mBluetoothAdapter.getBondedDevices();
 			if(pairedDevices.size() > 0) {
@@ -192,7 +305,7 @@ public class BluetoothLeService extends Service {
 		}
     }
 
-    public CharSequence[] getEntryValues() {  	
+    public CharSequence[] getEntryValues() {
     	if(pairedEntryValues.length > 0) {
 			return pairedEntryValues;
 		}
@@ -202,72 +315,9 @@ public class BluetoothLeService extends Service {
 		}
     }
     
-    public static void send(String type, String loop, String time, String repeat, String color) {
-		if(isEnabled) {
-			String send = type+":"+loop+":"+time+":"+repeat+":"+color+":";
-			Log.d(LOG_TAG, "Sending: "+send);
-			//TODO: send data
-		}
-	}
-    
-    public static void disconnectDevice() {
-		if(isConnected) {
-			//TODO: disconnect
-		}
-	}
-	
-	public void connectDevice() {
-		if(isEnabled) {
-			//TODO: connect
-		}
-		else {
-			Log.d(LOG_TAG, "BLE Not enabled");
-		}
-	}
-	
-	public boolean connectBLE() {
-		Log.d(LOG_TAG, "BLE Not enabled");
-		
-		if(mBluetoothDevice == null) {
-			Log.d(LOG_TAG, "Device not found.  Unable to connect.");
-	        return false;
-        }
-		
-		mBluetoothGatt = mBluetoothDevice.connectGatt(this, false, mGattCallback);
-        Log.d(LOG_TAG, "Trying to create a new connection: "+mBluetoothDevice.getName()+":"+mBluetoothDevice.getAddress());
-        mConnectionState = STATE_CONNECTING;
-        return true;
-	}
-	
-	public void disconnectBLE() {
-        if(mBluetoothAdapter == null || mBluetoothGatt == null) {
-            Log.w(LOG_TAG, "BluetoothAdapter not initialized");
-            return;
-        }
-        mBluetoothGatt.disconnect();
-    }
-	
-	private void broadcastUpdate(final String action) {
-        final Intent intent = new Intent(action);
-        sendBroadcast(intent);
-    }
-	
-	private void broadcastUpdate(final String action, final BluetoothGattCharacteristic characteristic) {
-		final Intent intent = new Intent(action);
-		// For all other profiles, writes the data formatted in HEX.
-        final byte[] data = characteristic.getValue();
-        if(data != null && data.length > 0) {
-            final StringBuilder stringBuilder = new StringBuilder(data.length);
-	        for(byte byteChar : data) {
-	        	stringBuilder.append(String.format("%02X ", byteChar));
-	        }   
-	        intent.putExtra(EXTRA_DATA, new String(data) + "\n" + stringBuilder.toString());
-        }
-        sendBroadcast(intent);
-	}
-	
-	private class EnableBluetoothThread extends Thread {
+    private class EnableBluetoothThread extends Thread {		
 		public void run() {
+			Log.d(LOG_TAG, "Enabling Bluetooth");
 			mBluetoothAdapter.enable();
 			while(!mBluetoothAdapter.isEnabled()) {
                 try
@@ -287,6 +337,7 @@ public class BluetoothLeService extends Service {
             b.putString("bluetooth", "isEnabled");
             msg.setData(b);
             mHandler.sendMessage(msg);
+			Log.d(LOG_TAG, "Enabled");
 		}
 	}
 }

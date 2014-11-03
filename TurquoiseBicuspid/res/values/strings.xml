@@ -33,5 +33,10 @@
     <string name="pref_notification_color">Notification Color</string>
     <string name="pref_notification_color_summary">Select a color</string>
     <string name="pref_clear">Clear</string>
-    <string name="pref_clear_summary">Click to clear notification</string>  
+    <string name="pref_clear_summary">Click to clear notification</string>
+    <string name="pref_test">Test</string>
+    <string name="pref_test_summary">Test Button</string>
+    <string name="scan_title">Device Scan</string>
+    <string name="scan_not_supported">BLE is not supported</string>
+    <string name="scan_no_bluetooth">Bluetooth is not supported</string>  
 </resources>

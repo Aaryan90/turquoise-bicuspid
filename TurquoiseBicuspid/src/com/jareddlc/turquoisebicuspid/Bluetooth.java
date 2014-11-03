@@ -39,8 +39,6 @@ public class Bluetooth {
 	public boolean isEnabled = false;
 	public boolean isConnected = false;
 	
-	private static BluetoothLeService bluetoothLeService;
-	
 	public Bluetooth(Handler mHndlr) {
 		Log.d(LOG_TAG, "Initializing Bluetooth");
 		mHandler = mHndlr;

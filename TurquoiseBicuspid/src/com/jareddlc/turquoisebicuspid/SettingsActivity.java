@@ -49,6 +49,7 @@ public class SettingsActivity extends Activity {
     	private static CheckBoxPreference pref_service;
     	private static ListPreference pref_connectivity_paired;
     	private static Preference pref_clear;
+    	private static Preference pref_test;
     	private static Preference pref_sms;
     	private static ListPreference pref_sms_type;
     	private static ListPreference pref_sms_time;
@@ -65,6 +66,9 @@ public class SettingsActivity extends Activity {
     	private static Handler mHandler;
     	private static Bluetooth bluetooth;
     	private static BluetoothLeService bluetoothLeService;
+    	
+    	private String mDeviceName;
+        private String mDeviceAddress;
 
 		@SuppressLint("HandlerLeak")
 		public void onCreate(Bundle savedInstanceState) {
@@ -88,7 +92,7 @@ public class SettingsActivity extends Activity {
 						Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
 						
 						SettingsFragment.this.restorePreferences(sPrefs);				
-						pref_connectivity_bluetooth.setChecked(true);
+						//pref_connectivity_bluetooth.setChecked(true);
 						pref_connectivity_paired.setEnabled(true);
 					}
 					if(bluetoothMsg.equals("isConnected")) {
@@ -108,19 +112,20 @@ public class SettingsActivity extends Activity {
 			};
             
             // initialize Bluetooth
-			bluetooth = new Bluetooth(mHandler);
+			//bluetooth = new Bluetooth(mHandler);
             
             final ServiceConnection mServiceConnection = new ServiceConnection() {
             	
                 @Override
                 public void onServiceConnected(ComponentName componentName, IBinder service) {
-                	Log.d(LOG_TAG, "LocalBinder");
                 	Log.d(LOG_TAG, "about to load BluetoothLeService");
                 	bluetoothLeService = ((BluetoothLeService.LocalBinder)service).getService();
-                	bluetoothLeService.init(mHandler);
+                    if(!bluetoothLeService.initialize()) {
+                        Log.e(LOG_TAG, "Unable to initialize Bluetooth");
+                    }
+                    bluetoothLeService.setHandler(mHandler);
                     // Automatically connects to the device upon successful start-up initialization.
-                    bluetoothLeService.connectBLE();
-                    Log.d(LOG_TAG, "connectBLE");
+                	bluetoothLeService.connect(mDeviceAddress);
                 }
 
                 @Override
@@ -129,7 +134,7 @@ public class SettingsActivity extends Activity {
 				}
             };
             Intent gattServiceIntent = new Intent(getActivity(), BluetoothLeService.class);
-			getActivity().bindService(gattServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
+            getActivity().bindService(gattServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
             
             // UI listeners
             pref_connectivity_paired = (ListPreference) getPreferenceManager().findPreference("pref_connectivity_paired");
@@ -142,7 +147,8 @@ public class SettingsActivity extends Activity {
             pref_connectivity_paired.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 				@Override
 				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					bluetooth.setDevice(newValue.toString());
+					//bluetooth.setDevice(newValue.toString());
+					BluetoothLeService.setDevice(newValue.toString());
 					int index = pref_connectivity_paired.findIndexOfValue(newValue.toString());
 				    CharSequence[] entries = pref_connectivity_paired.getEntries();
 				    editor.putString("saved_pref_connectivity_paired_value", newValue.toString());
@@ -158,15 +164,17 @@ public class SettingsActivity extends Activity {
 				@Override
 				public boolean onPreferenceChange(Preference preference, Object newValue) {
 					if((Boolean)newValue) {
-						bluetooth.enableBluetooth();
+						//bluetooth.enableBluetooth();
+						pref_connectivity_paired.setEnabled(false);
+						bluetoothLeService.enableBluetooth();
 						CharSequence text = "Enabling...";
 						Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
-						pref_connectivity_paired.setEnabled(false);
 						editor.putBoolean("saved_pref_connectivity_bluetooth", true);
 						editor.commit();
 					}
 					else {
-						bluetooth.disableBluetooth();
+						//bluetooth.disableBluetooth();
+						bluetoothLeService.disableBluetooth();
 						editor.putBoolean("saved_pref_connectivity_bluetooth", false);
 						editor.commit();
 					}
@@ -198,6 +206,16 @@ public class SettingsActivity extends Activity {
 				@Override
 				public boolean onPreferenceClick(Preference preference) {
 					bluetooth.send("blink", "3", "50", "-1", "ffffff");
+					return true;
+				}
+			});
+            
+            pref_test = (Preference) getPreferenceManager().findPreference("pref_test");
+            pref_test.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {		
+				@Override
+				public boolean onPreferenceClick(Preference preference) {
+					bluetoothLeService.enableBluetooth();
+					
 					return true;
 				}
 			});
@@ -361,7 +379,7 @@ public class SettingsActivity extends Activity {
 			});
             
             // restore preferences
-            if(bluetooth.isEnabled) {
+            /*if(bluetooth.isEnabled) {
             	pref_connectivity_bluetooth.setChecked(true);
             	editor.putBoolean("saved_pref_connectivity_bluetooth", true);
 				editor.commit();
@@ -374,7 +392,7 @@ public class SettingsActivity extends Activity {
             	pref_connectivity_bluetooth.setChecked(false);
             	editor.putBoolean("saved_pref_connectivity_bluetooth", false);
 				editor.commit();
-            }
+            }*/
         }
 		
 		public void notifyService() {
@@ -385,11 +403,13 @@ public class SettingsActivity extends Activity {
 		
 		public void restorePreferences(SavedPreferences sPrefs) {
 			Log.d(LOG_TAG, "Restore paired device: "+sPrefs.saved_pref_connectivity_paired_value+":"+sPrefs.saved_pref_connectivity_paired_entry);
-			bluetooth.getPaired();
-			bluetooth.setDevice(sPrefs.saved_pref_connectivity_paired_value);
+			//bluetooth.getPaired();
+			//bluetooth.setDevice(sPrefs.saved_pref_connectivity_paired_value);
+			//BluetoothLeService.getPaired();
+			//BluetoothLeService.setDevice(sPrefs.saved_pref_connectivity_paired_value);
 			pref_connectivity_paired.setSummary(sPrefs.saved_pref_connectivity_paired_entry);
-			pref_connectivity_paired.setEntries(bluetooth.getEntries());
-            pref_connectivity_paired.setEntryValues(bluetooth.getEntryValues());
+			//pref_connectivity_paired.setEntries(bluetooth.getEntries());
+            //pref_connectivity_paired.setEntryValues(bluetooth.getEntryValues());
 		}
      }
 }
