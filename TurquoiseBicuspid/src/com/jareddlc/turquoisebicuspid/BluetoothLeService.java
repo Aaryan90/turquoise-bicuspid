@@ -154,6 +154,13 @@ public class BluetoothLeService extends Service {
             Log.e(LOG_TAG, "Unable to obtain a BluetoothAdapter.");
             return false;
         }
+		if(mBluetoothAdapter.isEnabled()) {
+		    isEnabled = true;
+		}
+		else {
+			Log.d(LOG_TAG, "Bluetooth is not enabled.");
+			isEnabled = false;
+		}
         return true;
     }
 	
@@ -247,6 +254,9 @@ public class BluetoothLeService extends Service {
 			eBluetooth = new EnableBluetoothThread();
 			eBluetooth.start();
 		}
+		else {
+			Log.d(LOG_TAG, "enableBluetooth called when BT enabled");
+		}
 	}
 	
 	
@@ -263,12 +273,18 @@ public class BluetoothLeService extends Service {
 	
 	public static void setPaired() {
 		// loop through paired devices
-	    for(BluetoothDevice device : pairedDevices) {
-	        if(device.getAddress().equals(deviceMAC)) {
-	        	Log.d(LOG_TAG, "Set device: "+device.getName()+":"+device.getAddress());
-	        	mBluetoothDevice = device;
-	        }
-	    }
+		if(pairedDevices != null) {
+			for(BluetoothDevice device : pairedDevices) {
+		        if(device.getAddress().equals(deviceMAC)) {
+		        	Log.d(LOG_TAG, "Set device: "+device.getName()+":"+device.getAddress());
+		        	mBluetoothDevice = device;
+		        }
+		    }
+		}
+		else {
+			Log.d(LOG_TAG, "setPaired with empty pairedDevices");
+		}
+	    
 	}
 	
 	public static void getPaired() {
@@ -295,7 +311,7 @@ public class BluetoothLeService extends Service {
 		}
 	}
 	
-	public CharSequence[] getEntries() {
+	public static CharSequence[] getEntries() {
 		if(pairedEntries.length > 0) {
 			return pairedEntries;
 		}
@@ -305,7 +321,7 @@ public class BluetoothLeService extends Service {
 		}
     }
 
-    public CharSequence[] getEntryValues() {
+    public static CharSequence[] getEntryValues() {
     	if(pairedEntryValues.length > 0) {
 			return pairedEntryValues;
 		}

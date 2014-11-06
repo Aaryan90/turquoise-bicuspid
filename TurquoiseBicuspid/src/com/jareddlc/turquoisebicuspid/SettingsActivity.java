@@ -123,7 +123,24 @@ public class SettingsActivity extends Activity {
                     if(!bluetoothLeService.initialize()) {
                         Log.e(LOG_TAG, "Unable to initialize Bluetooth");
                     }
+
                     bluetoothLeService.setHandler(mHandler);
+                    
+                    if(BluetoothLeService.isEnabled) {
+                    	pref_connectivity_bluetooth.setChecked(true);
+                    	editor.putBoolean("saved_pref_connectivity_bluetooth", true);
+        				editor.commit();
+        				SettingsFragment.this.restorePreferences(sPrefs);
+                    	//if(!bluetooth.isConnected) {
+                    	if(!BluetoothLeService.isConnected) {
+                    		pref_service.setChecked(false);
+                    	}
+                    }
+                    else {
+                    	pref_connectivity_bluetooth.setChecked(false);
+                    	editor.putBoolean("saved_pref_connectivity_bluetooth", false);
+        				editor.commit();
+                    }
                     // Automatically connects to the device upon successful start-up initialization.
                 	bluetoothLeService.connect(mDeviceAddress);
                 }
@@ -141,6 +158,9 @@ public class SettingsActivity extends Activity {
             pref_connectivity_paired.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {		
 				@Override
 				public boolean onPreferenceClick(Preference preference) {
+					BluetoothLeService.getPaired();
+					pref_connectivity_paired.setEntries(BluetoothLeService.getEntries());
+		            pref_connectivity_paired.setEntryValues(BluetoothLeService.getEntryValues());
 					return true;
 				}
 			});
@@ -377,14 +397,15 @@ public class SettingsActivity extends Activity {
 					return true;
 				}
 			});
-            
+                      
             // restore preferences
             /*if(bluetooth.isEnabled) {
             	pref_connectivity_bluetooth.setChecked(true);
             	editor.putBoolean("saved_pref_connectivity_bluetooth", true);
 				editor.commit();
             	this.restorePreferences(sPrefs);
-            	if(!bluetooth.isConnected) {
+            	//if(!bluetooth.isConnected) {
+            	if(!BluetoothLeService.isConnected) {
             		pref_service.setChecked(false);
             	}
             }
@@ -405,11 +426,13 @@ public class SettingsActivity extends Activity {
 			Log.d(LOG_TAG, "Restore paired device: "+sPrefs.saved_pref_connectivity_paired_value+":"+sPrefs.saved_pref_connectivity_paired_entry);
 			//bluetooth.getPaired();
 			//bluetooth.setDevice(sPrefs.saved_pref_connectivity_paired_value);
-			//BluetoothLeService.getPaired();
-			//BluetoothLeService.setDevice(sPrefs.saved_pref_connectivity_paired_value);
+			BluetoothLeService.getPaired();
+			BluetoothLeService.setDevice(sPrefs.saved_pref_connectivity_paired_value);
 			pref_connectivity_paired.setSummary(sPrefs.saved_pref_connectivity_paired_entry);
 			//pref_connectivity_paired.setEntries(bluetooth.getEntries());
             //pref_connectivity_paired.setEntryValues(bluetooth.getEntryValues());
+			pref_connectivity_paired.setEntries(BluetoothLeService.getEntries());
+            pref_connectivity_paired.setEntryValues(BluetoothLeService.getEntryValues());
 		}
      }
 }
