@@ -169,6 +169,7 @@ public class SettingsActivity extends Activity {
 				public boolean onPreferenceChange(Preference preference, Object newValue) {
 					//bluetooth.setDevice(newValue.toString());
 					BluetoothLeService.setDevice(newValue.toString());
+					mDeviceAddress = newValue.toString();
 					int index = pref_connectivity_paired.findIndexOfValue(newValue.toString());
 				    CharSequence[] entries = pref_connectivity_paired.getEntries();
 				    editor.putString("saved_pref_connectivity_paired_value", newValue.toString());
@@ -234,7 +235,7 @@ public class SettingsActivity extends Activity {
             pref_test.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {		
 				@Override
 				public boolean onPreferenceClick(Preference preference) {
-					bluetoothLeService.enableBluetooth();
+					bluetoothLeService.disconnect();
 					
 					return true;
 				}
@@ -428,6 +429,7 @@ public class SettingsActivity extends Activity {
 			//bluetooth.setDevice(sPrefs.saved_pref_connectivity_paired_value);
 			BluetoothLeService.getPaired();
 			BluetoothLeService.setDevice(sPrefs.saved_pref_connectivity_paired_value);
+			mDeviceAddress = sPrefs.saved_pref_connectivity_paired_value;
 			pref_connectivity_paired.setSummary(sPrefs.saved_pref_connectivity_paired_entry);
 			//pref_connectivity_paired.setEntries(bluetooth.getEntries());
             //pref_connectivity_paired.setEntryValues(bluetooth.getEntryValues());

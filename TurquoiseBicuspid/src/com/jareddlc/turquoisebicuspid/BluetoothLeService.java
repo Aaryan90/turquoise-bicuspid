@@ -89,12 +89,14 @@ public class BluetoothLeService extends Service {
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             if(status == BluetoothGatt.GATT_SUCCESS) {
+            	Log.d(LOG_TAG, "BluetoothLe onCharacteristicRead received: "+status);
                 broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
             }
         }
 
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+        	Log.d(LOG_TAG, "BluetoothLe onCharacteristicChanged received: "+characteristic);
             broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
         }
     };
@@ -187,9 +189,9 @@ public class BluetoothLeService extends Service {
             Log.d(LOG_TAG, "Device not found.  Unable to connect.");
             return false;
         }
-        // We want to directly connect to the device, so we are setting the autoConnect parameter to false.
-        mBluetoothGatt = device.connectGatt(this, false, mGattCallback);
-        Log.d(LOG_TAG, "Trying to create a new connection.");
+        // We want to directly connect to the device, so we are setting the autoConnect parameter to true.
+        mBluetoothGatt = device.connectGatt(this, true, mGattCallback);
+        Log.d(LOG_TAG, "Trying to create a new connection to: "+address);
         mBluetoothDeviceAddress = address;
         mConnectionState = STATE_CONNECTING;
         return true;
