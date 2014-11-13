@@ -235,8 +235,8 @@ public class SettingsActivity extends Activity {
             pref_test.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {		
 				@Override
 				public boolean onPreferenceClick(Preference preference) {
-					bluetoothLeService.disconnect();
-					
+					//bluetoothLeService.disconnect();
+					bluetoothLeService.send("blink", "3", "50", "-1", "ffffff");
 					return true;
 				}
 			});

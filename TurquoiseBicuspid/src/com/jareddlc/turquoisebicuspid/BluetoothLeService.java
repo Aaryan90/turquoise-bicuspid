@@ -31,6 +31,7 @@ public class BluetoothLeService extends Service {
 	private static Handler mHandler;
 	private static String deviceMAC;
 	private static UUID mDeviceUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+	public final static UUID UUID_HM_RX_TX = UUID.fromString(BluetoothLeGattAttributes.HM_RX_TX);
 	private static Set<BluetoothDevice> pairedDevices;
 	private static BluetoothManager mBluetoothManager;
 	private static BluetoothAdapter mBluetoothAdapter;
@@ -40,6 +41,7 @@ public class BluetoothLeService extends Service {
 	private static EnableBluetoothThread eBluetooth;
 	public static CharSequence[] pairedEntries;
 	public static CharSequence[] pairedEntryValues;
+	public static BluetoothGattCharacteristic mWriteCharacteristic;
 	public int mConnectionState = 0;
 	public static boolean isEnabled = false;
 	public static boolean isConnected = false;
@@ -61,8 +63,12 @@ public class BluetoothLeService extends Service {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
         	Log.d(LOG_TAG, "BluetoothLe onConnectionStateChange: "+status);
+
             if(newState == BluetoothProfile.STATE_CONNECTED) {
-            	Log.d(LOG_TAG, "BluetoothLe Connected to GATT: "+status);
+            	Log.d(LOG_TAG, "BluetoothLe Connected to GATT: status:"+status+", state: "+newState);
+            	//gatt.getService(UUID_HM_RX_TX);
+            	
+            	
             	mConnectionState = STATE_CONNECTED;
                 broadcastUpdate(ACTION_GATT_CONNECTED);
                 // Attempts to discover services after successful connection.
@@ -77,7 +83,23 @@ public class BluetoothLeService extends Service {
 
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-            if(status == BluetoothGatt.GATT_SUCCESS) {
+        	Log.d(LOG_TAG, "onServicesDiscovered");
+            if(status == BluetoothGatt.GATT_SUCCESS) {	
+            	// Loops through available GATT Services.
+            	for(BluetoothGattService gattService : gatt.getServices()) {
+	            	String uuid = gattService.getUuid().toString();
+	            	Log.d(LOG_TAG, "onServicesDiscovered: uuid: "+uuid);
+	            	// If the service exists for HM 10 Serial, say so.
+	            	if(BluetoothLeGattAttributes.lookup(uuid, "Unknown service") == "HM 10 Serial") { 
+	            		Log.d(LOG_TAG, "onServicesDiscovered: Yes Serial");
+	            	} 
+	            	else { 
+	            		Log.d(LOG_TAG, "onServicesDiscovered: No Serial");
+	            	}
+	            	// get characteristic when UUID matches RX/TX UUID
+	            	mWriteCharacteristic = gattService.getCharacteristic(BluetoothLeService.UUID_HM_RX_TX);
+	            	Log.d(LOG_TAG, "onServicesDiscovered: getCharacteristic: "+mWriteCharacteristic);
+            	}
             	Log.d(LOG_TAG, "BluetoothLe Service discovered: "+status);
                 broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED);
             }
@@ -107,6 +129,7 @@ public class BluetoothLeService extends Service {
     }
 	
 	private void broadcastUpdate(final String action, final BluetoothGattCharacteristic characteristic) {
+		Log.d(LOG_TAG, "BluetoothLe broadcastUpdate received: "+characteristic);
 		final Intent intent = new Intent(action);
 		// For all other profiles, writes the data formatted in HEX.
         final byte[] data = characteristic.getValue();
@@ -231,10 +254,20 @@ public class BluetoothLeService extends Service {
 		mBluetoothGatt.setCharacteristicNotification(characteristic, enabled);
 	}
     
+    public void writeCharacteristic(BluetoothGattCharacteristic characteristic) {
+		if(mBluetoothAdapter == null || mBluetoothGatt == null) {
+			Log.w(LOG_TAG, "BluetoothAdapter not initialized");
+			return;
+		}
+		mBluetoothGatt.writeCharacteristic(characteristic);
+	} 
+    
     public List<BluetoothGattService> getSupportedGattServices() {
         if(mBluetoothGatt == null) {
+        	Log.w(LOG_TAG, "getSupportedGattServices mBluetoothGatt not initialized");
         	return null;
         }
+        Log.d(LOG_TAG, "getSupportedGattServices");
         return mBluetoothGatt.getServices();
     }
     
@@ -332,6 +365,20 @@ public class BluetoothLeService extends Service {
 			return entryValues;
 		}
     }
+    
+    public void send(String type, String loop, String time, String repeat, String color) {
+		if(isEnabled) {
+			String send = type+":"+loop+":"+time+":"+repeat+":"+color+":";
+			Log.d(LOG_TAG, "Sending: "+send);
+			byte[] sendBytes = send.getBytes();
+			mWriteCharacteristic.setValue(sendBytes);
+			writeCharacteristic(mWriteCharacteristic);
+			setCharacteristicNotification(mWriteCharacteristic, true);
+		}
+		else {
+			Log.d(LOG_TAG, "send called without BT enabled");
+		}
+	}
     
     private class EnableBluetoothThread extends Thread {		
 		public void run() {
