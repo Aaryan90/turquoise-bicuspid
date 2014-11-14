@@ -428,9 +428,11 @@ public class SettingsActivity extends Activity {
 			//bluetooth.getPaired();
 			//bluetooth.setDevice(sPrefs.saved_pref_connectivity_paired_value);
 			BluetoothLeService.getPaired();
-			BluetoothLeService.setDevice(sPrefs.saved_pref_connectivity_paired_value);
-			mDeviceAddress = sPrefs.saved_pref_connectivity_paired_value;
-			pref_connectivity_paired.setSummary(sPrefs.saved_pref_connectivity_paired_entry);
+			if(sPrefs.saved_pref_connectivity_paired_value != "DEFAULT") {
+				BluetoothLeService.setDevice(sPrefs.saved_pref_connectivity_paired_value);
+				mDeviceAddress = sPrefs.saved_pref_connectivity_paired_value;
+				pref_connectivity_paired.setSummary(sPrefs.saved_pref_connectivity_paired_entry);
+			}
 			//pref_connectivity_paired.setEntries(bluetooth.getEntries());
             //pref_connectivity_paired.setEntryValues(bluetooth.getEntryValues());
 			pref_connectivity_paired.setEntries(BluetoothLeService.getEntries());
