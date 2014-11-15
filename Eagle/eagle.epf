@@ -348,12 +348,18 @@ UsedLibrary="osram_led.lbr"
 UsedLibrary="C:/Users/Windows/Documents/eagle/SparkFun.lbr"
 
 [Win_1]
+Type="Control Panel"
+Loc="200 200 799 599"
+State=1
+Number=0
+
+[Win_2]
 Type="Schematic Editor"
 Loc="652 321 1251 720"
-State=3
-Number=1
+State=0
+Number=2
 File="TurquoiseBicuspid.sch"
-View="-65.3464 -28.8389 114.959 112.286"
+View="-47.3659 -28.9611 77.8459 63.7591"
 WireWidths=" 0 0.3048 0.6096 0.8128 1.016 1.27 1.4224 1.6764 1.778 1.9304 2.1844 2.54 3.81 6.4516 0.4064 0.1524"
 PadDiameters=" 0.254 0.3048 0.4064 0.6096 0.8128 1.016 1.27 1.4224 1.6764 1.778 1.9304 2.1844 2.54 3.81 6.4516 0"
 PadDrills=" 0.5 0.6 0.7 0.9 1 1.1 1.2 1.3 1.4 1.5 1.6 2 2.2 2.8 3.2 0.8"
@@ -392,23 +398,16 @@ ArcDirection=0
 AddLevel=2
 PadsSameType=0
 Layer=91
-Views=" 1: -65.3464 -28.8389 114.959 112.286"
 Sheet=1
-
-[Win_2]
-Type="Control Panel"
-Loc="200 200 799 599"
-State=3
-Number=0
 
 [Win_3]
 Type="Board Editor"
 Loc="652 321 1251 720"
 State=1
-Number=2
+Number=1
 File="TurquoiseBicuspid.brd"
-View="-14.9825 -1.54704 67.3856 82.6128"
-WireWidths=" 0 0.3048 0.6096 0.8128 1.016 1.27 1.4224 1.6764 1.778 1.9304 2.1844 2.54 3.81 6.4516 0.4064 0.254"
+View="-1.12 -1.12393 57.12 57.3203"
+WireWidths=" 0 0.254 0.3048 0.6096 0.8128 1.016 1.27 1.4224 1.6764 1.778 1.9304 2.1844 2.54 3.81 6.4516 0.4064"
 PadDiameters=" 0.254 0.3048 0.4064 0.6096 0.8128 1.016 1.27 1.4224 1.6764 1.778 1.9304 2.1844 2.54 3.81 6.4516 0"
 PadDrills=" 0.5 0.6 0.7 0.9 1 1.1 1.2 1.3 1.4 1.5 1.6 2 2.2 2.8 3.2 0.8"
 ViaDiameters=" 0.254 0.3048 0.4064 0.6096 0.8128 1.016 1.27 1.4224 1.6764 1.778 1.9304 2.1844 2.54 3.81 6.4516 0"
@@ -445,7 +444,7 @@ SwapLevel=0
 ArcDirection=0
 AddLevel=2
 PadsSameType=0
-Layer=1
+Layer=16
 
 [Desktop]
 Screen="1920 1080"
