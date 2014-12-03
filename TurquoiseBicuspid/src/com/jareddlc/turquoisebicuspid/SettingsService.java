@@ -26,15 +26,15 @@ public class SettingsService extends Service {
 	private TelephonyManager telephony;
 	private IntentFilter smsFilter;
 	
-	private String pref_sms_type;
-	private String pref_sms_time;
-	private String pref_sms_loop;
-	private String pref_sms_color;
-	private String pref_phone_type;
-	private String pref_phone_time;
-	private String pref_phone_loop;
-	private String pref_phone_color;
-	private String pref_repeat;
+	private String preference_sms_type;
+	private String preference_sms_time;
+	private String preference_sms_loop;
+	private String preference_sms_color;
+	private String preference_phone_type;
+	private String preference_phone_time;
+	private String preference_phone_loop;
+	private String preference_phone_color;
+	private String preference_repeat;
 	
 	private Handler mHandler;
 	private static Bluetooth bluetooth;
@@ -49,16 +49,16 @@ public class SettingsService extends Service {
 		phoneEnabled = value;
 	}
 	
-	public void prefChange(SavedPreferences sPrefs) {
-		pref_sms_type = sPrefs.saved_pref_sms_type_value;
-		pref_sms_time = sPrefs.saved_pref_sms_time_value;
-		pref_sms_loop = sPrefs.saved_pref_sms_loop_value;
-		pref_sms_color = sPrefs.saved_pref_sms_color;
-		pref_phone_type = sPrefs.saved_pref_phone_type_value;
-		pref_phone_time = sPrefs.saved_pref_phone_time_value;
-		pref_phone_loop = sPrefs.saved_pref_phone_loop_value;
-		pref_phone_color = sPrefs.saved_pref_phone_color;
-		pref_repeat = sPrefs.saved_pref_repeat_value;
+	public void setPreferences(SavedPreferences sPrefs) {
+		preference_sms_type = sPrefs.saved_preference_list_sms_type_value;
+		preference_sms_time = sPrefs.saved_preference_list_sms_time_value;
+		preference_sms_loop = sPrefs.saved_preference_list_sms_loop_value;
+		preference_sms_color = sPrefs.saved_preference_color_sms;
+		preference_phone_type = sPrefs.saved_preference_list_phone_type_value;
+		preference_phone_time = sPrefs.saved_preference_list_phone_time_value;
+		preference_phone_loop = sPrefs.saved_preference_list_phone_loop_value;
+		preference_phone_color = sPrefs.saved_preference_color_phone;
+		preference_repeat = sPrefs.saved_preference_list_repeat_value;
 	}
 	
 	@SuppressLint("HandlerLeak")
@@ -69,22 +69,22 @@ public class SettingsService extends Service {
 	    
 	    // restore saved preferences
 	    final SavedPreferences sPrefs = new SavedPreferences(this);
-	    pref_sms_type = sPrefs.saved_pref_sms_type_value;
-	    pref_sms_time = sPrefs.saved_pref_sms_time_value;
-		pref_sms_loop = sPrefs.saved_pref_sms_loop_value;
-		pref_sms_color = sPrefs.saved_pref_sms_color;
-		pref_phone_type = sPrefs.saved_pref_phone_type_value;
-	    pref_phone_time = sPrefs.saved_pref_phone_time_value;
-		pref_phone_loop = sPrefs.saved_pref_phone_loop_value;
-		pref_phone_color = sPrefs.saved_pref_phone_color;
-		pref_repeat = sPrefs.saved_pref_repeat_value;
+	    preference_sms_type = sPrefs.saved_preference_list_sms_type_value;
+		preference_sms_time = sPrefs.saved_preference_list_sms_time_value;
+		preference_sms_loop = sPrefs.saved_preference_list_sms_loop_value;
+		preference_sms_color = sPrefs.saved_preference_color_sms;
+		preference_phone_type = sPrefs.saved_preference_list_phone_type_value;
+		preference_phone_time = sPrefs.saved_preference_list_phone_time_value;
+		preference_phone_loop = sPrefs.saved_preference_list_phone_loop_value;
+		preference_phone_color = sPrefs.saved_preference_color_phone;
+		preference_repeat = sPrefs.saved_preference_list_repeat_value;
 	    
 	    // register broadcast events
 	 	LocalBroadcastManager.getInstance(this).registerReceiver(smsReceiver, new IntentFilter("sms"));
 	 	LocalBroadcastManager.getInstance(this).registerReceiver(phoneReceiver, new IntentFilter("phone"));
-	 	LocalBroadcastManager.getInstance(this).registerReceiver(prefReceiver, new IntentFilter("prefChange"));
+	 	LocalBroadcastManager.getInstance(this).registerReceiver(prefReceiver, new IntentFilter("setPreferences"));
 
-	    // setup bluetooth handler
+	    // setup message handler
         mHandler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
@@ -111,7 +111,7 @@ public class SettingsService extends Service {
         
         if(bluetooth.isEnabled) {
         	bluetooth.getPaired();
-			bluetooth.setDevice(sPrefs.saved_pref_connectivity_paired_value);
+			bluetooth.setDevice(sPrefs.saved_preference_list_paired_value);
         	bluetooth.connectDevice();
         }
 	    
@@ -162,7 +162,7 @@ public class SettingsService extends Service {
 			String message = intent.getStringExtra("message");
 			String sender = intent.getStringExtra("sender");
 			Log.d(LOG_TAG, "Recieved SMS message: "+sender+" - "+message);
-			bluetooth.send(pref_sms_type, pref_sms_loop, pref_sms_time, pref_repeat, pref_sms_color);
+			bluetooth.send(preference_sms_type, preference_sms_loop, preference_sms_time, preference_repeat, preference_sms_color);
 		}
 	};
 	
@@ -171,7 +171,7 @@ public class SettingsService extends Service {
 		public void onReceive(Context context, Intent intent) {
 			String sender = intent.getStringExtra("sender");
 			Log.d(LOG_TAG, "Recieved PHONE: "+sender);
-			bluetooth.send(pref_phone_type, pref_phone_loop, pref_phone_time, pref_repeat, pref_phone_color);
+			bluetooth.send(preference_phone_type, preference_phone_loop, preference_phone_time, preference_repeat, preference_phone_color);
 		}
 	};
 	
@@ -180,7 +180,7 @@ public class SettingsService extends Service {
 		public void onReceive(Context context, Intent intent) {
 			Log.d(LOG_TAG, "Recieved PREF: ");
 			SavedPreferences sPrefs = new SavedPreferences(context);
-		    prefChange(sPrefs);
+		    setPreferences(sPrefs);
 		}
 	};
 }

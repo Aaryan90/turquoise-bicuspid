@@ -1,6 +1,7 @@
 package com.jareddlc.turquoisebicuspid;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -30,7 +31,6 @@ public class BluetoothLeService extends Service {
 	// private static objects
 	private static Handler mHandler;
 	private static String deviceMAC;
-	private static UUID mDeviceUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 	public final static UUID UUID_HM_RX_TX = UUID.fromString(BluetoothLeGattAttributes.HM_RX_TX);
 	private static Set<BluetoothDevice> pairedDevices;
 	private static BluetoothManager mBluetoothManager;
@@ -49,7 +49,7 @@ public class BluetoothLeService extends Service {
 	private static final int STATE_DISCONNECTED = 0;
     private static final int STATE_CONNECTING = 1;
     private static final int STATE_CONNECTED = 2;
-    private static final int REQUEST_ENABLE_BT = 1;
+    //private static final int REQUEST_ENABLE_BT = 1;
     
     public final static String ACTION_GATT_CONNECTED = "ACTION_GATT_CONNECTED";
     public final static String ACTION_GATT_DISCONNECTED = "ACTION_GATT_DISCONNECTED";
@@ -57,21 +57,18 @@ public class BluetoothLeService extends Service {
     public final static String ACTION_DATA_AVAILABLE = "ACTION_DATA_AVAILABLE";
     public final static String EXTRA_DATA = "EXTRA_DATA";
     
-    // Implements callback methods for GATT events that the app cares about.  For example,
-    // connection change and services discovered.
+    // bluetoothle callback
     private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
         	Log.d(LOG_TAG, "BluetoothLe onConnectionStateChange: "+status);
 
             if(newState == BluetoothProfile.STATE_CONNECTED) {
-            	Log.d(LOG_TAG, "BluetoothLe Connected to GATT: status:"+status+", state: "+newState);
-            	//gatt.getService(UUID_HM_RX_TX);
-            	
+            	Log.d(LOG_TAG, "BluetoothLe Connected to GATT: status:"+status+", state: "+newState);            	
             	
             	mConnectionState = STATE_CONNECTED;
                 broadcastUpdate(ACTION_GATT_CONNECTED);
-                // Attempts to discover services after successful connection.
+                // attempts to discover services after successful connection.
                 mBluetoothGatt.discoverServices();
             } 
             else if(newState == BluetoothProfile.STATE_DISCONNECTED) {
@@ -85,16 +82,16 @@ public class BluetoothLeService extends Service {
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
         	Log.d(LOG_TAG, "onServicesDiscovered");
             if(status == BluetoothGatt.GATT_SUCCESS) {	
-            	// Loops through available GATT Services.
+            	// loops through available GATT Services.
             	for(BluetoothGattService gattService : gatt.getServices()) {
 	            	String uuid = gattService.getUuid().toString();
 	            	Log.d(LOG_TAG, "onServicesDiscovered: uuid: "+uuid);
-	            	// If the service exists for HM 10 Serial, say so.
-	            	if(BluetoothLeGattAttributes.lookup(uuid, "Unknown service") == "HM 10 Serial") { 
-	            		Log.d(LOG_TAG, "onServicesDiscovered: Yes Serial");
+	            	// look for TurquoiseBicuspid
+	            	if(BluetoothLeGattAttributes.lookup(uuid, "Unknown service") == "TurquoiseBicuspid") { 
+	            		Log.d(LOG_TAG, "onServicesDiscovered: Found:TurquoiseBicuspid");
 	            	} 
 	            	else { 
-	            		Log.d(LOG_TAG, "onServicesDiscovered: No Serial");
+	            		Log.d(LOG_TAG, "onServicesDiscovered: NotFound:TurquoiseBicuspid");
 	            	}
 	            	// get characteristic when UUID matches RX/TX UUID
 	            	mWriteCharacteristic = gattService.getCharacteristic(BluetoothLeService.UUID_HM_RX_TX);
@@ -131,7 +128,7 @@ public class BluetoothLeService extends Service {
 	private void broadcastUpdate(final String action, final BluetoothGattCharacteristic characteristic) {
 		Log.d(LOG_TAG, "BluetoothLe broadcastUpdate received: "+characteristic);
 		final Intent intent = new Intent(action);
-		// For all other profiles, writes the data formatted in HEX.
+		// for all other profiles, writes the data formatted in HEX.
         final byte[] data = characteristic.getValue();
         if(data != null && data.length > 0) {
             final StringBuilder stringBuilder = new StringBuilder(data.length);
@@ -212,7 +209,7 @@ public class BluetoothLeService extends Service {
             Log.d(LOG_TAG, "Device not found.  Unable to connect.");
             return false;
         }
-        // We want to directly connect to the device, so we are setting the autoConnect parameter to true.
+        // auto connect to the device
         mBluetoothGatt = device.connectGatt(this, true, mGattCallback);
         Log.d(LOG_TAG, "Trying to create a new connection to: "+address);
         mBluetoothDeviceAddress = address;
@@ -283,9 +280,8 @@ public class BluetoothLeService extends Service {
 		if(!mBluetoothAdapter.isEnabled()) {
 			/*Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
 			enableBtIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			startActivity(enableBtIntent);
-			startActivityForResult(enableBtIntent);*/
-			//mBluetoothAdapter.enable();
+			startActivity(enableBtIntent);*/
+			//startActivityForResult(enableBtIntent);
 			eBluetooth = new EnableBluetoothThread();
 			eBluetooth.start();
 		}
@@ -382,11 +378,19 @@ public class BluetoothLeService extends Service {
     
     private class EnableBluetoothThread extends Thread {		
 		public void run() {
-			Log.d(LOG_TAG, "Enabling Bluetooth");
+			boolean bluetoothEnabled = true;
+		    long timeStart = Calendar.getInstance().getTimeInMillis();
+			Log.d(LOG_TAG, "Enabling Bluetooth: "+timeStart);
+
 			mBluetoothAdapter.enable();
 			while(!mBluetoothAdapter.isEnabled()) {
                 try
                 {
+                	long timeDiff =  Calendar.getInstance().getTimeInMillis() - timeStart;
+                	if(timeDiff >= 5000) {
+                		bluetoothEnabled = false;
+                		break;
+                	}
                     Thread.sleep(100L);
                 }
                 catch (InterruptedException ie)
@@ -396,13 +400,24 @@ public class BluetoothLeService extends Service {
                     return;
                 }
             }
-			isEnabled = true;
-			Message msg = mHandler.obtainMessage();
-            Bundle b = new Bundle();
-            b.putString("bluetooth", "isEnabled");
-            msg.setData(b);
-            mHandler.sendMessage(msg);
-			Log.d(LOG_TAG, "Enabled");
+			if(bluetoothEnabled) {
+				isEnabled = true;
+				Message msg = mHandler.obtainMessage();
+	            Bundle b = new Bundle();
+	            b.putString("bluetooth", "isEnabled");
+	            msg.setData(b);
+	            mHandler.sendMessage(msg);
+				Log.d(LOG_TAG, "Enabled");
+			}
+			else {
+				Message msg = mHandler.obtainMessage();
+	            Bundle b = new Bundle();
+	            b.putString("bluetooth", "isEnabledFailed");
+	            msg.setData(b);
+	            mHandler.sendMessage(msg);
+				Log.d(LOG_TAG, "Enabling Bluetooth timed out");
+			}
+			
 		}
 	}
 }
