@@ -13,6 +13,13 @@
 	        android:entries="@array/preference_list_paired_entries"
 	        android:entryValues="@array/preference_list_paired_values"
 	        android:defaultValue="@string/preference_list_paired_default" />
+        <CheckBoxPreference
+	        android:dependency="preference_switch_bluetooth"
+	        android:key="preference_checkbox_connect"
+	        android:title="@string/preference_checkbox_connect_title"
+	        android:summaryOn="@string/preference_checkbox_connect_on"
+	        android:summaryOff="@string/preference_checkbox_connect_off"
+	        android:defaultValue="false" />
     </PreferenceCategory>
     
 	<PreferenceCategory android:title="@string/preference_category_device_title" >

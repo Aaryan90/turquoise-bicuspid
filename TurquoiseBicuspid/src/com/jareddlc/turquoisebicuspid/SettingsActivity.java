@@ -45,6 +45,7 @@ public class SettingsActivity extends Activity {
     	
     	// preferences
     	private static SwitchPreference preference_switch_bluetooth;
+    	private static CheckBoxPreference preference_checkbox_connect;
     	private static CheckBoxPreference preference_checkbox_service;
     	private static CheckBoxPreference preference_checkbox_sms;
     	private static CheckBoxPreference preference_checkbox_phone;
@@ -102,12 +103,20 @@ public class SettingsActivity extends Activity {
 						Log.d(LOG_TAG, "Bluetooth Connected");
 						CharSequence text = "Bluetooth Connected";
 						Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
+						preference_checkbox_connect.setChecked(true);
 						preference_checkbox_service.setEnabled(true);
+					}
+					if(bluetoothMessage.equals("isDisconnected")) {
+						Log.d(LOG_TAG, "Bluetooth Disconnected");
+						CharSequence text = "Bluetooth Disconnected";
+						Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
+						preference_checkbox_connect.setChecked(false);
 					}
 					if(bluetoothMessage.equals("isConnectedFailed")) {
 						Log.d(LOG_TAG, "Bluetooth Connected Failed");
 						CharSequence text = "Bluetooth Connected failed";
 						Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
+						preference_checkbox_connect.setChecked(false);
 						preference_checkbox_service.setEnabled(true);
 						preference_checkbox_service.setChecked(false);
 					}
@@ -139,7 +148,7 @@ public class SettingsActivity extends Activity {
         				editor.commit();
                     }
                     // Automatically connects to the device upon successful start-up initialization.
-                	bluetoothLeService.connect(mDeviceAddress);
+                	//bluetoothLeService.connect(mDeviceAddress);
                 }
 
                 @Override
@@ -194,8 +203,24 @@ public class SettingsActivity extends Activity {
 					editor.commit();
 					mDeviceAddress = newValue.toString();
 					mDeviceName = entries[index].toString();
+					preference_checkbox_connect.setSummaryOff("Click to connect ("+mDeviceName+")");
 					preference_list_paired.setSummary(entries[index].toString());
 					return true;
+				}
+			});
+            
+            preference_checkbox_connect = (CheckBoxPreference) getPreferenceManager().findPreference("preference_checkbox_connect");
+            preference_checkbox_connect.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					if((Boolean)newValue) {
+						bluetoothLeService.connect(mDeviceAddress);
+						return false;
+					}
+					else {
+						bluetoothLeService.disconnect();
+						return true;
+					}
 				}
 			});
             
@@ -231,7 +256,7 @@ public class SettingsActivity extends Activity {
             preference_test.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {		
 				@Override
 				public boolean onPreferenceClick(Preference preference) {
-					bluetoothLeService.send("blink", "3", "50", "-1", "ffffff");
+					bluetoothLeService.send("blink", "3", "250", "-1", "ffffff");
 					return true;
 				}
 			});
@@ -408,6 +433,7 @@ public class SettingsActivity extends Activity {
 				BluetoothLeService.setDevice(sPrefs.saved_preference_list_paired_value);
 				mDeviceAddress = sPrefs.saved_preference_list_paired_value;
 				preference_list_paired.setSummary(sPrefs.saved_preference_list_paired_entry);
+				preference_checkbox_connect.setSummaryOff("Click to connect ("+sPrefs.saved_preference_list_paired_entry+")");
 			}
 			preference_list_paired.setEntries(BluetoothLeService.getEntries());
             preference_list_paired.setEntryValues(BluetoothLeService.getEntryValues());

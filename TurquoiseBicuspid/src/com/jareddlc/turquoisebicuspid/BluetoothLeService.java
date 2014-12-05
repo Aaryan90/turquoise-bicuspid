@@ -68,6 +68,13 @@ public class BluetoothLeService extends Service {
             	
             	mConnectionState = STATE_CONNECTED;
                 broadcastUpdate(ACTION_GATT_CONNECTED);
+                if(mHandler != null) {
+                	Message msg = mHandler.obtainMessage();
+    	            Bundle b = new Bundle();
+    	            b.putString("bluetooth", "isConnected");
+    	            msg.setData(b);
+    	            mHandler.sendMessage(msg);
+                }
                 // attempts to discover services after successful connection.
                 mBluetoothGatt.discoverServices();
             } 
@@ -75,6 +82,13 @@ public class BluetoothLeService extends Service {
             	Log.d(LOG_TAG, "BluetoothLe Disconnected from GATT");
             	mConnectionState = STATE_DISCONNECTED;              
                 broadcastUpdate(ACTION_GATT_DISCONNECTED);
+                if(mHandler != null) {
+                	Message msg = mHandler.obtainMessage();
+    	            Bundle b = new Bundle();
+    	            b.putString("bluetooth", "isDisconnected");
+    	            msg.setData(b);
+    	            mHandler.sendMessage(msg);
+                }
             }
         }
 
