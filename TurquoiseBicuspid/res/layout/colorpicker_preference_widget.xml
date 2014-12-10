@@ -16,6 +16,5 @@
     <com.jareddlc.turquoisebicuspid.ColorPickerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/colorpicker_preference_widget_box"
-            />
+            android:id="@+id/colorpicker_preference_widget_box"/>
 </FrameLayout>

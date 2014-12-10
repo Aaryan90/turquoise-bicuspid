@@ -1,127 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-	<PreferenceCategory android:title="@string/preference_category_connectivity_title" >
+    <PreferenceCategory android:title="@string/preference_category_connectivity_title" >
         <SwitchPreference
-			android:title="@string/preference_switch_bluetooth_title"
-			android:key="preference_switch_bluetooth"/>
+            android:title="@string/preference_switch_bluetooth_title"
+            android:key="preference_switch_bluetooth"/>
         <ListPreference
             android:dependency="preference_switch_bluetooth"
-	        android:key="preference_list_paired"
-	        android:title="@string/preference_list_paired_title"
-	        android:dialogTitle="@string/preference_list_paired_dialog"
-	        android:summary="@string/preference_list_paired_summary"
-	        android:entries="@array/preference_list_paired_entries"
-	        android:entryValues="@array/preference_list_paired_values"
-	        android:defaultValue="@string/preference_list_paired_default" />
+            android:key="preference_list_paired"
+            android:title="@string/preference_list_paired_title"
+            android:dialogTitle="@string/preference_list_paired_dialog"
+            android:summary="@string/preference_list_paired_summary"
+            android:entries="@array/preference_list_paired_entries"
+            android:entryValues="@array/preference_list_paired_values"
+            android:defaultValue="@string/preference_list_paired_default" />
         <CheckBoxPreference
-	        android:dependency="preference_switch_bluetooth"
-	        android:key="preference_checkbox_connect"
-	        android:title="@string/preference_checkbox_connect_title"
-	        android:summaryOn="@string/preference_checkbox_connect_on"
-	        android:summaryOff="@string/preference_checkbox_connect_off"
-	        android:defaultValue="false" />
+            android:dependency="preference_switch_bluetooth"
+            android:key="preference_checkbox_connect"
+            android:title="@string/preference_checkbox_connect_title"
+            android:summaryOn="@string/preference_checkbox_connect_on"
+            android:summaryOff="@string/preference_checkbox_connect_off"
+            android:defaultValue="false" />
+        <ListPreference
+            android:dependency="preference_switch_bluetooth"
+            android:key="preference_list_scan"
+            android:title="@string/preference_list_scan_title"
+            android:dialogTitle="@string/preference_list_scan_dialog"
+            android:summary="@string/preference_list_scan_summary"
+            android:entries="@array/preference_list_scan_entries"
+            android:entryValues="@array/preference_list_scan_values"
+            android:defaultValue="@string/preference_list_scan_default" />
     </PreferenceCategory>
-    
-	<PreferenceCategory android:title="@string/preference_category_device_title" >
-	    <CheckBoxPreference
-	        android:dependency="preference_list_paired"
-	        android:key="preference_checkbox_service"
-	        android:title="@string/preference_checkbox_service_title"
-	        android:summaryOn="@string/preference_checkbox_service_on"
-	        android:summaryOff="@string/preference_checkbox_service_off"
-	        android:defaultValue="false" />
-	    <Preference 
-	        android:dependency="preference_checkbox_service"
+
+    <PreferenceCategory android:title="@string/preference_category_device_title" >
+        <CheckBoxPreference
+            android:dependency="preference_list_paired"
+            android:key="preference_checkbox_service"
+            android:title="@string/preference_checkbox_service_title"
+            android:summaryOn="@string/preference_checkbox_service_on"
+            android:summaryOff="@string/preference_checkbox_service_off"
+            android:defaultValue="false" />
+        <Preference 
+            android:dependency="preference_checkbox_service"
             android:key="preference_clear"
             android:title="@string/preference_clear_title"
             android:summary="@string/preference_clear_summary"/>
-	    <Preference 
+        <Preference 
             android:key="preference_test"
             android:title="@string/preference_test_title"
             android:summary="@string/preference_test_summary"/>
     </PreferenceCategory>
-    
-	<PreferenceCategory android:title="@string/preference_category_sms_title" >
-	    <CheckBoxPreference
-	        android:dependency="preference_checkbox_service"
-	        android:key="preference_checkbox_sms"
-	        android:title="@string/preference_checkbox_sms_title"
-	        android:summaryOn="@string/preference_checkbox_sms_on"
-	        android:summaryOff="@string/preference_checkbox_sms_off"
-	        android:defaultValue="false" />
-	    <ListPreference
+
+    <PreferenceCategory android:title="@string/preference_category_sms_title" >
+        <CheckBoxPreference
+            android:key="preference_checkbox_sms"
+            android:title="@string/preference_checkbox_sms_title"
+            android:summaryOn="@string/preference_checkbox_sms_on"
+            android:summaryOff="@string/preference_checkbox_sms_off"
+            android:defaultValue="false" />
+        <ListPreference
             android:dependency="preference_checkbox_sms"
-	        android:key="preference_list_sms_type"
-	        android:title="@string/preference_list_type_title"
-	        android:summary="@string/preference_list_type_summary"
-	        android:entries="@array/preference_list_type_entries"
-	        android:entryValues="@array/preference_list_type_values" />
-	    <ListPreference
+            android:key="preference_list_sms_type"
+            android:title="@string/preference_list_type_title"
+            android:summary="@string/preference_list_type_summary"
+            android:entries="@array/preference_list_type_entries"
+            android:entryValues="@array/preference_list_type_values" />
+        <ListPreference
             android:dependency="preference_checkbox_sms"
-	        android:key="preference_list_sms_time"
-	        android:title="@string/preference_list_time_title"
-	        android:summary="@string/preference_list_time_summary"
-	        android:entries="@array/preference_list_time_entries"
-	        android:entryValues="@array/preference_list_time_values" />
-	    <ListPreference
+            android:key="preference_list_sms_time"
+            android:title="@string/preference_list_time_title"
+            android:summary="@string/preference_list_time_summary"
+            android:entries="@array/preference_list_time_entries"
+            android:entryValues="@array/preference_list_time_values" />
+        <ListPreference
             android:dependency="preference_checkbox_sms"
-	        android:key="preference_list_sms_loop"
-	        android:title="@string/preference_list_loop_title"
-	        android:summary="@string/preference_list_loop_summary"
-	        android:entries="@array/preference_list_loop_entries"
-	        android:entryValues="@array/preference_list_loop_values" />
-	    <com.jareddlc.turquoisebicuspid.ColorPickerPreference
-	        android:dependency="preference_checkbox_sms"
-			android:key="preference_color_sms"
-			android:defaultValue="0xffffffff" 
-			android:title="@string/preference_color_title"
-			android:summary="@string/preference_color_summary" />
+            android:key="preference_list_sms_loop"
+            android:title="@string/preference_list_loop_title"
+            android:summary="@string/preference_list_loop_summary"
+            android:entries="@array/preference_list_loop_entries"
+            android:entryValues="@array/preference_list_loop_values" />
+        <com.jareddlc.turquoisebicuspid.ColorPickerPreference
+            android:dependency="preference_checkbox_sms"
+            android:key="preference_color_sms"
+            android:defaultValue="0xffffffff" 
+            android:title="@string/preference_color_title"
+            android:summary="@string/preference_color_summary" />
     </PreferenceCategory>
-    
-	<PreferenceCategory android:title="@string/preference_category_phone_title" >
-	    <CheckBoxPreference
-	        android:dependency="preference_checkbox_service"
-	        android:key="preference_checkbox_phone"
-	        android:title="@string/preference_checkbox_phone_title"
-	        android:summaryOn="@string/preference_checkbox_phone_on"
-	        android:summaryOff="@string/preference_checkbox_phone_off"
-	        android:defaultValue="false" />
-	    <ListPreference
+
+    <PreferenceCategory android:title="@string/preference_category_phone_title" >
+        <CheckBoxPreference
+            android:key="preference_checkbox_phone"
+            android:title="@string/preference_checkbox_phone_title"
+            android:summaryOn="@string/preference_checkbox_phone_on"
+            android:summaryOff="@string/preference_checkbox_phone_off"
+            android:defaultValue="false" />
+        <ListPreference
             android:dependency="preference_checkbox_phone"
-	        android:key="preference_list_phone_type"
-	        android:title="@string/preference_list_type_title"
-	        android:summary="@string/preference_list_type_summary"
-	        android:entries="@array/preference_list_type_entries"
-	        android:entryValues="@array/preference_list_type_values" />
-	    <ListPreference
+            android:key="preference_list_phone_type"
+            android:title="@string/preference_list_type_title"
+            android:summary="@string/preference_list_type_summary"
+            android:entries="@array/preference_list_type_entries"
+            android:entryValues="@array/preference_list_type_values" />
+        <ListPreference
             android:dependency="preference_checkbox_phone"
-	        android:key="preference_list_phone_time"
-	        android:title="@string/preference_list_time_title"
-	        android:summary="@string/preference_list_time_summary"
-	        android:entries="@array/preference_list_time_entries"
-	        android:entryValues="@array/preference_list_time_values" />
-	    <ListPreference
+            android:key="preference_list_phone_time"
+            android:title="@string/preference_list_time_title"
+            android:summary="@string/preference_list_time_summary"
+            android:entries="@array/preference_list_time_entries"
+            android:entryValues="@array/preference_list_time_values" />
+        <ListPreference
             android:dependency="preference_checkbox_phone"
-	        android:key="preference_list_phone_loop"
-	        android:title="@string/preference_list_loop_title"
-	        android:summary="@string/preference_list_loop_summary"
-	        android:entries="@array/preference_list_loop_entries"
-	        android:entryValues="@array/preference_list_loop_values" />
-	    <com.jareddlc.turquoisebicuspid.ColorPickerPreference
-	        android:dependency="preference_checkbox_phone"
-			android:key="preference_color_phone"
-			android:defaultValue="0xffffffff" 
-			android:title="@string/preference_color_title"
-			android:summary="@string/preference_color_summary" />
+            android:key="preference_list_phone_loop"
+            android:title="@string/preference_list_loop_title"
+            android:summary="@string/preference_list_loop_summary"
+            android:entries="@array/preference_list_loop_entries"
+            android:entryValues="@array/preference_list_loop_values" />
+        <com.jareddlc.turquoisebicuspid.ColorPickerPreference
+            android:dependency="preference_checkbox_phone"
+            android:key="preference_color_phone"
+            android:defaultValue="0xffffffff" 
+            android:title="@string/preference_color_title"
+            android:summary="@string/preference_color_summary" />
     </PreferenceCategory>
-    
-	<PreferenceCategory android:title="@string/preference_category_repeat_title" >
-	    <ListPreference
-            android:dependency="preference_checkbox_service"
-	        android:key="preference_list_repeat"
-	        android:title="@string/preference_list_repeat_title"
-	        android:summary="@string/preference_list_repeat_summary"
-	        android:entries="@array/preference_list_repeat_entries"
-	        android:entryValues="@array/preference_list_repeat_values" />
+
+    <PreferenceCategory android:title="@string/preference_category_repeat_title" >
+        <ListPreference
+            android:key="preference_list_repeat"
+            android:title="@string/preference_list_repeat_title"
+            android:summary="@string/preference_list_repeat_summary"
+            android:entries="@array/preference_list_repeat_entries"
+            android:entryValues="@array/preference_list_repeat_values" />
     </PreferenceCategory>
 </PreferenceScreen>
