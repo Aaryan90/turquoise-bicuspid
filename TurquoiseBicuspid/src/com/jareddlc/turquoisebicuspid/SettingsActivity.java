@@ -86,39 +86,54 @@ public class SettingsActivity extends Activity {
             mHandler = new Handler() {
                 @Override
                 public void handleMessage(Message msg) {
+                    Log.d(LOG_TAG, "handleMessage: "+msg.getData());
                     String bluetoothMessage = msg.getData().getString("bluetooth");
-                    if(bluetoothMessage.equals("isEnabled")) {
-                        CharSequence text = "Bluetooth Enabled";
-                        Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
-                        SettingsFragment.this.restorePreferences(sPrefs);                
-                        preference_switch_bluetooth.setChecked(true);
-                        preference_list_paired.setEnabled(true);
+                    String bluetoothDevice = msg.getData().getString("bluetoothDevice");
+                    if(bluetoothMessage != null && !bluetoothMessage.isEmpty()) {
+                        if(bluetoothMessage.equals("isEnabled")) {
+                            CharSequence text = "Bluetooth Enabled";
+                            Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
+                            SettingsFragment.this.restorePreferences(sPrefs);                
+                            preference_switch_bluetooth.setChecked(true);
+                            preference_list_paired.setEnabled(true);
+                        }
+                        if(bluetoothMessage.equals("isEnabledFailed")) {
+                            CharSequence text = "Failed";
+                            Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
+                            preference_switch_bluetooth.setChecked(false);
+                        }
+                        if(bluetoothMessage.equals("isConnected")) {
+                            Log.d(LOG_TAG, "Bluetooth Connected");
+                            CharSequence text = "Bluetooth Connected";
+                            Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
+                            preference_checkbox_connect.setChecked(true);
+                            preference_checkbox_service.setEnabled(true);
+                        }
+                        if(bluetoothMessage.equals("isDisconnected")) {
+                            Log.d(LOG_TAG, "Bluetooth Disconnected");
+                            CharSequence text = "Bluetooth Disconnected";
+                            Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
+                            preference_checkbox_connect.setChecked(false);
+                        }
+                        if(bluetoothMessage.equals("isConnectedFailed")) {
+                            Log.d(LOG_TAG, "Bluetooth Connected Failed");
+                            CharSequence text = "Bluetooth Connected failed";
+                            Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
+                            preference_checkbox_connect.setChecked(false);
+                            preference_checkbox_service.setEnabled(true);
+                            preference_checkbox_service.setChecked(false);
+                        }
+                        if(bluetoothMessage.equals("scanStopped")) {
+                            Log.d(LOG_TAG, "Bluetooth scanning done");
+                            CharSequence text = "Scanning complete";
+                            Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
+                        }
                     }
-                    if(bluetoothMessage.equals("isEnabledFailed")) {
-                        CharSequence text = "Failed";
-                        Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
-                        preference_switch_bluetooth.setChecked(false);
-                    }
-                    if(bluetoothMessage.equals("isConnected")) {
-                        Log.d(LOG_TAG, "Bluetooth Connected");
-                        CharSequence text = "Bluetooth Connected";
-                        Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
-                        preference_checkbox_connect.setChecked(true);
-                        preference_checkbox_service.setEnabled(true);
-                    }
-                    if(bluetoothMessage.equals("isDisconnected")) {
-                        Log.d(LOG_TAG, "Bluetooth Disconnected");
-                        CharSequence text = "Bluetooth Disconnected";
-                        Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
-                        preference_checkbox_connect.setChecked(false);
-                    }
-                    if(bluetoothMessage.equals("isConnectedFailed")) {
-                        Log.d(LOG_TAG, "Bluetooth Connected Failed");
-                        CharSequence text = "Bluetooth Connected failed";
-                        Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
-                        preference_checkbox_connect.setChecked(false);
-                        preference_checkbox_service.setEnabled(true);
-                        preference_checkbox_service.setChecked(false);
+                    if(bluetoothDevice != null && !bluetoothDevice.isEmpty()) {
+                        String[] sDevice = bluetoothDevice.split(",");
+                        String sDeviceName = sDevice[0];
+                        String sDeviceAddress = sDevice[1];
+                        Log.d(LOG_TAG, "Bluetooth device name: "+sDeviceName+" address: "+sDeviceAddress);
                     }
                 }
             };
@@ -228,6 +243,8 @@ public class SettingsActivity extends Activity {
             preference_list_scan.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {        
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
+                    CharSequence text = "Scanning...";
+                    Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
                     bluetoothLeService.scanLeDevice();
                     return true;
                 }

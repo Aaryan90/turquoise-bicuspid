@@ -2,12 +2,14 @@ package com.jareddlc.turquoisebicuspid;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothAdapter.LeScanCallback;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
@@ -22,6 +24,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.preference.ListPreference;
 import android.util.Log;
 
 public class BluetoothLeService extends Service {
@@ -33,6 +36,7 @@ public class BluetoothLeService extends Service {
     private static String deviceMAC;
     public final static UUID UUID_HM_RX_TX = UUID.fromString(BluetoothLeGattAttributes.HM_RX_TX);
     private static Set<BluetoothDevice> pairedDevices;
+    private static Set<BluetoothDevice> mBluetoothLeDevices;
     private static BluetoothManager mBluetoothManager;
     private static BluetoothAdapter mBluetoothAdapter;
     private static BluetoothDevice mBluetoothDevice;
@@ -41,6 +45,7 @@ public class BluetoothLeService extends Service {
     private static EnableBluetoothThread eBluetooth;
     public static CharSequence[] pairedEntries;
     public static CharSequence[] pairedEntryValues;
+    
     public static BluetoothGattCharacteristic mWriteCharacteristic;
     public int mConnectionState = 0;
     public static boolean isEnabled = false;
@@ -187,7 +192,7 @@ public class BluetoothLeService extends Service {
                 return false;
             }
         }
-
+        mBluetoothLeDevices = new LinkedHashSet<BluetoothDevice>();
         mBluetoothAdapter = mBluetoothManager.getAdapter();
         if(mBluetoothAdapter == null) {
             Log.e(LOG_TAG, "Unable to obtain a BluetoothAdapter.");
@@ -404,13 +409,18 @@ public class BluetoothLeService extends Service {
                         @Override
                         public void run() {
                             isScanning = false;
-                            mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                            mBluetoothAdapter.stopLeScan(mScanCallback);
+                            Message msg = mHandler.obtainMessage();
+                            Bundle b = new Bundle();
+                            b.putString("bluetooth", "scanStopped");
+                            msg.setData(b);
+                            mHandler.sendMessage(msg);
                         }
                     }, SCAN_PERIOD);
                     
                     Log.d(LOG_TAG, "scanLeDevice starting scan for: "+SCAN_PERIOD+"ms");
                     isScanning = true;
-                    mBluetoothAdapter.startLeScan(mLeScanCallback);
+                    mBluetoothAdapter.startLeScan(mScanCallback);
                 }
                 else {
                     Log.d(LOG_TAG, "scanLeDevice currently scanning");
@@ -431,13 +441,23 @@ public class BluetoothLeService extends Service {
         public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
             Log.d(LOG_TAG, "onLeScan:");
             Log.d(LOG_TAG, "onLeScan: device:"+device+" rssi:"+rssi+" scanRecord: "+scanRecord);
-            /*runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mLeDeviceListAdapter.addDevice(device);
-                    mLeDeviceListAdapter.notifyDataSetChanged();
-                }
-            });*/
+        }
+    };
+    
+    private LeScanCallback mScanCallback = new LeScanCallback() {
+        @Override
+        public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+            //Log.d(LOG_TAG, "LeScanCallback onLeScan: device:"+device+" rssi:"+rssi+" scanRecord: "+scanRecord);
+            //Log.d(LOG_TAG, device.getName()+" : "+device.getAddress()+" : "+device.getType()+" : "+device.getBondState());
+            if(mBluetoothLeDevices.add(device)) {
+                Log.d(LOG_TAG, device.getName()+" : "+device.getAddress()+" : "+device.getType()+" : "+device.getBondState());
+                Message msg = mHandler.obtainMessage();
+                Bundle b = new Bundle();
+                b.putString("bluetoothDevice", device.getName()+","+device.getAddress());
+                //b.putParcelable("bluetoothDevice", device);
+                msg.setData(b);
+                mHandler.sendMessage(msg);
+            }
         }
     };
 
