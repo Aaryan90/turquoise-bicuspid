@@ -8,13 +8,13 @@
     <string name="preference_category_phone_title">Phone Notifications</string>
     <string name="preference_category_repeat_title">Repeat Notifications</string>
     <string name="preference_switch_bluetooth_title">Bluetooth</string>
-    <string name="preference_list_paired_title">Selected device</string>
+    <string name="preference_list_paired_title">Select device</string>
     <string name="preference_list_paired_dialog">Select a device</string>
     <string name="preference_list_paired_summary">Click to select a paired device</string>
     <string name="preference_list_paired_default">No paired devices</string>
     <string name="preference_list_scan_title">Scan</string>
     <string name="preference_list_scan_dialog">Scan Results</string>
-    <string name="preference_list_scan_summary">Click to scan for a device</string>
+    <string name="preference_list_scan_summary">Click to scan for devices</string>
     <string name="preference_list_scan_default">No devices</string>
     <string name="preference_list_type_title">Notification Type</string>
     <string name="preference_list_type_summary">Select a type</string>

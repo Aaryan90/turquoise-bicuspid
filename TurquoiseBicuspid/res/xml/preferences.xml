@@ -4,6 +4,12 @@
         <SwitchPreference
             android:title="@string/preference_switch_bluetooth_title"
             android:key="preference_switch_bluetooth"/>
+        <Preference
+            android:dependency="preference_switch_bluetooth"
+            android:key="preference_list_scan"
+            android:title="@string/preference_list_scan_title"
+            android:dialogTitle="@string/preference_list_scan_dialog"
+            android:summary="@string/preference_list_scan_summary"/>
         <ListPreference
             android:dependency="preference_switch_bluetooth"
             android:key="preference_list_paired"
@@ -20,15 +26,6 @@
             android:summaryOn="@string/preference_checkbox_connect_on"
             android:summaryOff="@string/preference_checkbox_connect_off"
             android:defaultValue="false" />
-        <ListPreference
-            android:dependency="preference_switch_bluetooth"
-            android:key="preference_list_scan"
-            android:title="@string/preference_list_scan_title"
-            android:dialogTitle="@string/preference_list_scan_dialog"
-            android:summary="@string/preference_list_scan_summary"
-            android:entries="@array/preference_list_scan_entries"
-            android:entryValues="@array/preference_list_scan_values"
-            android:defaultValue="@string/preference_list_scan_default" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/preference_category_device_title" >

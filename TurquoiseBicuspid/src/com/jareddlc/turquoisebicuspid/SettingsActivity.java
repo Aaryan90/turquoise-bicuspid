@@ -50,7 +50,6 @@ public class SettingsActivity extends Activity {
         private static CheckBoxPreference preference_checkbox_sms;
         private static CheckBoxPreference preference_checkbox_phone;
         private static ListPreference preference_list_paired;
-        private static ListPreference preference_list_scan;
         private static ListPreference preference_list_sms_type;
         private static ListPreference preference_list_sms_time;
         private static ListPreference preference_list_sms_loop;
@@ -60,6 +59,7 @@ public class SettingsActivity extends Activity {
         private static ListPreference preference_list_repeat;
         private static ColorPickerPreference preference_color_sms;
         private static ColorPickerPreference preference_color_phone;
+        private static Preference preference_scan;
         private static Preference preference_clear;
         private static Preference preference_test;
 
@@ -125,7 +125,9 @@ public class SettingsActivity extends Activity {
                         }
                         if(bluetoothMessage.equals("scanStopped")) {
                             Log.d(LOG_TAG, "Bluetooth scanning done");
-                            CharSequence text = "Scanning complete";
+                            preference_list_paired.setEntries(BluetoothLeService.getEntries());
+                            preference_list_paired.setEntryValues(BluetoothLeService.getEntryValues());
+                            CharSequence text = "Scanning complete. Please select device";
                             Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -197,11 +199,22 @@ public class SettingsActivity extends Activity {
                 }
             });
 
-            preference_list_paired = (ListPreference) getPreferenceManager().findPreference("preference_list_paired");
-            preference_list_paired.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {        
+            preference_scan = (Preference) getPreferenceManager().findPreference("preference_list_scan");
+            preference_scan.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    BluetoothLeService.getPaired();
+                    CharSequence text = "Scanning...";
+                    Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
+                    bluetoothLeService.scanLeDevice();
+                    return true;
+                }
+            });
+
+            preference_list_paired = (ListPreference) getPreferenceManager().findPreference("preference_list_paired");
+            preference_list_paired.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    BluetoothLeService.setEntries();
                     preference_list_paired.setEntries(BluetoothLeService.getEntries());
                     preference_list_paired.setEntryValues(BluetoothLeService.getEntryValues());
                     return true;
@@ -239,17 +252,6 @@ public class SettingsActivity extends Activity {
                 }
             });
 
-            preference_list_scan = (ListPreference) getPreferenceManager().findPreference("preference_list_scan");
-            preference_list_scan.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {        
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    CharSequence text = "Scanning...";
-                    Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
-                    bluetoothLeService.scanLeDevice();
-                    return true;
-                }
-            });
-
             preference_checkbox_service = (CheckBoxPreference) getPreferenceManager().findPreference("preference_checkbox_service");
             preference_checkbox_service.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
@@ -270,7 +272,7 @@ public class SettingsActivity extends Activity {
             });
 
             preference_clear = (Preference) getPreferenceManager().findPreference("preference_clear");
-            preference_clear.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {        
+            preference_clear.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     bluetoothLeService.send("blink", "3", "50", "-1", "ffffff");
@@ -279,7 +281,7 @@ public class SettingsActivity extends Activity {
             });
 
             preference_test = (Preference) getPreferenceManager().findPreference("preference_test");
-            preference_test.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {        
+            preference_test.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     bluetoothLeService.send("blink", "3", "250", "-1", "ffffff");
@@ -454,7 +456,7 @@ public class SettingsActivity extends Activity {
 
         public void restorePreferences(SavedPreferences sPrefs) {
             Log.d(LOG_TAG, "Restore paired device: "+sPrefs.saved_preference_list_paired_value+":"+sPrefs.saved_preference_list_paired_entry);
-            BluetoothLeService.getPaired();
+            BluetoothLeService.setEntries();
             if(sPrefs.saved_preference_list_paired_value != "DEFAULT") {
                 BluetoothLeService.setDevice(sPrefs.saved_preference_list_paired_value);
                 mDeviceAddress = sPrefs.saved_preference_list_paired_value;
