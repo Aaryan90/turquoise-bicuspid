@@ -406,6 +406,7 @@ public class BluetoothLeService extends Service {
         if(isEnabled) {
             String send = type+":"+loop+":"+time+":"+repeat+":"+color+":";
             Log.d(LOG_TAG, "Sending: "+send);
+            BitSmang.toByte(type, loop, time, repeat, color);
             if(isConnected) {
                 byte[] sendBytes = send.getBytes();
                 mWriteCharacteristic.setValue(sendBytes);
