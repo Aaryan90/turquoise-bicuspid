@@ -285,7 +285,6 @@ public class SettingsActivity extends Activity {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     bluetoothLeService.send(preference_list_sms_type.getValue(), preference_list_sms_loop.getValue(), preference_list_sms_time.getValue(), preference_list_repeat.getValue(), preference_color_sms.getHexValue());
-                    //bluetoothLeService.send("blink", "3", "250", "-1", "ffffff");
                     return true;
                 }
             });
