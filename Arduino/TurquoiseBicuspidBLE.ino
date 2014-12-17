@@ -4,8 +4,6 @@ SoftwareSerial btSerial(9, 10); // TX, RX
 
 // Global
 String BUFFER = "";
-char DELIMETER = ':';
-int LED = 11;
 int BUT = 2;
 int BUTT_STATE = 0;
 int TIME_START = 0;
@@ -14,46 +12,68 @@ int GREPIN = 3;
 int BLUPIN = 5;
 
 // Defaults
-String TYPE = "blink";   // blink, pulse
-int LOOP = 3;            // 3, 2, 1
-int TIME = 100;          // 500, 250, 100, 50 (milliseconds)
-int REPT = 15000;        // 30000, 15000, 5000, 3000, -1 (milliseconds)
-int RED = 255;           // 0-255
-int GRE = 255;           // 0-255
-int BLU = 255;           // 0-255
+/*
+Type:
+    Blink: 0
+    Pulse: 1
+    On: 2
+Number:
+    1: 0
+    2: 1
+    3: 2
+    5: 3
+Time:
+    50: 0
+    100: 1
+    250: 2
+    500: 3
+Repeat:
+    0: 0
+    5000: 1
+    15000: 2
+    30000: 3
+*/
+//00-00-00-00-00000000-00000000-00000000
+int TYPE = 0;
+int NUMB = 0;
+int TIME = 0;
+int PETE = 0;
 
-boolean REPEATING = false;
+char API;
+char R;
+char G;
+char B;
 
 void setup()
 {
-   pinMode(BUT, INPUT);
-   pinMode(REDPIN, OUTPUT);
-   pinMode(GREPIN, OUTPUT);
-   pinMode(BLUPIN, OUTPUT);
-  
-   Serial.begin(9600);
-   delay(500);
-   Serial.println("Type AT commands!");
+  pinMode(BUT, INPUT);
+  pinMode(REDPIN, OUTPUT);
+  pinMode(GREPIN, OUTPUT);
+  pinMode(BLUPIN, OUTPUT);
 
-   // AC-BT v4 defaults to 9600.
-   btSerial.begin(9600);
-   //btSerial.write("AT+RENEW"); // Reset all settings.
-   delay(250);
-   btSerial.write("AT+ROLE0"); // Slave mode (0: Peripheral, 1: Central, default: 0)
-   delay(250);
-   btSerial.write("AT+MODE2"); // (0: Tranmission, 1: PIO+0, 2: Remote Control+0, default: 0)
-   delay(250);
-   btSerial.write("AT+IMME1"); // (0: work immediately, 1: wait for AT+ commands, wait for AT+START to resume work, default: 0) Don't enter transmission mode until told. ("AT+IMME0" is wait until "AT+START" to work. "AT+WORK1" is connect right away.)
-   delay(250);
-   btSerial.write("AT+BAUD0");
-   delay(250);
-   btSerial.write("AT+NAMETurquoiseB");
-   delay(250);
-   btSerial.write("AT+PASS123456");
-   delay(250);
-   btSerial.write("AT+START"); // Work immediately when AT+IMME1 is set.
-   
-   TIME_START = millis();
+  Serial.begin(9600);
+  delay(500);
+  Serial.println("Type AT commands!");
+
+  // AC-BT v4 defaults to 9600.
+  btSerial.begin(9600);
+  //btSerial.write("AT+RENEW"); // Reset all settings.
+  delay(250);
+  btSerial.write("AT+ROLE0"); // Slave mode (0: Peripheral, 1: Central, default: 0)
+  delay(250);
+  btSerial.write("AT+MODE2"); // (0: Tranmission, 1: PIO+0, 2: Remote Control+0, default: 0)
+  delay(250);
+  btSerial.write("AT+IMME1"); // (0: work immediately, 1: wait for AT+ commands, wait for AT+START to resume work, default: 0) Don't enter transmission mode until told. ("AT+IMME0" is wait until "AT+START" to work. "AT+WORK1" is connect right away.)
+  delay(250);
+  btSerial.write("AT+BAUD0");
+  delay(250);
+  btSerial.write("AT+NAMETurquoiseB");
+  delay(250);
+  btSerial.write("AT+PASS123456");
+  delay(250);
+  btSerial.write("AT+START"); // Work immediately when AT+IMME1 is set.
+
+  TIME_START = millis();
 }
 
 void loop()
@@ -62,91 +82,50 @@ void loop()
   BUTT_STATE = digitalRead(BUT);
   if(BUTT_STATE == HIGH) {
     Serial.println("Clear");
-    REPEATING = false;
   }
   // read from bluetooth
+  int index = 0;
   if(btSerial.available()) {
     while(btSerial.available()) {
-      BUFFER += (char)btSerial.read();
+      if(index == 0) {
+        API = btSerial.read();
+      }
+      else if(index == 1) {
+        R = btSerial.read();
+      }
+      else if(index == 2) {
+        G = btSerial.read();
+      }
+      else if(index == 3) {
+        B = btSerial.read();
+      }
+      index++;
       delay(1);
     }
+    Serial.print("API:");
+    Serial.print(API, DEC);
+    Serial.print(", Binary:");
+    Serial.println(API, BIN);
     
-    Serial.println("BUFFER: "+BUFFER); 
-    String buff = "";
-    int index = 0;
-    for(int i=0; i<BUFFER.length(); i++) {
-      // copy buffer
-      buff += BUFFER[i];
-      
-      // clear buffer
-      if(BUFFER[i] == ':') {
-        buff = "";
-      }
-      
-      // get a value
-      if(BUFFER[i+1] == ':') {
-        if(index == 0) {
-          TYPE = buff;
-          index++;
-        }
-        else if(index == 1) {
-          LOOP = buff.toInt();
-          index++;
-        }
-        else if(index == 2) {
-          TIME = buff.toInt();
-          index++;
-        }
-        else if(index == 3) {
-          REPT = buff.toInt();
-          if(REPT > 0)
-          {
-            REPEATING = true;
-          }
-          else if(REPT == -1) {
-            REPEATING = false;
-          }
-          index++;
-        }
-        else if(index == 4) {
-          RED = HEXToRGB(buff[0], buff[1]);
-          GRE = HEXToRGB(buff[2], buff[3]);
-          BLU = HEXToRGB(buff[4], buff[5]);
-          index++;
-        }
-        buff = "";
-      }
-    }
-    BUFFER = "";
-    Serial.println(TYPE+":"+LOOP+":"+TIME+":"+REPT+":"+RED+":"+GRE+":"+BLU);
+    Serial.print("R:");
+    Serial.print(R, DEC);
+    Serial.print(", Binary:");
+    Serial.println(R, BIN);
     
-    if(TYPE == "blink") {
-      blinkRGB(LOOP, TIME, RED, GRE, BLU);
+    Serial.print("G:");
+    Serial.print(G, DEC);
+    Serial.print(", Binary:");
+    Serial.println(G, BIN);
+    
+    Serial.print("B:");
+    Serial.print(B, DEC);
+    Serial.print(", Binary:");
+    Serial.println(B, BIN);
+    
+    // AT commands
+    if(Serial.available()){
+      btSerial.write(Serial.read());
     }
-    else if(TYPE == "pulse") {
-      pulseRGB(LOOP, TIME, RED, GRE, BLU);
-    }
-    else if(TYPE == "clear") {
-      REPEATING = false;
-    }
-    else {
-      blinkRGB(LOOP, TIME, RED, GRE, BLU);
-    }
-  }
-  
-  int time_end = millis();
-  int time_diff = time_end - TIME_START;
-  if(time_diff > REPT) {
-    TIME_START = millis();
-    if(REPEATING) {
-      Serial.println("repeat");
-      blinkRGB(LOOP, TIME, RED, GRE, BLU);
-    }
-  }
-  
-  // AT commands
-  if(Serial.available()){
-    btSerial.write(Serial.read());
   }
 }
 
