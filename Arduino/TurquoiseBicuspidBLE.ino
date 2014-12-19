@@ -3,8 +3,7 @@
 SoftwareSerial btSerial(9, 10); // TX, RX
 
 // Global
-String BUFFER = "";
-int BUT = 2;
+int BUTT = 2;
 int BUTT_STATE = 0;
 int TIME_START = 0;
 int REDPIN = 6;
@@ -37,7 +36,7 @@ Repeat:
 int TYPE = 0;
 int NUMB = 0;
 int TIME = 0;
-int PETE = 0;
+int REPT = 0;
 
 char API;
 char R;
@@ -46,7 +45,7 @@ char B;
 
 void setup()
 {
-  pinMode(BUT, INPUT);
+  pinMode(BUTT, INPUT);
   pinMode(REDPIN, OUTPUT);
   pinMode(GREPIN, OUTPUT);
   pinMode(BLUPIN, OUTPUT);
@@ -79,7 +78,7 @@ void setup()
 void loop()
 {
   // clear button
-  BUTT_STATE = digitalRead(BUT);
+  BUTT_STATE = digitalRead(BUTT);
   if(BUTT_STATE == HIGH) {
     Serial.println("Clear");
   }
@@ -87,25 +86,54 @@ void loop()
   int index = 0;
   if(btSerial.available()) {
     while(btSerial.available()) {
-      if(index == 0) {
-        API = btSerial.read();
-      }
-      else if(index == 1) {
-        R = btSerial.read();
-      }
-      else if(index == 2) {
-        G = btSerial.read();
-      }
-      else if(index == 3) {
-        B = btSerial.read();
-      }
-      index++;
+      API = btSerial.read();
+      delay(1);
+      R = btSerial.read();
+      delay(1);
+      G = btSerial.read();
+      delay(1);
+      B = btSerial.read();
       delay(1);
     }
+
     Serial.print("API:");
     Serial.print(API, DEC);
     Serial.print(", Binary:");
     Serial.println(API, BIN);
+    
+    // parse API
+    REPT = 0;
+    TIME = 0;
+    NUMB = 0;
+    TYPE = 0;
+    
+    REPT = API & 3;
+    API >>= 2;
+    TIME = API & 3;
+    API >>= 2;
+    NUMB = API & 3;
+    API >>= 2;
+    TYPE = API &3;
+
+    Serial.print("TYPE:");
+    Serial.print(TYPE, DEC);
+    Serial.print(", Binary:");
+    Serial.println(TYPE, BIN);
+    
+    Serial.print("NUMB:");
+    Serial.print(NUMB, DEC);
+    Serial.print(", Binary:");
+    Serial.println(NUMB, BIN);
+    
+    Serial.print("TIME:");
+    Serial.print(TIME, DEC);
+    Serial.print(", Binary:");
+    Serial.println(TIME, BIN);
+    
+    Serial.print("REPT:");
+    Serial.print(REPT, DEC);
+    Serial.print(", Binary:");
+    Serial.println(REPT, BIN);
     
     Serial.print("R:");
     Serial.print(R, DEC);
