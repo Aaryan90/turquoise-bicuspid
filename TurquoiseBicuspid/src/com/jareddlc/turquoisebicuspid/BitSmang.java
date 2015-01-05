@@ -8,6 +8,7 @@ public class BitSmang {
         Blink: 0
         Pulse: 1
         On: 2
+        Off: 3
     Number:
         1: 0
         2: 1

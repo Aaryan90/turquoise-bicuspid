@@ -402,13 +402,13 @@ public class BluetoothLeService extends Service {
         }
     }
 
-    public void send(String type, String loop, String time, String repeat, String color) {
+    public void send(String type, String number, String time, String repeat, String color) {
         if(isEnabled) {
-            String send = type+":"+loop+":"+time+":"+repeat+":"+color+":";
+            String send = type+":"+number+":"+time+":"+repeat+":"+color+":";
             Log.d(LOG_TAG, "Sending: "+send);
             if(isConnected) {
                 //byte[] sendBytes = send.getBytes();
-                byte[] sendBytes = BitSmang.toByte(type, loop, time, repeat, color);
+                byte[] sendBytes = BitSmang.toByte(type, number, time, repeat, color);
                 mWriteCharacteristic.setValue(sendBytes);
                 writeCharacteristic(mWriteCharacteristic);
                 setCharacteristicNotification(mWriteCharacteristic, true);

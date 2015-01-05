@@ -36,6 +36,12 @@
             android:summaryOn="@string/preference_checkbox_service_on"
             android:summaryOff="@string/preference_checkbox_service_off"
             android:defaultValue="false" />
+        <CheckBoxPreference
+            android:key="preference_checkbox_onoff"
+            android:title="@string/preference_checkbox_onoff_title"
+            android:summaryOn="@string/preference_checkbox_onoff_on"
+            android:summaryOff="@string/preference_checkbox_onoff_off"
+            android:defaultValue="false" />
         <Preference 
             android:dependency="preference_checkbox_service"
             android:key="preference_clear"
@@ -70,11 +76,11 @@
             android:entryValues="@array/preference_list_time_values" />
         <ListPreference
             android:dependency="preference_checkbox_sms"
-            android:key="preference_list_sms_loop"
-            android:title="@string/preference_list_loop_title"
-            android:summary="@string/preference_list_loop_summary"
-            android:entries="@array/preference_list_loop_entries"
-            android:entryValues="@array/preference_list_loop_values" />
+            android:key="preference_list_sms_number"
+            android:title="@string/preference_list_number_title"
+            android:summary="@string/preference_list_number_summary"
+            android:entries="@array/preference_list_number_entries"
+            android:entryValues="@array/preference_list_number_values" />
         <com.jareddlc.turquoisebicuspid.ColorPickerPreference
             android:dependency="preference_checkbox_sms"
             android:key="preference_color_sms"
@@ -106,11 +112,11 @@
             android:entryValues="@array/preference_list_time_values" />
         <ListPreference
             android:dependency="preference_checkbox_phone"
-            android:key="preference_list_phone_loop"
-            android:title="@string/preference_list_loop_title"
-            android:summary="@string/preference_list_loop_summary"
-            android:entries="@array/preference_list_loop_entries"
-            android:entryValues="@array/preference_list_loop_values" />
+            android:key="preference_list_phone_number"
+            android:title="@string/preference_list_number_title"
+            android:summary="@string/preference_list_number_summary"
+            android:entries="@array/preference_list_number_entries"
+            android:entryValues="@array/preference_list_number_values" />
         <com.jareddlc.turquoisebicuspid.ColorPickerPreference
             android:dependency="preference_checkbox_phone"
             android:key="preference_color_phone"

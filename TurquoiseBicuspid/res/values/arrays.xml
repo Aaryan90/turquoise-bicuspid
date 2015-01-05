@@ -32,13 +32,13 @@
         <item>2</item>
         <item>3</item>
     </string-array>
-    <string-array name="preference_list_loop_entries">
+    <string-array name="preference_list_number_entries">
         <item>1</item>
         <item>2</item>
         <item>3</item>
         <item>5</item>
     </string-array>
-    <string-array name="preference_list_loop_values">
+    <string-array name="preference_list_number_values">
         <item>0</item>
         <item>1</item>
         <item>2</item>

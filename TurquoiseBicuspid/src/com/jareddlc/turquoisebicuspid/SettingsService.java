@@ -28,11 +28,11 @@ public class SettingsService extends Service {
 
     private String preference_sms_type;
     private String preference_sms_time;
-    private String preference_sms_loop;
+    private String preference_sms_number;
     private String preference_sms_color;
     private String preference_phone_type;
     private String preference_phone_time;
-    private String preference_phone_loop;
+    private String preference_phone_number;
     private String preference_phone_color;
     private String preference_repeat;
 
@@ -52,11 +52,11 @@ public class SettingsService extends Service {
     public void setPreferences(SavedPreferences sPrefs) {
         preference_sms_type = sPrefs.saved_preference_list_sms_type_value;
         preference_sms_time = sPrefs.saved_preference_list_sms_time_value;
-        preference_sms_loop = sPrefs.saved_preference_list_sms_loop_value;
+        preference_sms_number = sPrefs.saved_preference_list_sms_number_value;
         preference_sms_color = sPrefs.saved_preference_color_sms;
         preference_phone_type = sPrefs.saved_preference_list_phone_type_value;
         preference_phone_time = sPrefs.saved_preference_list_phone_time_value;
-        preference_phone_loop = sPrefs.saved_preference_list_phone_loop_value;
+        preference_phone_number = sPrefs.saved_preference_list_phone_number_value;
         preference_phone_color = sPrefs.saved_preference_color_phone;
         preference_repeat = sPrefs.saved_preference_list_repeat_value;
     }
@@ -71,11 +71,11 @@ public class SettingsService extends Service {
         final SavedPreferences sPrefs = new SavedPreferences(this);
         preference_sms_type = sPrefs.saved_preference_list_sms_type_value;
         preference_sms_time = sPrefs.saved_preference_list_sms_time_value;
-        preference_sms_loop = sPrefs.saved_preference_list_sms_loop_value;
+        preference_sms_number = sPrefs.saved_preference_list_sms_number_value;
         preference_sms_color = sPrefs.saved_preference_color_sms;
         preference_phone_type = sPrefs.saved_preference_list_phone_type_value;
         preference_phone_time = sPrefs.saved_preference_list_phone_time_value;
-        preference_phone_loop = sPrefs.saved_preference_list_phone_loop_value;
+        preference_phone_number = sPrefs.saved_preference_list_phone_number_value;
         preference_phone_color = sPrefs.saved_preference_color_phone;
         preference_repeat = sPrefs.saved_preference_list_repeat_value;
 
@@ -162,7 +162,7 @@ public class SettingsService extends Service {
             String message = intent.getStringExtra("message");
             String sender = intent.getStringExtra("sender");
             Log.d(LOG_TAG, "Recieved SMS message: "+sender+" - "+message);
-            bluetooth.send(preference_sms_type, preference_sms_loop, preference_sms_time, preference_repeat, preference_sms_color);
+            bluetooth.send(preference_sms_type, preference_sms_number, preference_sms_time, preference_repeat, preference_sms_color);
         }
     };
 
@@ -171,7 +171,7 @@ public class SettingsService extends Service {
         public void onReceive(Context context, Intent intent) {
             String sender = intent.getStringExtra("sender");
             Log.d(LOG_TAG, "Recieved PHONE: "+sender);
-            bluetooth.send(preference_phone_type, preference_phone_loop, preference_phone_time, preference_repeat, preference_phone_color);
+            bluetooth.send(preference_phone_type, preference_phone_number, preference_phone_time, preference_repeat, preference_phone_color);
         }
     };
 

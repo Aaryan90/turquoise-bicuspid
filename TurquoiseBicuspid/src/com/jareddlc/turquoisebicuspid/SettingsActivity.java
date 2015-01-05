@@ -47,15 +47,16 @@ public class SettingsActivity extends Activity {
         private static SwitchPreference preference_switch_bluetooth;
         private static CheckBoxPreference preference_checkbox_connect;
         private static CheckBoxPreference preference_checkbox_service;
+        private static CheckBoxPreference preference_checkbox_onoff;
         private static CheckBoxPreference preference_checkbox_sms;
         private static CheckBoxPreference preference_checkbox_phone;
         private static ListPreference preference_list_paired;
         private static ListPreference preference_list_sms_type;
         private static ListPreference preference_list_sms_time;
-        private static ListPreference preference_list_sms_loop;
+        private static ListPreference preference_list_sms_number;
         private static ListPreference preference_list_phone_type;
         private static ListPreference preference_list_phone_time;
-        private static ListPreference preference_list_phone_loop;
+        private static ListPreference preference_list_phone_number;
         private static ListPreference preference_list_repeat;
         private static ColorPickerPreference preference_color_sms;
         private static ColorPickerPreference preference_color_phone;
@@ -270,12 +271,30 @@ public class SettingsActivity extends Activity {
                     return true;
                 }
             });
+            
+            preference_checkbox_onoff = (CheckBoxPreference) getPreferenceManager().findPreference("preference_checkbox_onoff");
+            preference_checkbox_onoff.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    if((Boolean)newValue) {
+                        bluetoothLeService.send("2", preference_list_sms_number.getValue(), preference_list_sms_time.getValue(), "0", preference_color_sms.getHexValue());
+                        editor.putBoolean("saved_preference_checkbox_onoff", true);
+                        editor.commit();
+                    }
+                    else {
+                        bluetoothLeService.send("3", preference_list_sms_number.getValue(), preference_list_sms_time.getValue(), "0", preference_color_sms.getHexValue());
+                        editor.putBoolean("saved_preference_checkbox_onoff", false);
+                        editor.commit();
+                    }
+                    return true;
+                }
+            });
 
             preference_clear = (Preference) getPreferenceManager().findPreference("preference_clear");
             preference_clear.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    bluetoothLeService.send("blink", "3", "50", "-1", "ffffff");
+                    bluetoothLeService.send("blink", "3", "50", "0", "ffffff");
                     return true;
                 }
             });
@@ -284,7 +303,7 @@ public class SettingsActivity extends Activity {
             preference_test.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    bluetoothLeService.send(preference_list_sms_type.getValue(), preference_list_sms_loop.getValue(), preference_list_sms_time.getValue(), preference_list_repeat.getValue(), preference_color_sms.getHexValue());
+                    bluetoothLeService.send(preference_list_sms_type.getValue(), preference_list_sms_number.getValue(), preference_list_sms_time.getValue(), preference_list_repeat.getValue(), preference_color_sms.getHexValue());
                     return true;
                 }
             });
@@ -315,7 +334,7 @@ public class SettingsActivity extends Activity {
                     editor.putString("saved_preference_list_sms_type_value", newValue.toString());
                     editor.putString("saved_preference_list_sms_type_entry", entries[index].toString());
                     editor.commit();
-                    bluetoothLeService.send(newValue.toString(), preference_list_sms_loop.getValue(), preference_list_sms_time.getValue(), "-1", preference_color_sms.getHexValue());
+                    bluetoothLeService.send(newValue.toString(), preference_list_sms_number.getValue(), preference_list_sms_time.getValue(), "0", preference_color_sms.getHexValue());
                     notifyService();
                     return true;
                 }
@@ -329,21 +348,21 @@ public class SettingsActivity extends Activity {
                     editor.putString("saved_preference_list_sms_time_value", newValue.toString());
                     editor.putString("saved_preference_list_sms_time_entry", entries[index].toString());
                     editor.commit();
-                    bluetoothLeService.send(preference_list_sms_type.getValue(), preference_list_sms_loop.getValue(), newValue.toString(), "-1", preference_color_sms.getHexValue());
+                    bluetoothLeService.send(preference_list_sms_type.getValue(), preference_list_sms_number.getValue(), newValue.toString(), "0", preference_color_sms.getHexValue());
                     notifyService();
                     return true;
                 }
             });
-            preference_list_sms_loop = (ListPreference) getPreferenceManager().findPreference("preference_list_sms_loop");
-            preference_list_sms_loop.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            preference_list_sms_number = (ListPreference) getPreferenceManager().findPreference("preference_list_sms_number");
+            preference_list_sms_number.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    int index = preference_list_sms_loop.findIndexOfValue(newValue.toString());
-                    CharSequence[] entries = preference_list_sms_loop.getEntries();
-                    editor.putString("saved_preference_list_sms_loop_value", newValue.toString());
-                    editor.putString("saved_preference_list_sms_loop_entry", entries[index].toString());
+                    int index = preference_list_sms_number.findIndexOfValue(newValue.toString());
+                    CharSequence[] entries = preference_list_sms_number.getEntries();
+                    editor.putString("saved_preference_list_sms_number_value", newValue.toString());
+                    editor.putString("saved_preference_list_sms_number_entry", entries[index].toString());
                     editor.commit();
-                    bluetoothLeService.send(preference_list_sms_type.getValue(), newValue.toString(), preference_list_sms_time.getValue(), "-1", preference_color_sms.getHexValue());
+                    bluetoothLeService.send(preference_list_sms_type.getValue(), newValue.toString(), preference_list_sms_time.getValue(), "0", preference_color_sms.getHexValue());
                     notifyService();
                     return true;
                 }
@@ -355,7 +374,7 @@ public class SettingsActivity extends Activity {
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     editor.putString("saved_preference_color_sms", Integer.toHexString((Integer)newValue).substring(2));
                     editor.commit();
-                    bluetoothLeService.send(preference_list_sms_type.getValue(), preference_list_sms_loop.getValue(), preference_list_sms_time.getValue(), "-1", Integer.toHexString((Integer)newValue).substring(2));
+                    bluetoothLeService.send(preference_list_sms_type.getValue(), preference_list_sms_number.getValue(), preference_list_sms_time.getValue(), "0", Integer.toHexString((Integer)newValue).substring(2));
                     notifyService();
                     return true;
                 }
@@ -387,7 +406,7 @@ public class SettingsActivity extends Activity {
                     editor.putString("saved_preference_list_phone_type_value", newValue.toString());
                     editor.putString("saved_preference_list_phone_type_entry", entries[index].toString());
                     editor.commit();
-                    bluetoothLeService.send(newValue.toString(), preference_list_phone_loop.getValue(), preference_list_phone_time.getValue(), "-1", preference_color_phone.getHexValue());
+                    bluetoothLeService.send(newValue.toString(), preference_list_phone_number.getValue(), preference_list_phone_time.getValue(), "0", preference_color_phone.getHexValue());
                     notifyService();
                     return true;
                 }
@@ -401,21 +420,21 @@ public class SettingsActivity extends Activity {
                     editor.putString("saved_preference_list_phone_time_value", newValue.toString());
                     editor.putString("saved_preference_list_phone_time_entry", entries[index].toString());
                     editor.commit();
-                    bluetoothLeService.send(preference_list_phone_type.getValue(), preference_list_phone_loop.getValue(), newValue.toString(), "-1", preference_color_phone.getHexValue());
+                    bluetoothLeService.send(preference_list_phone_type.getValue(), preference_list_phone_number.getValue(), newValue.toString(), "0", preference_color_phone.getHexValue());
                     notifyService();
                     return true;
                 }
             });
-            preference_list_phone_loop = (ListPreference) getPreferenceManager().findPreference("preference_list_phone_loop");
-            preference_list_phone_loop.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            preference_list_phone_number = (ListPreference) getPreferenceManager().findPreference("preference_list_phone_number");
+            preference_list_phone_number.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    int index = preference_list_phone_loop.findIndexOfValue(newValue.toString());
-                    CharSequence[] entries = preference_list_phone_loop.getEntries();
-                    editor.putString("saved_preference_list_phone_loop_value", newValue.toString());
-                    editor.putString("saved_preference_list_phone_loop_entry", entries[index].toString());
+                    int index = preference_list_phone_number.findIndexOfValue(newValue.toString());
+                    CharSequence[] entries = preference_list_phone_number.getEntries();
+                    editor.putString("saved_preference_list_phone_number_value", newValue.toString());
+                    editor.putString("saved_preference_list_phone_number_entry", entries[index].toString());
                     editor.commit();
-                    bluetoothLeService.send(preference_list_phone_type.getValue(), newValue.toString(), preference_list_phone_time.getValue(), "-1", preference_color_phone.getHexValue());
+                    bluetoothLeService.send(preference_list_phone_type.getValue(), newValue.toString(), preference_list_phone_time.getValue(), "0", preference_color_phone.getHexValue());
                     notifyService();
                     return true;
                 }
@@ -427,7 +446,7 @@ public class SettingsActivity extends Activity {
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     editor.putString("saved_preference_color_phone", Integer.toHexString((Integer)newValue).substring(2));
                     editor.commit();
-                    bluetoothLeService.send(preference_list_phone_type.getValue(), preference_list_phone_loop.getValue(), preference_list_phone_time.getValue(), "-1", Integer.toHexString((Integer)newValue).substring(2));
+                    bluetoothLeService.send(preference_list_phone_type.getValue(), preference_list_phone_number.getValue(), preference_list_phone_time.getValue(), "0", Integer.toHexString((Integer)newValue).substring(2));
                     notifyService();
                     return true;
                 }

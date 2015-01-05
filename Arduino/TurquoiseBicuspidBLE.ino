@@ -16,6 +16,7 @@ Type:
     Blink: 0
     Pulse: 1
     On: 2
+    Off: 3
 Number:
     1: 0
     2: 1
@@ -37,11 +38,14 @@ int TYPE = 0;
 int NUMB = 0;
 int TIME = 0;
 int REPT = 0;
+int arrayNUMB[] = {1, 2, 3, 5};
+int arrayTIME[] = {50, 100, 250, 500};
+int arrayREPT[] = {0, 5000, 15000, 30000};
 
-char API;
-char R;
-char G;
-char B;
+unsigned char API;
+unsigned char R;
+unsigned char G;
+unsigned char B;
 
 void setup()
 {
@@ -71,7 +75,13 @@ void setup()
   btSerial.write("AT+PASS123456");
   delay(250);
   btSerial.write("AT+START"); // Work immediately when AT+IMME1 is set.
-
+  delay(250);
+  if(btSerial.available()) {
+    while(btSerial.available()) {
+       char buff = (char)btSerial.read();
+       Serial.print(buff);
+     }
+   }
   TIME_START = millis();
 }
 
@@ -95,7 +105,7 @@ void loop()
       B = btSerial.read();
       delay(1);
     }
-
+    
     Serial.print("API:");
     Serial.print(API, DEC);
     Serial.print(", Binary:");
@@ -150,25 +160,52 @@ void loop()
     Serial.print(", Binary:");
     Serial.println(B, BIN);
     
-    // AT commands
-    if(Serial.available()){
-      btSerial.write(Serial.read());
+    // blink
+    if(TYPE == 0) {
+      blinkRGB(arrayNUMB[NUMB], arrayTIME[TIME]);
+    }
+    // pulse
+    else if(TYPE == 1) {
+      pulseRGB(arrayNUMB[NUMB], arrayTIME[TIME]);
+    }
+    // turn on
+    else if(TYPE == 2) {
+      onRGB();
+    }
+    // turn off
+    else if(TYPE == 3) {
+      offRGB();
+    }
+  }
+  
+  // repeat
+  if(REPT > 0) {
+    int time_end = millis();
+    int time_diff = time_end - TIME_START;
+    
+    if(time_diff > arrayREPT[REPT]) {
+      TIME_START = millis();
+      Serial.println("repeat");
+      if(TYPE == 0) {
+      blinkRGB(arrayNUMB[NUMB], arrayTIME[TIME]);
+      }
+      // pulse
+      else if(TYPE == 1) {
+        pulseRGB(arrayNUMB[NUMB], arrayTIME[TIME]);
+      }
     }
   }
 }
 
 // blinkRGB - blinks an RGB LED
 // params:
-//   looper: int - amount of times blink the LED
-//   time: int - time for the delay between on/off
-//   red: int - red 
-//   gre: int - green
-//   blu: int - blue
-void blinkRGB(int looper, int time, int red, int gre, int blu) {
-  for(int i=0; i<looper; i++) {
-    analogWrite(REDPIN, red);
-    analogWrite(GREPIN, gre);
-    analogWrite(BLUPIN, blu);
+//  numb: int - number of blinks
+//  time: int - delay between each blink (millis)
+void blinkRGB(int numb, int time) {
+  for(int i=0; i<numb; i++) {
+    analogWrite(REDPIN, R);
+    analogWrite(GREPIN, G);
+    analogWrite(BLUPIN, B);
     delay(time);
     analogWrite(REDPIN, 0);
     analogWrite(GREPIN, 0);
@@ -177,14 +214,11 @@ void blinkRGB(int looper, int time, int red, int gre, int blu) {
   }
 }
 
-// pulse - pulse an RGB LED
+// pulse - pulses an RGB LED
 // params:
-//   looper: int - amount of times pulse the LED
-//   time: int - time for the delay between on/off
-//   red: int - red 
-//   gre: int - green
-//   blu: int - blue
-void pulseRGB(int looper, int time, int red, int gre, int blu) {
+//   looper: int - number of pulses
+//   time: int - delay between each pulse (millis)
+void pulseRGB(int numb, int time) {
   int DELAY = 1;
   if(time == 500) {
     DELAY = 8;
@@ -198,59 +232,49 @@ void pulseRGB(int looper, int time, int red, int gre, int blu) {
   else if(time == 50) {
     DELAY = 1;
   }
-  for(int i=0; i<looper; i++) {
+  for(int i=0; i<numb; i++) {
     for(int j=0; j<255; j++) {
-      if(j <= red) {
+      if(j <= R) {
         analogWrite(REDPIN, j);
       }
-      if(j <= gre) {
+      if(j <= G) {
         analogWrite(GREPIN, j);
       }
-      if(j <= blu) {
+      if(j <= B) {
         analogWrite(BLUPIN, j);
+      }
+      if(j <= 55) {
+        delay(DELAY);
       }
       delay(DELAY);
     }
     for(int k=255; k>=0; k--) {
-      if(k <= red) {
+      if(k <= R) {
         analogWrite(REDPIN, k);
       }
-      if(k <= gre) {
+      if(k <= G) {
         analogWrite(GREPIN, k);
       }
-      if(k <= blu) {
+      if(k <= B) {
         analogWrite(BLUPIN, k);
       }
       delay(DELAY);
     }
+    delay(100);
   }
 }
 
-int HEXToRGB(char first, char second) {
-  int f = CharToHEX(first);
-  int s = CharToHEX(second);
-  return (f*16)+s;
+// onRGB - turns on an RGB LED
+void onRGB() {
+  analogWrite(REDPIN, R);
+  analogWrite(GREPIN, G);
+  analogWrite(BLUPIN, B);
 }
 
-int CharToHEX(char x) {
-  int y = 0;
-  if(x == '1') y = 1;
-  else if(x == '2') y = 2;
-  else if(x == '3') y = 3;
-  else if(x == '4') y = 4;
-  else if(x == '5') y = 5;
-  else if(x == '6') y = 6;
-  else if(x == '7') y = 7;
-  else if(x == '8') y = 8;
-  else if(x == '9') y = 9;
-  else if(x == 'a') y = 10;
-  else if(x == 'b') y = 11;
-  else if(x == 'c') y = 12;
-  else if(x == 'd') y = 13;
-  else if(x == 'e') y = 14;
-  else if(x == 'f') y = 15;
-  return y;
+// offRGB - turns off an RGB LED
+void offRGB() {
+  analogWrite(REDPIN, 0);
+  analogWrite(GREPIN, 0);
+  analogWrite(BLUPIN, 0);
 }
-
-
 
