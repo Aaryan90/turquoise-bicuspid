@@ -1,12 +1,9 @@
 #include <SoftwareSerial.h>
 
 // ATtiny settings: ATtiny85 @8MHz (internal oscillator; BOD disabled), burn bootloader
-
-SoftwareSerial btSerial(3, 2); // TX, RX
+SoftwareSerial btSerial(3, 2); // ATtiny TX, RX
 
 // Global
-int BUTT = 2;
-int BUTT_STATE = 0;
 int TIME_START = 0;
 int REDPIN = 0;
 int GREPIN = 1;
@@ -28,7 +25,6 @@ unsigned char B;
 
 void setup()
 {
-  pinMode(BUTT, INPUT); 
   pinMode(REDPIN, OUTPUT);
   pinMode(GREPIN, OUTPUT);
   pinMode(BLUPIN, OUTPUT);
@@ -37,30 +33,26 @@ void setup()
   btSerial.begin(9600);
   //btSerial.write("AT+RENEW"); // Reset all settings.
   delay(250);
-  btSerial.write("AT+ROLE0"); // Slave mode (0: Peripheral, 1: Central, default: 0)
+  btSerial.print("AT+ROLE0"); // Slave mode (0: Peripheral, 1: Central, default: 0)
   delay(250);
-  btSerial.write("AT+MODE2"); // (0: Tranmission, 1: PIO+0, 2: Remote Control+0, default: 0)
+  btSerial.print("AT+MODE2"); // (0: Tranmission, 1: PIO+0, 2: Remote Control+0, default: 0)
   delay(250);
-  btSerial.write("AT+IMME1"); // (0: work immediately, 1: wait for AT+ commands, wait for AT+START to resume work, default: 0) Don't enter transmission mode until told. ("AT+IMME0" is wait until "AT+START" to work. "AT+WORK1" is connect right away.)
+  btSerial.print("AT+IMME1"); // (0: work immediately, 1: wait for AT+ commands, wait for AT+START to resume work, default: 0) Don't enter transmission mode until told. ("AT+IMME0" is wait until "AT+START" to work. "AT+WORK1" is connect right away.)
   delay(250);
-  btSerial.write("AT+BAUD0");
+  btSerial.print("AT+BAUD0");
   delay(250);
-  btSerial.write("AT+NAMETurquoiseB");
+  btSerial.print("AT+NAMETurquoiseB");
   delay(250);
-  btSerial.write("AT+PASS123456");
+  btSerial.print("AT+PASS123456");
   delay(250);
-  btSerial.write("AT+START"); // Work immediately when AT+IMME1 is set.
+  btSerial.print("AT+START"); // Work immediately when AT+IMME1 is set.
   delay(250);
   
   TIME_START = millis();
 }
 
 void loop()
-{
-  // clear button
-  BUTT_STATE = digitalRead(BUTT);
-  if(BUTT_STATE == HIGH) {
-  }
+{  
   // read from bluetooth
   int index = 0;
   if(btSerial.available()) {
