@@ -1,7 +1,7 @@
 #include <SoftwareSerial.h>
 
 // ATtiny settings: ATtiny85 @8MHz (internal oscillator; BOD disabled), burn bootloader
-SoftwareSerial btSerial(3, 2); // ATtiny TX, RX
+SoftwareSerial btSerial(3, 2); // ATtiny RX, TX
 
 // Global
 int TIME_START = 0;
@@ -32,6 +32,7 @@ void setup()
   // AC-BT v4 defaults to 9600.
   btSerial.begin(9600);
   //btSerial.write("AT+RENEW"); // Reset all settings.
+  
   delay(250);
   btSerial.print("AT+ROLE0"); // Slave mode (0: Peripheral, 1: Central, default: 0)
   delay(250);
@@ -52,7 +53,7 @@ void setup()
 }
 
 void loop()
-{  
+{
   // read from bluetooth
   int index = 0;
   if(btSerial.available()) {
