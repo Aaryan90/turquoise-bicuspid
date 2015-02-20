@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.1" unitdist="mm" unit="mm" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
+<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="no" active="no"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="no"/>
@@ -9489,7 +9489,7 @@ LETTER landscape</description>
 <part name="HM-10" library="HM-10" deviceset="HM-10" device="BOARD"/>
 <part name="USB" library="fci_micro_usb" deviceset="10118192-0001LF" device=""/>
 <part name="ATTINY85" library="attiny85" deviceset="ATTINY85" device="SU"/>
-<part name="C2" library="rcl" deviceset="C-EU" device="C1206" value="10µf"/>
+<part name="C2" library="rcl" deviceset="C-EU" device="C1206" value="0.1µf"/>
 <part name="C3" library="rcl" deviceset="C-EU" device="C1206" value="10µf"/>
 <part name="FRAME1" library="frames" deviceset="LETTER_L" device="">
 <attribute name="VERSION" value="2.0.0"/>
@@ -9525,8 +9525,8 @@ LETTER landscape</description>
 <instance part="S3" gate="1" x="83.82" y="50.8" rot="R180"/>
 <instance part="J0" gate="G$1" x="48.26" y="-17.78" rot="R90"/>
 <instance part="J2" gate="G$1" x="48.26" y="43.18"/>
-<instance part="R5" gate="G$1" x="35.56" y="27.94"/>
-<instance part="R6" gate="G$1" x="45.72" y="25.4"/>
+<instance part="R5" gate="G$1" x="38.1" y="17.78" rot="R90"/>
+<instance part="R6" gate="G$1" x="45.72" y="17.78" rot="R90"/>
 <instance part="HM-10" gate="G$1" x="58.42" y="38.1"/>
 <instance part="USB" gate="G$1" x="-30.48" y="17.78" smashed="yes">
 <attribute name="NAME" x="-35.56" y="26.67" size="1.778" layer="95"/>
@@ -9565,7 +9565,9 @@ LETTER landscape</description>
 <wire x1="-40.64" y1="-25.4" x2="-20.32" y2="-25.4" width="0.1524" layer="91"/>
 <pinref part="C1" gate="G$1" pin="2"/>
 <wire x1="-20.32" y1="-25.4" x2="-15.24" y2="-25.4" width="0.1524" layer="91"/>
-<wire x1="-15.24" y1="-25.4" x2="43.18" y2="-25.4" width="0.1524" layer="91"/>
+<wire x1="-15.24" y1="-25.4" x2="38.1" y2="-25.4" width="0.1524" layer="91"/>
+<wire x1="38.1" y1="-25.4" x2="40.64" y2="-25.4" width="0.1524" layer="91"/>
+<wire x1="40.64" y1="-25.4" x2="43.18" y2="-25.4" width="0.1524" layer="91"/>
 <wire x1="43.18" y1="-25.4" x2="43.18" y2="-7.62" width="0.1524" layer="91"/>
 <wire x1="-15.24" y1="10.16" x2="-15.24" y2="-5.08" width="0.1524" layer="91"/>
 <junction x="-15.24" y="-25.4"/>
@@ -9621,6 +9623,14 @@ LETTER landscape</description>
 <pinref part="HM-10" gate="G$1" pin="GND4"/>
 <wire x1="86.36" y1="-2.54" x2="96.52" y2="-2.54" width="0.1524" layer="91"/>
 <junction x="96.52" y="-2.54"/>
+<pinref part="R6" gate="G$1" pin="1"/>
+<wire x1="45.72" y1="12.7" x2="45.72" y2="5.08" width="0.1524" layer="91"/>
+<wire x1="45.72" y1="5.08" x2="40.64" y2="5.08" width="0.1524" layer="91"/>
+<wire x1="40.64" y1="5.08" x2="40.64" y2="-25.4" width="0.1524" layer="91"/>
+<junction x="40.64" y="-25.4"/>
+<pinref part="R5" gate="G$1" pin="1"/>
+<wire x1="38.1" y1="12.7" x2="38.1" y2="-25.4" width="0.1524" layer="91"/>
+<junction x="38.1" y="-25.4"/>
 </segment>
 <segment>
 <pinref part="J0" gate="G$1" pin="2"/>
@@ -9694,18 +9704,26 @@ LETTER landscape</description>
 <segment>
 <wire x1="27.94" y1="15.24" x2="27.94" y2="27.94" width="0.1524" layer="91"/>
 <wire x1="17.78" y1="15.24" x2="27.94" y2="15.24" width="0.1524" layer="91"/>
-<pinref part="R5" gate="G$1" pin="1"/>
-<wire x1="27.94" y1="27.94" x2="30.48" y2="27.94" width="0.1524" layer="91"/>
 <pinref part="ATTINY85" gate="G$1" pin="PB2"/>
+<pinref part="HM-10" gate="G$1" pin="UART_TX"/>
+<wire x1="27.94" y1="27.94" x2="38.1" y2="27.94" width="0.1524" layer="91"/>
+<pinref part="R5" gate="G$1" pin="2"/>
+<wire x1="38.1" y1="27.94" x2="53.34" y2="27.94" width="0.1524" layer="91"/>
+<wire x1="38.1" y1="27.94" x2="38.1" y2="22.86" width="0.1524" layer="91"/>
+<junction x="38.1" y="27.94"/>
 </segment>
 </net>
 <net name="BT_RX" class="0">
 <segment>
 <wire x1="30.48" y1="17.78" x2="17.78" y2="17.78" width="0.1524" layer="91"/>
-<pinref part="R6" gate="G$1" pin="1"/>
 <wire x1="30.48" y1="17.78" x2="30.48" y2="25.4" width="0.1524" layer="91"/>
-<wire x1="30.48" y1="25.4" x2="40.64" y2="25.4" width="0.1524" layer="91"/>
 <pinref part="ATTINY85" gate="G$1" pin="PB3"/>
+<pinref part="HM-10" gate="G$1" pin="UART_RX"/>
+<wire x1="30.48" y1="25.4" x2="45.72" y2="25.4" width="0.1524" layer="91"/>
+<pinref part="R6" gate="G$1" pin="2"/>
+<wire x1="45.72" y1="25.4" x2="53.34" y2="25.4" width="0.1524" layer="91"/>
+<wire x1="45.72" y1="25.4" x2="45.72" y2="22.86" width="0.1524" layer="91"/>
+<junction x="45.72" y="25.4"/>
 </segment>
 </net>
 <net name="RESET" class="0">
@@ -9732,20 +9750,6 @@ LETTER landscape</description>
 <junction x="58.42" y="43.18"/>
 <wire x1="58.42" y1="43.18" x2="53.34" y2="43.18" width="0.1524" layer="91"/>
 <pinref part="J2" gate="G$1" pin="2"/>
-</segment>
-</net>
-<net name="N$2" class="0">
-<segment>
-<pinref part="R6" gate="G$1" pin="2"/>
-<pinref part="HM-10" gate="G$1" pin="UART_RX"/>
-<wire x1="50.8" y1="25.4" x2="53.34" y2="25.4" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$1" class="0">
-<segment>
-<pinref part="R5" gate="G$1" pin="2"/>
-<pinref part="HM-10" gate="G$1" pin="UART_TX"/>
-<wire x1="40.64" y1="27.94" x2="53.34" y2="27.94" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
