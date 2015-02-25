@@ -9499,9 +9499,9 @@ LETTER landscape</description>
 <sheet>
 <plain>
 <text x="144.78" y="-71.12" size="2.54" layer="94" font="vector" align="bottom-center">2.0.0</text>
-<text x="96.52" y="-68.58" size="2.54" layer="94" font="vector" align="bottom-center">1</text>
 <text x="88.9" y="-53.34" size="2.54" layer="94" font="vector" align="bottom-center">Designed by:    Jared De La Cruz
                 jared@jareddlc.com</text>
+<text x="91.44" y="-68.58" size="2.54" layer="94">Schematic</text>
 </plain>
 <instances>
 <instance part="U$1" gate="G$1" x="-5.08" y="-10.16" rot="R180"/>
