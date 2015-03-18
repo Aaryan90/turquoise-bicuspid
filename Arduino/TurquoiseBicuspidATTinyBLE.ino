@@ -1,7 +1,7 @@
 #include <SoftwareSerial.h>
 
 // ATtiny settings: ATtiny85 @8MHz (internal oscillator; BOD disabled), burn bootloader
-SoftwareSerial btSerial(3, 2); // ATtiny RX, TX
+SoftwareSerial btSerial(3, 2); // ATtiny RX, TX: HM10 TX, RX
 
 // Global
 int TIME_START = 0;
@@ -55,7 +55,6 @@ void setup()
 void loop()
 {
   // read from bluetooth
-  int index = 0;
   if(btSerial.available()) {
     while(btSerial.available()) {
       API = btSerial.read();

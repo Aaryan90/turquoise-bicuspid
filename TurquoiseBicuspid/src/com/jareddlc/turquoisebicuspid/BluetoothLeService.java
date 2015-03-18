@@ -24,7 +24,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.preference.ListPreference;
 import android.util.Log;
 
 public class BluetoothLeService extends Service {
@@ -47,7 +46,7 @@ public class BluetoothLeService extends Service {
     public static CharSequence[] pairedEntryValues;
     public static CharSequence[] scannedEntries;
     public static CharSequence[] scannedEntryValues;
-    
+
     public static BluetoothGattCharacteristic mWriteCharacteristic;
     public int mConnectionState = 0;
     public static boolean isEnabled = false;
@@ -383,7 +382,7 @@ public class BluetoothLeService extends Service {
     }
 
     public static CharSequence[] getEntries() {
-        if(pairedEntries.length > 0) {
+        if(pairedEntries != null && pairedEntries.length > 0) {
             return pairedEntries;
         }
         else {
@@ -393,7 +392,7 @@ public class BluetoothLeService extends Service {
     }
 
     public static CharSequence[] getEntryValues() {
-        if(pairedEntryValues.length > 0) {
+        if(pairedEntryValues!= null && pairedEntryValues.length > 0) {
             return pairedEntryValues;
         }
         else {

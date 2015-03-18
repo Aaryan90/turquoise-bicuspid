@@ -63,6 +63,7 @@
         <ListPreference
             android:dependency="preference_checkbox_sms"
             android:key="preference_list_sms_type"
+            android:defaultValue="0"
             android:title="@string/preference_list_type_title"
             android:summary="@string/preference_list_type_summary"
             android:entries="@array/preference_list_type_entries"
@@ -70,6 +71,7 @@
         <ListPreference
             android:dependency="preference_checkbox_sms"
             android:key="preference_list_sms_time"
+            android:defaultValue="2"
             android:title="@string/preference_list_time_title"
             android:summary="@string/preference_list_time_summary"
             android:entries="@array/preference_list_time_entries"
@@ -77,6 +79,7 @@
         <ListPreference
             android:dependency="preference_checkbox_sms"
             android:key="preference_list_sms_number"
+            android:defaultValue="2"
             android:title="@string/preference_list_number_title"
             android:summary="@string/preference_list_number_summary"
             android:entries="@array/preference_list_number_entries"
@@ -84,7 +87,7 @@
         <com.jareddlc.turquoisebicuspid.ColorPickerPreference
             android:dependency="preference_checkbox_sms"
             android:key="preference_color_sms"
-            android:defaultValue="0xffffffff" 
+            android:defaultValue="0xffffffff"
             android:title="@string/preference_color_title"
             android:summary="@string/preference_color_summary" />
     </PreferenceCategory>
@@ -99,6 +102,7 @@
         <ListPreference
             android:dependency="preference_checkbox_phone"
             android:key="preference_list_phone_type"
+            android:defaultValue="0"
             android:title="@string/preference_list_type_title"
             android:summary="@string/preference_list_type_summary"
             android:entries="@array/preference_list_type_entries"
@@ -106,6 +110,7 @@
         <ListPreference
             android:dependency="preference_checkbox_phone"
             android:key="preference_list_phone_time"
+            android:defaultValue="2"
             android:title="@string/preference_list_time_title"
             android:summary="@string/preference_list_time_summary"
             android:entries="@array/preference_list_time_entries"
@@ -113,6 +118,7 @@
         <ListPreference
             android:dependency="preference_checkbox_phone"
             android:key="preference_list_phone_number"
+            android:defaultValue="2"
             android:title="@string/preference_list_number_title"
             android:summary="@string/preference_list_number_summary"
             android:entries="@array/preference_list_number_entries"
