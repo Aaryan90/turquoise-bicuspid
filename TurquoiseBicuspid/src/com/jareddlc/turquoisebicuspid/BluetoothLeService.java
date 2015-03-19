@@ -56,6 +56,7 @@ public class BluetoothLeService extends Service {
     private static final int STATE_DISCONNECTED = 0;
     private static final int STATE_CONNECTING = 1;
     private static final int STATE_CONNECTED = 2;
+    private static final int STATE_FORCE = 3;
     private static final long SCAN_PERIOD = 5000;
     //private static final int REQUEST_ENABLE_BT = 1;
 
@@ -220,6 +221,7 @@ public class BluetoothLeService extends Service {
             Log.d(LOG_TAG, "Trying to use an existing mBluetoothGatt for connection.");
             if(mBluetoothGatt.connect()) {
                 mConnectionState = STATE_CONNECTING;
+                forceConnect();
                 return true;
             }
             else {
@@ -228,8 +230,8 @@ public class BluetoothLeService extends Service {
         }
 
         final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
-        if (device == null) {
-            Log.d(LOG_TAG, "Device not found.  Unable to connect.");
+        if(device == null) {
+            Log.d(LOG_TAG, "Device not found. Unable to connect.");
             return false;
         }
         // auto connect to the device
@@ -247,6 +249,19 @@ public class BluetoothLeService extends Service {
             return;
         }
         mBluetoothGatt.disconnect();
+    }
+
+    public void forceConnect() {
+        if(mBluetoothDeviceAddress != null) {
+            Log.d(LOG_TAG, "Trying to force connection: "+mBluetoothDeviceAddress);
+            mConnectionState = STATE_FORCE;
+            mBluetoothGatt.disconnect();
+            final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(mBluetoothDeviceAddress);
+            mBluetoothGatt = device.connectGatt(this, true, mGattCallback);
+        }
+        else {
+            Log.d(LOG_TAG, "Force connect called without previous connection");
+        }
     }
 
     public void close() {
