@@ -1,12 +1,12 @@
 #include <SoftwareSerial.h>
 
 // ATtiny settings: ATtiny85 @8MHz (internal oscillator; BOD disabled), burn bootloader
-SoftwareSerial btSerial(3, 2); // ATtiny RX, TX: HM10 TX, RX
+SoftwareSerial btSerial(1, 2); // ATtiny RX, TX: HM10 TX, RX
 
 // Global
 int TIME_START = 0;
 int REDPIN = 0;
-int GREPIN = 1;
+int GREPIN = 3;
 int BLUPIN = 4;
 
 // Defaults
