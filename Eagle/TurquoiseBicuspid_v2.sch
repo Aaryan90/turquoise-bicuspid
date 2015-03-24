@@ -9507,13 +9507,13 @@ LETTER landscape</description>
 <instance part="U$1" gate="G$1" x="-5.08" y="-10.16" rot="R180"/>
 <instance part="C1" gate="G$1" x="43.18" y="-2.54"/>
 <instance part="3.3VREG" gate="G1" x="-27.94" y="40.64"/>
-<instance part="R1" gate="G$1" x="17.78" y="-15.24" smashed="yes">
-<attribute name="NAME" x="13.97" y="-13.7414" size="1.778" layer="95"/>
-<attribute name="VALUE" x="17.77" y="-13.742" size="1.778" layer="96"/>
+<instance part="R1" gate="G$1" x="12.7" y="-15.24" smashed="yes">
+<attribute name="NAME" x="8.89" y="-13.7414" size="1.778" layer="95"/>
+<attribute name="VALUE" x="12.69" y="-13.742" size="1.778" layer="96"/>
 </instance>
-<instance part="R2" gate="G$1" x="15.24" y="-10.16" smashed="yes">
-<attribute name="NAME" x="11.43" y="-8.6614" size="1.778" layer="95"/>
-<attribute name="VALUE" x="15.23" y="-8.662" size="1.778" layer="96"/>
+<instance part="R2" gate="G$1" x="12.7" y="-10.16" smashed="yes">
+<attribute name="NAME" x="8.89" y="-8.6614" size="1.778" layer="95"/>
+<attribute name="VALUE" x="12.69" y="-8.662" size="1.778" layer="96"/>
 </instance>
 <instance part="R3" gate="G$1" x="12.7" y="-5.08" smashed="yes">
 <attribute name="NAME" x="8.89" y="-3.5814" size="1.778" layer="95"/>
@@ -9653,15 +9653,16 @@ LETTER landscape</description>
 </net>
 <net name="A2" class="0">
 <segment>
-<wire x1="20.32" y1="12.7" x2="20.32" y2="-10.16" width="0.1524" layer="91"/>
-<wire x1="17.78" y1="12.7" x2="20.32" y2="12.7" width="0.1524" layer="91"/>
-<pinref part="R2" gate="G$1" pin="2"/>
-<pinref part="ATTINY85" gate="G$1" pin="PB1"/>
-</segment>
-<segment>
 <pinref part="U$1" gate="G$1" pin="A2"/>
 <pinref part="R2" gate="G$1" pin="1"/>
-<wire x1="5.08" y1="-10.16" x2="10.16" y2="-10.16" width="0.1524" layer="91"/>
+<wire x1="5.08" y1="-10.16" x2="7.62" y2="-10.16" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<wire x1="20.32" y1="-10.16" x2="17.78" y2="-10.16" width="0.1524" layer="91"/>
+<pinref part="R2" gate="G$1" pin="2"/>
+<wire x1="20.32" y1="-10.16" x2="20.32" y2="20.32" width="0.1524" layer="91"/>
+<pinref part="ATTINY85" gate="G$1" pin="PB4"/>
+<wire x1="20.32" y1="20.32" x2="17.78" y2="20.32" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="3.3V" class="0">
@@ -9690,14 +9691,15 @@ LETTER landscape</description>
 <net name="A1" class="0">
 <segment>
 <pinref part="U$1" gate="G$1" pin="A1"/>
-<wire x1="12.7" y1="-15.24" x2="5.08" y2="-15.24" width="0.1524" layer="91"/>
+<wire x1="7.62" y1="-15.24" x2="5.08" y2="-15.24" width="0.1524" layer="91"/>
 <pinref part="R1" gate="G$1" pin="1"/>
 </segment>
 <segment>
-<wire x1="17.78" y1="20.32" x2="22.86" y2="20.32" width="0.1524" layer="91"/>
-<wire x1="22.86" y1="20.32" x2="22.86" y2="-15.24" width="0.1524" layer="91"/>
+<pinref part="ATTINY85" gate="G$1" pin="PB3"/>
+<wire x1="22.86" y1="17.78" x2="17.78" y2="17.78" width="0.1524" layer="91"/>
 <pinref part="R1" gate="G$1" pin="2"/>
-<pinref part="ATTINY85" gate="G$1" pin="PB4"/>
+<wire x1="17.78" y1="-15.24" x2="22.86" y2="-15.24" width="0.1524" layer="91"/>
+<wire x1="22.86" y1="-15.24" x2="22.86" y2="17.78" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="BT_TX" class="0">
@@ -9715,15 +9717,15 @@ LETTER landscape</description>
 </net>
 <net name="BT_RX" class="0">
 <segment>
-<wire x1="30.48" y1="17.78" x2="17.78" y2="17.78" width="0.1524" layer="91"/>
-<wire x1="30.48" y1="17.78" x2="30.48" y2="25.4" width="0.1524" layer="91"/>
-<pinref part="ATTINY85" gate="G$1" pin="PB3"/>
+<wire x1="30.48" y1="12.7" x2="30.48" y2="25.4" width="0.1524" layer="91"/>
 <pinref part="HM-10" gate="G$1" pin="UART_RX"/>
 <wire x1="30.48" y1="25.4" x2="45.72" y2="25.4" width="0.1524" layer="91"/>
 <pinref part="R6" gate="G$1" pin="2"/>
 <wire x1="45.72" y1="25.4" x2="53.34" y2="25.4" width="0.1524" layer="91"/>
 <wire x1="45.72" y1="25.4" x2="45.72" y2="22.86" width="0.1524" layer="91"/>
 <junction x="45.72" y="25.4"/>
+<pinref part="ATTINY85" gate="G$1" pin="PB1"/>
+<wire x1="30.48" y1="12.7" x2="17.78" y2="12.7" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="RESET" class="0">
