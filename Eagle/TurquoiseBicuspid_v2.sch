@@ -9738,6 +9738,7 @@ LETTER landscape</description>
 <wire x1="40.64" y1="30.48" x2="40.64" y2="43.18" width="0.1524" layer="91"/>
 <wire x1="40.64" y1="43.18" x2="43.18" y2="43.18" width="0.1524" layer="91"/>
 <pinref part="ATTINY85" gate="G$1" pin="NRES/PB5"/>
+<junction x="17.78" y="30.48"/>
 </segment>
 <segment>
 <pinref part="S2" gate="1" pin="S"/>
