@@ -1,7 +1,10 @@
 #include <SoftwareSerial.h>
 
 // ATtiny settings: ATtiny85 @8MHz (internal oscillator; BOD disabled), burn bootloader
-SoftwareSerial btSerial(1, 2); // ATtiny RX, TX: HM10 TX, RX
+SoftwareSerial btSerial(2, 1); // ATtiny RX, TX: HM10 TX, RX
+// ATtiny   HM-10
+// 2 -------> TX
+// 1 -------> RX
 
 // Global
 int TIME_START = 0;
@@ -28,7 +31,7 @@ void setup()
   pinMode(REDPIN, OUTPUT);
   pinMode(GREPIN, OUTPUT);
   pinMode(BLUPIN, OUTPUT);
-  
+
   // AC-BT v4 defaults to 9600.
   btSerial.begin(9600);
   //btSerial.write("AT+RENEW"); // Reset all settings.
