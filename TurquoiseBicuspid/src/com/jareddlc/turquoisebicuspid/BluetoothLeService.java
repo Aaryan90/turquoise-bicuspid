@@ -32,39 +32,42 @@ public class BluetoothLeService extends Service {
 
     // private static objects
     private static Handler mHandler;
-    private static String deviceMAC;
-    public final static UUID UUID_HM_RX_TX = UUID.fromString(BluetoothLeGattAttributes.HM_RX_TX);
-    private static Set<BluetoothDevice> pairedDevices;
-    private static Set<BluetoothDevice> scannedDevices;
-    private static BluetoothManager mBluetoothManager;
-    private static BluetoothAdapter mBluetoothAdapter;
-    private static BluetoothDevice mBluetoothDevice;
+    private static String setDeviceMac;
     private String mBluetoothDeviceAddress;
-    private static BluetoothGatt mBluetoothGatt;
-    private static EnableBluetoothThread eBluetooth;
     public static CharSequence[] pairedEntries;
     public static CharSequence[] pairedEntryValues;
     public static CharSequence[] scannedEntries;
     public static CharSequence[] scannedEntryValues;
-
+    private static EnableBluetoothThread eBluetooth;
+    private static BluetoothGatt mBluetoothGatt;
+    private static BluetoothDevice mBluetoothDevice;
+    private static BluetoothManager mBluetoothManager;
+    private static BluetoothAdapter mBluetoothAdapter;
+    private static Set<BluetoothDevice> pairedDevices;
+    private static Set<BluetoothDevice> scannedDevices;
     public static BluetoothGattCharacteristic mWriteCharacteristic;
+    public final static UUID UUID_HM_RX_TX = UUID.fromString(BluetoothLeGattAttributes.HM_RX_TX);
+
     public int mConnectionState = 0;
     public static boolean isEnabled = false;
     public static boolean isConnected = false;
     public static boolean isScanning = false;
 
-    private static final int STATE_DISCONNECTED = 0;
-    private static final int STATE_CONNECTING = 1;
-    private static final int STATE_CONNECTED = 2;
     private static final int STATE_FORCE = 3;
     private static final long SCAN_PERIOD = 5000;
+    private static final int STATE_CONNECTED = 2;
+    private static final int STATE_CONNECTING = 1;
+    private static final int STATE_DISCONNECTED = 0;
     //private static final int REQUEST_ENABLE_BT = 1;
-
+    public final static String EXTRA_DATA = "EXTRA_DATA";
+    public final static String ACTION_DATA_AVAILABLE = "ACTION_DATA_AVAILABLE";
     public final static String ACTION_GATT_CONNECTED = "ACTION_GATT_CONNECTED";
     public final static String ACTION_GATT_DISCONNECTED = "ACTION_GATT_DISCONNECTED";
     public final static String ACTION_GATT_SERVICES_DISCOVERED = "ACTION_GATT_SERVICES_DISCOVERED";
-    public final static String ACTION_DATA_AVAILABLE = "ACTION_DATA_AVAILABLE";
-    public final static String EXTRA_DATA = "EXTRA_DATA";
+
+    public static String[] gattStatus = {"Success", "Failure"};
+    public static String[] gattState = {"Disconnected", "Connecting", "Connected", "Disconnecting"};
+    public static String[] gattServiceType = {"Primary", "Secondary"};
 
     // bluetoothle callback
     private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
@@ -73,7 +76,7 @@ public class BluetoothLeService extends Service {
             Log.d(LOG_TAG, "BluetoothLe onConnectionStateChange: "+status);
 
             if(newState == BluetoothProfile.STATE_CONNECTED) {
-                Log.d(LOG_TAG, "BluetoothLe Connected to GATT: status:"+status+", state: "+newState);                
+                Log.d(LOG_TAG, "BluetoothLe Connected to GATT: status:"+status+", state: "+gattState[newState]);                
                 isConnected = true;
                 mConnectionState = STATE_CONNECTED;
                 broadcastUpdate(ACTION_GATT_CONNECTED);
@@ -104,12 +107,15 @@ public class BluetoothLeService extends Service {
 
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-            Log.d(LOG_TAG, "onServicesDiscovered");
+            Log.d(LOG_TAG, "onServicesDiscovered: "+status);
             if(status == BluetoothGatt.GATT_SUCCESS) {    
                 // loops through available GATT Services.
                 for(BluetoothGattService gattService : gatt.getServices()) {
                     String uuid = gattService.getUuid().toString();
-                    Log.d(LOG_TAG, "onServicesDiscovered: uuid: "+uuid);
+                    String type = gattServiceType[gattService.getType()];
+
+                    Log.d(LOG_TAG, "onServicesDiscovered type: "+type);
+                    Log.d(LOG_TAG, "onServicesDiscovered uuid: "+uuid);
                     // look for TurquoiseBicuspid
                     if(BluetoothLeGattAttributes.lookup(uuid, "Unknown service") == "TurquoiseBicuspid") { 
                         Log.d(LOG_TAG, "onServicesDiscovered: Found:TurquoiseBicuspid");
@@ -306,7 +312,7 @@ public class BluetoothLeService extends Service {
         return mBluetoothGatt.getServices();
     }
 
-    /*****/
+    /* Helper Functions */
     public void setHandler(Handler mHndlr) {
         Log.d(LOG_TAG, "Setting handler");
         mHandler = mHndlr;
@@ -332,15 +338,15 @@ public class BluetoothLeService extends Service {
     }
 
     public static void setDevice(String devMac) {
-        deviceMAC = devMac;
+        setDeviceMac = devMac;
         setBluetoothDevice();
     }
 
     public static void setBluetoothDevice() {
-        // loop through paired devices
+        // loop through  devices
         if(pairedDevices != null) {
             for(BluetoothDevice device : pairedDevices) {
-                if(device.getAddress().equals(deviceMAC)) {
+                if(device.getAddress().equals(setDeviceMac)) {
                     Log.d(LOG_TAG, "Set device: "+device.getName()+":"+device.getAddress());
                     mBluetoothDevice = device;
                 }
@@ -353,7 +359,7 @@ public class BluetoothLeService extends Service {
             }
         }
         else {
-            Log.d(LOG_TAG, "setPaired with empty pairedDevices");
+            Log.d(LOG_TAG, "setBluetoothDevice called with empty devices");
         }
         
     }

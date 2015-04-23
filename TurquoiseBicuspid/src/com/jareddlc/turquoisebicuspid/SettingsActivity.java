@@ -36,9 +36,6 @@ public class SettingsActivity extends Activity {
         getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
     }
 
-    /**
-     * Simple preferences without {@code PreferenceActivity} and headers.
-     */
     public static class SettingsFragment extends PreferenceFragment {
         // debug data
         private static final String LOG_TAG = "TurquoiseBicuspid:SettingsFragment";
@@ -65,11 +62,10 @@ public class SettingsActivity extends Activity {
         private static Preference preference_test;
 
         // private static objects
-        private static Handler mHandler;
-        private static BluetoothLeService bluetoothLeService;
-
         private String mDeviceName;
         private String mDeviceAddress;
+        private static Handler mHandler;
+        private static BluetoothLeService bluetoothLeService;
 
         @SuppressLint("HandlerLeak")
         public void onCreate(Bundle savedInstanceState) {
